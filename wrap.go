@@ -5,10 +5,11 @@ import (
 )
 
 // Do runs fn with exclusive access to the interpreter, for direct use of
-// Node.Value and other Ruby values. Inside a callback the access is already
-// held and fn runs directly.
+// Node.Value and other Ruby values. Inside fn, the instance's methods and
+// nodes may be used, by the same goroutine only. Inside a callback the access
+// is already held and fn runs directly.
 func (a *Asciidoctor) Do(fn func(in *ruby.Interp) error) error {
-	return a.do(func() error { return fn(a.b.Interp()) })
+	return wrapError(a.b.Enter(func() error { return fn(a.b.Interp()) }))
 }
 
 // rubyArg converts Go API values (nodes, attributes) into what the

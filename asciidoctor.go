@@ -21,6 +21,9 @@ import (
 // by the goroutine running that callback, and only until it returns.
 type Asciidoctor struct {
 	b *bridge.Bridge
+
+	extOnce sync.Once
+	ext     *ExtensionRegistry
 }
 
 // An Option configures New.

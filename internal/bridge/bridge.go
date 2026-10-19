@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	goruntime "runtime"
+	"strings"
 	"sync"
 	"sync/atomic"
 
@@ -45,6 +46,10 @@ type Bridge struct {
 	handles   map[int64]Handler
 	nextID    int64
 
+	// goErr is the last Go error a callback raised during the current
+	// top-level call (see CallbackError).
+	goErr error
+
 	asciidoctor ruby.Value // the Asciidoctor module
 	consts      map[string]ruby.Value
 }
@@ -82,7 +87,9 @@ func (b *Bridge) Root() string { return b.rt.Root }
 // Asciidoctor is the Asciidoctor module. Use it only inside Do.
 func (b *Bridge) Asciidoctor() ruby.Value { return b.asciidoctor }
 
-// Do runs fn with exclusive access to the interpreter.
+// Do runs fn with exclusive access to the interpreter. When a top-level call
+// fails because a Go callback returned an error, the result is a
+// *CallbackError holding both that error and the Ruby exception.
 func (b *Bridge) Do(fn func() error) error {
 	if b.callbacks.Load() > 0 {
 		return fn()
@@ -92,8 +99,38 @@ func (b *Bridge) Do(fn func() error) error {
 	if b.closed {
 		return ErrClosed
 	}
-	return fn()
+	b.goErr = nil
+	err := fn()
+	if goErr := b.goErr; err != nil && goErr != nil {
+		b.goErr = nil
+		var re *ruby.Error
+		if errors.As(err, &re) && strings.Contains(re.Message, goErr.Error()) {
+			return &CallbackError{Ruby: err, Go: goErr}
+		}
+	}
+	return err
 }
+
+// Enter runs fn as Do does, and lets code inside fn use the bridge again on
+// the same goroutine (the critical section is re-entrant while fn runs, as
+// during a callback).
+func (b *Bridge) Enter(fn func() error) error {
+	return b.Do(func() error {
+		b.callbacks.Add(1)
+		defer b.callbacks.Add(-1)
+		return fn()
+	})
+}
+
+// CallbackError is a Ruby exception caused by an error a Go callback
+// returned. errors.Is and errors.As see both.
+type CallbackError struct {
+	Ruby error
+	Go   error
+}
+
+func (e *CallbackError) Error() string   { return e.Ruby.Error() }
+func (e *CallbackError) Unwrap() []error { return []error{e.Ruby, e.Go} }
 
 // Close runs the interpreter's at_exit handlers and releases it.
 func (b *Bridge) Close() error {
@@ -150,6 +187,10 @@ func (b *Bridge) dispatch(c *ruby.Call) (any, error) {
 	defer b.callbacks.Add(-1)
 	res, err := safeDispatch(h, c, method, c.Args[2:])
 	if err != nil {
+		var re *ruby.Error
+		if !errors.As(err, &re) {
+			b.goErr = err
+		}
 		return nil, toRubyError(err)
 	}
 	return res, nil

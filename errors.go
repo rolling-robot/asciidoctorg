@@ -21,6 +21,9 @@ type Error struct {
 	Message string
 	// Backtrace is the Ruby backtrace, innermost frame first.
 	Backtrace []string
+	// Cause is the error returned by Go code (an extension, converter or
+	// other callback) that raised the exception, if any.
+	Cause error
 
 	err *ruby.Error
 }
@@ -32,12 +35,16 @@ func (e *Error) Error() string {
 	return "asciidoctor: " + e.Message + " (" + e.Class + ")"
 }
 
-// Unwrap returns the underlying interpreter error.
-func (e *Error) Unwrap() error {
-	if e.err == nil {
-		return nil
+// Unwrap returns the underlying interpreter error and the Go Cause.
+func (e *Error) Unwrap() []error {
+	var errs []error
+	if e.err != nil {
+		errs = append(errs, e.err)
 	}
-	return e.err
+	if e.Cause != nil {
+		errs = append(errs, e.Cause)
+	}
+	return errs
 }
 
 // wrapError converts an interpreter error into an *Error; other errors are
@@ -52,7 +59,12 @@ func wrapError(err error) error {
 	}
 	var re *ruby.Error
 	if errors.As(err, &re) {
-		return &Error{Class: re.Class, Message: re.Message, Backtrace: re.Backtrace, err: re}
+		e = &Error{Class: re.Class, Message: re.Message, Backtrace: re.Backtrace, err: re}
+		var ce *bridge.CallbackError
+		if errors.As(err, &ce) {
+			e.Cause = ce.Go
+		}
+		return e
 	}
 	return err
 }

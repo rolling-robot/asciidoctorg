@@ -131,3 +131,22 @@ func TestConstCaches(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestEnterIsReentrant(t *testing.T) {
+	b := newBridge(t)
+	err := b.Enter(func() error {
+		return b.Do(func() error {
+			_, err := b.Interp().Eval("1", "inner.rb", 1)
+			return err
+		})
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	// After Enter returns, Do locks again (and so works from other goroutines).
+	done := make(chan error)
+	go func() { done <- b.Do(func() error { return nil }) }()
+	if err := <-done; err != nil {
+		t.Fatal(err)
+	}
+}

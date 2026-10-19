@@ -443,3 +443,5 @@ func TestPackageLevelConvert(t *testing.T) {
 		t.Fatalf("got %q, %v", out, err)
 	}
 }
+
+func asErr(err error, target **asciidoctor.Error) bool { return errors.As(err, target) }
