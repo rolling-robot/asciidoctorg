@@ -118,6 +118,9 @@ func Materialize(parent string) (string, error) {
 	return root, nil
 }
 
-// libDir and shimDir locate the load path entries within a materialized root.
-func libDir(root string) string  { return filepath.Join(root, filepath.FromSlash(path.Join("asciidoctor", "lib"))) }
+// libDir, shimDir and glueDir locate the load path entries within a materialized root.
+func libDir(root string) string {
+	return filepath.Join(root, filepath.FromSlash(path.Join("asciidoctor", "lib")))
+}
 func shimDir(root string) string { return filepath.Join(root, "shims") }
+func glueDir(root string) string { return filepath.Join(root, "glue") }
