@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>AsciidoctorJ Conversion Process Overview</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>AsciidoctorJ Conversion Process Overview</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>Before starting to write your first extension, some basic understanding of how Asciidoctor treats the document is helpful.
+As any language processing tool, the process can be roughly split into three steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Parsing: the raw sources content is read and analyzed to generate the internal representation, the AST (<em>abstract syntax tree</em>).</p>
+</li>
+<li>
+<p>Processing: the AST is processed. For example to detect possible errors, add automatically generated content (toc), etc.</p>
+</li>
+<li>
+<p>Output generation: once the final AST is set, it&#8217;s again processed to generate the desired output.
+For example, a subsection of the AST representing a title with a paragraph will be converted into its correspondent HTML or PDF output.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Some liberty is taken to make the process easier to understand.
+In reality, Asciidoctor has implementation details that divert from the 3 steps above.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The different extension types are called in different steps of the conversion process in the following order:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Preprocessors are called when the parser requires the AsciiDoc source to parse.</p>
+</li>
+<li>
+<p>IncludeProcessors are called whenever an <code>include::</code> directive is found while reading the AsciiDoc source.</p>
+</li>
+<li>
+<p>BlockMacroProcessors and BlockProcessors are called while parsing in the order that they appear in the source document.</p>
+</li>
+<li>
+<p>Treeprocessors are called after the document has been completely parsed into the Document tree right before processing.</p>
+</li>
+<li>
+<p>InlineMacroProcessors are called during output generation in the order that they appear in the document.</p>
+</li>
+<li>
+<p>DocinfoProcessors are called at the beginning of output generation if they add content to the header.
+And they are called at the end of output generation if they add content to the footer.</p>
+</li>
+<li>
+<p>Postprocessors are called after output generation before the content is written to the destination.</p>
+</li>
+</ol>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

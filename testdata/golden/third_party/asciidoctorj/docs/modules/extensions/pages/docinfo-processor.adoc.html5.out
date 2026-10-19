@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Docinfo Processor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body id="docinfoprocessor" class="article">
+<div id="header">
+<h1>Docinfo Processor</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>Docinfo Processors are primarily targeted for the HTML and DocBook5 formats.
+A Docinfo Processor basically allows to add content to the HTML header or at the end of the HTML body.
+For the DocBook5 target format a Docinfo Processor can add content to the info element or at the very end of the document, just before the closing tag of the root element.</p>
+</div>
+<div class="paragraph">
+<p>Our example Docinfo Processor will add a robots meta tag to the head of the HTML output:</p>
+</div>
+<div class="listingblock">
+<div class="title">A Docinfo Processor that adds a robots meta tag</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in docinfo-processor.adoc - include::example$org/asciidoctor/integrationguide/extension/RobotsDocinfoProcessor.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The Location annotation defines whether the result of this Docinfo Processor should be added to the header or the footer of the document.
+Content is added to the header via <code>LocationType.HEADER</code> and to the footer via <code>LocationType.FOOTER</code>.</p>
+</li>
+<li>
+<p>Every Docinfo Processor must extend the class <code>DocinfoProcessor</code> and implement the <code>process()</code> method.</p>
+</li>
+<li>
+<p>Our example implementation simply returns the meta tag as a string.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>For the example to work make sure:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>standalone</code> option is not set to <code>true</code>, otherwise these will not be added to the document.</p>
+</li>
+<li>
+<p><code>safe</code> mode option is set to at least <code>SECURE</code></p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">Options configuration example</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Options.builder()
+        .standalone(true)
+        .safe(SafeMode.SERVER)
+        .build();</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

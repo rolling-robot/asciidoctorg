@@ -1,0 +1,10 @@
+ERROR: api-migration-guide-v25x-to-v30.adoc: line 7: include file not found: {repo}/third_party/asciidoctorj/docs/modules/guides/pages/partial$update-preprocessor-api.adoc
+ERROR: api-migration-guide-v25x-to-v30.adoc: line 9: include file not found: {repo}/third_party/asciidoctorj/docs/modules/guides/pages/partial$update-macro-api.adoc
+ERROR: api-migration-guide-v25x-to-v30.adoc: line 11: include file not found: {repo}/third_party/asciidoctorj/docs/modules/guides/pages/partial$removal-of-deprecated-methods-in-options.adoc
+ERROR: api-migration-guide-v25x-to-v30.adoc: line 13: include file not found: {repo}/third_party/asciidoctorj/docs/modules/guides/pages/partial$removal-of-deprecated-methods-in-attributes.adoc
+ERROR: api-migration-guide-v25x-to-v30.adoc: line 15: include file not found: {repo}/third_party/asciidoctorj/docs/modules/guides/pages/partial$removal-of-deprecated-asMap-from-builders.adoc
+ERROR: api-migration-guide-v25x-to-v30.adoc: line 17: include file not found: {repo}/third_party/asciidoctorj/docs/modules/guides/pages/partial$removal-of-deprecated-methods-in-asciidoctor.adoc
+ERROR: api-migration-guide-v25x-to-v30.adoc: line 19: include file not found: {repo}/third_party/asciidoctorj/docs/modules/guides/pages/partial$removal-of-deprecated-methods-in-document.adoc
+ERROR: api-migration-guide-v25x-to-v30.adoc: line 21: include file not found: {repo}/third_party/asciidoctorj/docs/modules/guides/pages/partial$removal-of-deprecated-constants-in-BlockProcessor.adoc
+ERROR: api-migration-guide-v25x-to-v30.adoc: line 23: include file not found: {repo}/third_party/asciidoctorj/docs/modules/guides/pages/partial$removal-of-deprecated-methods-in-extension-package.adoc
+ERROR: api-migration-guide-v25x-to-v30.adoc: line 25: include file not found: {repo}/third_party/asciidoctorj/docs/modules/guides/pages/partial$removal-of-deprecated-methods-in-ast-package.adoc

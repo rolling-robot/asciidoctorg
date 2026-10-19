@@ -1,0 +1,3 @@
+ERROR: logging.adoc: line 13: include file not found: {repo}/third_party/asciidoctorj/docs/modules/extensions/pages/example$org/asciidoctor/integrationguide/extension/LoggingBlockMacroProcessor.java
+WARN: logging.adoc: line 15: no callout found for <1>
+WARN: logging.adoc: line 16: no callout found for <2>

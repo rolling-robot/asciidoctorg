@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Untitled</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<div class="paragraph">
+<p>If the gem installed successfully, Asciidoctor&#8217;s <a href="cli:index.html">command line interface (CLI)</a> will be available on your PATH.
+To confirm that Asciidoctor is available, execute:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor --version</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see information about the Asciidoctor version and your Ruby environment printed in the terminal.</p>
+</div>
+<div class="literalblock output">
+<div class="content">
+<pre>Asciidoctor {release-version} [https://asciidoctor.org]
+Runtime Environment ({ruby-description}) (lc:UTF-8 fs:UTF-8 in:- ex:UTF-8)</pre>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

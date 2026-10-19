@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?asciidoc-toc?>
+<?asciidoc-numbered?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0" xml:lang="en">
+<info>
+<title>Inline and Block Macros</title>
+<date>2020-01-01</date>
+</info>
+<section xml:id="top">
+<title>Links</title>
+<simpara><link xl:href="https://asciidoctor.org">https://asciidoctor.org</link>, <link xl:href="https://example.org/angle">https://example.org/angle</link>, <link xl:href="https://example.org/caret">Caret</link>,
+<link xl:href="relative/path.html">Relative</link>, <link xl:href="https://example.org/a_b_c">Escaped</link>,
+<link xl:href="mailto:jane@example.org?subject=Subject%20Line&amp;body=Body%20text">Mail Jane</link>, <link xl:href="mailto:jane@example.org">jane@example.org</link>,
+<link xl:href="https://example.org">https://example.org</link>.
+Not a link: https://example.org.</simpara>
+</section>
+<section xml:id="_cross_references">
+<title>Cross References</title>
+<simpara>See <xref linkend="top"/>, <link linkend="top">the top</link>, <xref linkend="sec-images"/>, <link linkend="sec-images">Images section</link>,
+<xref linkend="table-1"/>, <xref linkend="listing-1"/>, <link xl:href="other-doc.xml#anchor">Other doc</link>, and <xref linkend="missing-ref"/>.</simpara>
+</section>
+<section xml:id="sec-images">
+<title>Images</title>
+<simpara><inlinemediaobject>
+<imageobject>
+<imagedata fileref="images/inline.png" contentwidth="16" contentdepth="16"/>
+</imageobject>
+<textobject><phrase>Inline</phrase></textobject>
+</inlinemediaobject> and <inlinemediaobject role="icon">
+<imageobject>
+<imagedata fileref="images/icon.svg"/>
+</imageobject>
+<textobject><phrase>icon</phrase></textobject>
+</inlinemediaobject>.</simpara>
+<figure xml:id="fig-1">
+<title>A block image</title>
+<link xl:href="https://example.org"><mediaobject>
+<imageobject>
+<imagedata fileref="images/diagram.png" contentwidth="300" contentdepth="200" align="center"/>
+</imageobject>
+<textobject><phrase>Diagram</phrase></textobject>
+</mediaobject></link>
+</figure>
+<informalfigure>
+<mediaobject>
+<imageobject>
+<imagedata fileref="images/photo.jpg" contentwidth="50%"/>
+</imageobject>
+<textobject><phrase>photo</phrase></textobject>
+</mediaobject>
+</informalfigure>
+</section>
+<section xml:id="_ui_macros">
+<title>UI Macros</title>
+<simpara>Press <keycombo><keycap>Ctrl</keycap><keycap>Shift</keycap><keycap>N</keycap></keycombo> or <keycap>F11</keycap>, click <guibutton>Save</guibutton>, select <menuchoice><guimenu>File</guimenu> <guimenuitem>Save As&#8230;&#8203;</guimenuitem></menuchoice> and <menuchoice><guimenu>View</guimenu> <guisubmenu>Zoom</guisubmenu> <guimenuitem>Reset</guimenuitem></menuchoice>.</simpara>
+</section>
+<section xml:id="_footnotes_and_index">
+<title>Footnotes and Index</title>
+<simpara>Text with a footnote.<footnote><simpara>The footnote text.</simpara></footnote>
+Another with an id.<footnote xml:id="fn1"><simpara>Reusable footnote.</simpara></footnote> Reuse it.<footnoteref linkend="fn1"/>
+Index terms <indexterm>
+<primary>visible term</primary>
+</indexterm>visible term and <indexterm>
+<primary>hidden</primary><secondary>secondary</secondary><tertiary>tertiary</tertiary>
+</indexterm> and <indexterm>
+<primary>concealed</primary>
+</indexterm> and <indexterm>
+<primary>flow</primary>
+</indexterm>flow.</simpara>
+</section>
+<section xml:id="_anchors_and_formatting">
+<title>Anchors and Formatting</title>
+<simpara><anchor xml:id="inline-anchor" xreflabel="[inline-anchor]"/>Anchored text, <anchor xml:id="another" xreflabel="Ref text"/> and <anchor xml:id="phrase-id"/><emphasis role="strong"><phrase role="role1 role2">styled phrase</phrase></emphasis>.
+<emphasis role="strong">strong</emphasis> <emphasis>emphasis</emphasis> <literal>mono</literal> <emphasis role="marked">highlight</emphasis> <superscript>super</superscript> <subscript>sub</subscript> <emphasis role="strong">un</emphasis>constrained <emphasis>emp</emphasis>hasis <literal>mo</literal>no <emphasis role="marked">ma</emphasis>rk.
+<phrase role="underline">underlined</phrase> <phrase role="line-through">struck</phrase> <phrase role="big">big</phrase> <phrase role="small">small</phrase>.
+<quote role="double">double curved</quote> <quote role="single">single curved</quote> it&#8217;s &#169; &#174; &#8482;&#8201;&#8212;&#8201;&#8230;&#8203; &#8594; &#8658; &#8592; &#8656; &#169; &amp; &#x2122;.</simpara>
+</section>
+<section xml:id="_stem">
+<title>STEM</title>
+<simpara>Inline <inlineequation><alt><![CDATA[\sqrt{x^2+1}]]></alt><mathphrase><![CDATA[\sqrt{x^2+1}]]></mathphrase></inlineequation> and <inlineequation><alt><![CDATA[E=mc^2]]></alt><mathphrase><![CDATA[E=mc^2]]></mathphrase></inlineequation> and <inlineequation><mathphrase><![CDATA[sum_(i=1)^n i]]></mathphrase></inlineequation>.</simpara>
+<informalequation>
+<alt><![CDATA[\int_0^\infty e^{-x} \, dx = 1]]></alt>
+<mathphrase><![CDATA[\int_0^\infty e^{-x} \, dx = 1]]></mathphrase>
+</informalequation>
+</section>
+<section xml:id="_icons">
+<title>Icons</title>
+<simpara><inlinemediaobject role="red">
+<imageobject>
+<imagedata fileref="./images/icons/heart.png"/>
+</imageobject>
+<textobject><phrase>heart</phrase></textobject>
+</inlinemediaobject> <inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/check.png"/>
+</imageobject>
+<textobject><phrase>check</phrase></textobject>
+</inlinemediaobject> <inlinemediaobject>
+<imageobject>
+<imagedata fileref="./images/icons/download.png"/>
+</imageobject>
+<textobject><phrase>download</phrase></textobject>
+</inlinemediaobject>.</simpara>
+</section>
+<section xml:id="_block_macros">
+<title>Block Macros</title>
+
+
+
+
+
+</section>
+</article>

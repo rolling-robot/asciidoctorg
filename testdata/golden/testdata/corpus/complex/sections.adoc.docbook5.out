@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?asciidoc-toc?>
+<?asciidoc-numbered?>
+<book xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0" xml:lang="en">
+<info>
+<title>Book Title</title>
+<subtitle>A Subtitle</subtitle>
+<date>2020-01-01</date>
+</info>
+<preface xml:id="_preface">
+<title>Preface</title>
+<simpara>Preface content.</simpara>
+</preface>
+<part xml:id="_part_one">
+<title>Part One</title>
+<partintro>
+<simpara>Part introduction.</simpara>
+</partintro>
+<chapter xml:id="_first_chapter">
+<title>First Chapter</title>
+<simpara>Chapter content.</simpara>
+<section xml:id="_section_1_1">
+<title>Section 1.1</title>
+<section xml:id="custom-id" xreflabel="Custom Reftext">
+<title>Section with custom id</title>
+<simpara>Content.</simpara>
+</section>
+</section>
+</chapter>
+<chapter xml:id="_second_chapter">
+<title>Second Chapter</title>
+<section xml:id="_section_2_1">
+<title>Section 2.1</title>
+
+</section>
+</chapter>
+</part>
+<appendix xml:id="_first_appendix">
+<title>First Appendix</title>
+<simpara>Appendix content.</simpara>
+</appendix>
+<glossary xml:id="_glossary">
+<title>Glossary</title>
+<glossentry>
+<glossterm>mud</glossterm>
+<glossdef>
+<simpara>wet, cold dirt</simpara>
+</glossdef>
+</glossentry>
+</glossary>
+<bibliography xml:id="_bibliography">
+<title>Bibliography</title>
+<bibliodiv>
+<bibliomixed>
+<bibliomisc><anchor xml:id="taoup" xreflabel="[taoup]"/>[taoup] Eric Steven Raymond. <emphasis>The Art of Unix Programming</emphasis>.</bibliomisc>
+</bibliomixed>
+<bibliomixed>
+<bibliomisc><anchor xml:id="walsh-muellner" xreflabel="[DocBook Guide]"/>[DocBook Guide] Norman Walsh &amp; Leonard Muellner.</bibliomisc>
+</bibliomixed>
+</bibliodiv>
+<simpara>See <xref linkend="taoup"/> and <xref linkend="walsh-muellner"/>.</simpara>
+</bibliography>
+<index xml:id="_index">
+<title>Index</title>
+
+</index>
+</book>

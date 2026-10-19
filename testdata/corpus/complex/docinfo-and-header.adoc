@@ -1,0 +1,13 @@
+= Document With Docinfo
+:docinfo: shared,private
+:docinfodir: includes
+:nofooter:
+:favicon: favicon.ico
+:stylesheet: custom.css
+:linkcss:
+:copycss!:
+:lang: de
+:title: Overridden Title
+:notitle:
+
+Body text.

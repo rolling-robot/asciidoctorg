@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Project Layout</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Project Layout</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>The project is structured as a multimodule {url-gradle}[Gradle] build.</p>
+</div>
+<div class="paragraph">
+<p>The root folder is the root project and there are several subproject folders, each prefixed with <em>asciidoctorj-</em>.
+Each subproject produces a primary artifact (e.g., jar or zip) and its supporting artifacts (e.g., javadoc, sources, etc).</p>
+</div>
+<div class="paragraph">
+<p>The subprojects are as follows:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">asciidoctorj-api</dt>
+<dd>
+<p>The common API for AsciidoctorJ.
+Other implementations for different platforms than JRuby may reuse and implement this API.
+Produces the asciidoctorj-api.jar</p>
+</dd>
+<dt class="hdlist1">asciidoctorj</dt>
+<dd>
+<p>The main Java bindings for the Asciidoctor RubyGem (asciidoctor) running on JRuby.
+Also bundles optional RubyGems needed at runtime, such as coderay, tilt, haml and slim.
+Produces the asciidoctorj jar.</p>
+</dd>
+<dt class="hdlist1">asciidoctorj-distribution</dt>
+<dd>
+<p>Produces the distribution zip that provides the standalone <code>asciidoctorj</code> command.</p>
+</dd>
+<dt class="hdlist1">asciidoctorj-documentation</dt>
+<dd>
+<p>Contains code examples used for documentation that are run and tested during builds.</p>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+When tests are modified the gradle task <code>copyAllExamplesToDocs</code> must be executed to update documentation required files in under <code>/docs</code>.
+</td>
+</tr>
+</table>
+</div>
+</dd>
+<dt class="hdlist1">asciidoctorj-arquillian-extension</dt>
+<dd>
+<p>Bundles an Arquillian extension that allows to inject an Asciidoctor instance or other instances commonly used by Asciidoctor tests into a test case.</p>
+</dd>
+<dt class="hdlist1">asciidoctorj-test-support</dt>
+<dd>
+<p>Contains some common test classes that are used by multiple other subprojects and the Arquillian extension.</p>
+</dd>
+<dt class="hdlist1">asciidoctorj-wildfly-integration-test</dt>
+<dd>
+<p>WildFly integration tests.</p>
+</dd>
+<dt class="hdlist1">asciidoctorj-springboot-integration-test</dt>
+<dd>
+<p>Spring Boot example app and integration tests.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The Gradle build is partitioned into the following files:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>build.gradle
+gradle.properties
+settings.gradle
+gradle/
+  wrapper/
+    ...
+  deploy.gradle
+  deploySnapshot.gradle
+  eclipse.gradle
+  providedConfiguration.gradle
+  publish.gradle
+  sign.gradle
+asciidoctorj-arquillian-extension/
+  build.gradle
+asciidoctorj-api/
+  build.gradle
+asciidoctorj-core/
+  build.gradle
+asciidoctorj-distribution/
+  build.gradle
+asciidoctorj-documentation/
+  build.gradle
+asciidoctorj-test-support/
+  build.gradle
+asciidoctorj-wildfly-integration-test
+  build.gradle</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will publish the all artifacts that have a snapshot version number to <a href="https://oss.jfrog.org" class="bare">https://oss.jfrog.org</a>.</p>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Read the Document Tree</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Read the Document Tree</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>Instead of converting an AsciiDoc document, you may want to parse the document to read information it contains or navigate the document&#8217;s structure.
+AsciidoctorJ lets you do this!</p>
+</div>
+<div class="paragraph">
+<p>AsciidoctorJ provides a model of the abstract syntax tree of the document.
+These objects are directly linked to the internal representation.</p>
+</div>
+<div class="paragraph">
+<p>To load a document, use the <code>load</code> or <code>loadFile</code> methods.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import org.asciidoctor.ast.Document;
+
+//...
+Document document = asciidoctor.load(DOCUMENT, Options.builder().build()); // <b class="conum">(1)</b>
+assertThat(document.doctitle(), is("Document Title")); // <b class="conum">(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Document from a String is loaded into <code>Document</code> object.</p>
+</li>
+<li>
+<p>Title of the document is retrieved.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>But also all blocks that conforms the document can be retrieved.
+Currently there are support for three kinds of blocks.
+<code>Blocks</code> itself, <code>Section</code> for sections of the document and <code>StructuralNode</code> which is the base type where all kind of blocks (including those not mapped as Java class) are mapped.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import org.asciidoctor.ast.Document;
+import org.asciidoctor.ast.Section;
+
+//...
+Document document = asciidoctor.load(DOCUMENT, Options.builder().build()); // <b class="conum">(1)</b>
+Section section = (Section) document.getBlocks().get(1); // <b class="conum">(2)</b>
+
+assertThat(section.index(), is(0)); // <b class="conum">(3)</b>
+assertThat(section.sectname(), is("sect1"));
+assertThat(section.special(), is(false));</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Document from a String is loaded into <code>Document</code> object.</p>
+</li>
+<li>
+<p>All blocks are get and because in this example the first block is a Section block, we cast it directly.</p>
+</li>
+<li>
+<p>Concrete methods for sections can be called.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Blocks can also be retrieved from query using <code>findBy</code> method.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Document document = asciidoctor.load(DOCUMENT, Options.builder().build());
+
+Map&lt;Object, Object&gt; selector = new HashMap&lt;&gt;(); // <b class="conum">(1)</b>
+selector.put("context", ":image"); // <b class="conum">(2)</b>
+
+List&lt;StructuralNode&gt; findBy = document.findBy(selector);
+assertThat(findBy, hasSize(2)); // <b class="conum">(3)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Queries are defined in a <code>map</code> estructure.</p>
+</li>
+<li>
+<p>In this example all blocks with context as image is returned. Notice that the colon (<code>:</code>) must be added in the value part.</p>
+</li>
+<li>
+<p>Document used as example contains two images.</p>
+</li>
+</ol>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

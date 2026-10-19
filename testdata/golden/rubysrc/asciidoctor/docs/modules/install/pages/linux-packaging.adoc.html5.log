@@ -1,0 +1,4 @@
+ERROR: linux-packaging.adoc: line 32: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/install/pages/partial$success.adoc
+ERROR: linux-packaging.adoc: line 41: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/install/pages/partial$success.adoc
+ERROR: linux-packaging.adoc: line 50: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/install/pages/partial$success.adoc
+ERROR: linux-packaging.adoc: line 59: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/install/pages/partial$success.adoc

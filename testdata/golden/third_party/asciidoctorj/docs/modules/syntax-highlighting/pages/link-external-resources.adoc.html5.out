@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Link and Copy External Resources</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Link and Copy External Resources</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>In <a href="implement-adapter.html">implement-adapter.html</a> we have seen how to implement a basic syntax highlighter that embeds all required resources as DocInfo in the document.
+When the document is converted with the attributes <code>:linkcss</code> and <code>:copycss</code> we expect though that these resources are also written to disk next to the document, and that the document only references them.</p>
+</div>
+<div class="paragraph">
+<p>Looking at our current example of the highlight.js adapter we referenced the resources from the internet.
+For scenarios where it should also be possible to read the document while offline, the syntax highlighter can implement the interface <code>org.asciidoctor.syntaxhighlighter.StylesheetWriter</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in link-external-resources.adoc - include::example$org/asciidoctor/integrationguide/syntaxhighlighter/HighlightJsWithOfflineStylesHighlighter.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>A syntax highlighter that writes additional resources to the filesystem next to the document must implement the interface <code>org.asciidoctor.syntaxhighlighter.StylesheetWriter</code>.</p>
+</li>
+<li>
+<p>If the document is converted with the attributes <code>:copycss</code> and <code>:linkcss</code> the DocInfo that is added to the converted document should link to the local resources.</p>
+</li>
+<li>
+<p>The syntax highlighter should return if it wants to write stylesheets in <code>isWriteStylesheet()</code>.
+This method could for example examine the document if it really needs external resources and return the corresponding result.</p>
+</li>
+<li>
+<p>The method <code>writeStylesheet()</code> gets the <code>org.asciidoctor.ast.Document</code> and the File for the target directory where the document should be written.
+External resources should be written to this directory as well.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This highlighter writes the css and js resources to files in the same directory as the document if it is converted with the attributes <code>:linkcss</code> and <code>:copycss</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in link-external-resources.adoc - include::example$org/asciidoctor/integrationguide/syntaxhighlighter/HighlightJsHighlighterTest.java[tags=includestylesheetwriter]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>External stylesheets are only written when converting to a file, not when converting to a stream or a string, and when the attributes <code>:linkcss</code> and <code>:copycss</code> are set.</p>
+</li>
+</ol>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

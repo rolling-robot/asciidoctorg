@@ -1,0 +1,7 @@
+ERROR: link-external-resources.adoc: line 11: include file not found: {repo}/third_party/asciidoctorj/docs/modules/syntax-highlighting/pages/example$org/asciidoctor/integrationguide/syntaxhighlighter/HighlightJsWithOfflineStylesHighlighter.java
+WARN: link-external-resources.adoc: line 13: no callout found for <1>
+WARN: link-external-resources.adoc: line 14: no callout found for <2>
+WARN: link-external-resources.adoc: line 15: no callout found for <3>
+WARN: link-external-resources.adoc: line 17: no callout found for <4>
+ERROR: link-external-resources.adoc: line 24: include file not found: {repo}/third_party/asciidoctorj/docs/modules/syntax-highlighting/pages/example$org/asciidoctor/integrationguide/syntaxhighlighter/HighlightJsHighlighterTest.java
+WARN: link-external-resources.adoc: line 26: no callout found for <1>

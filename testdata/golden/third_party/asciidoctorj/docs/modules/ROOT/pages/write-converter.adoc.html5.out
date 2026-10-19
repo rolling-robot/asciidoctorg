@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Write a Custom Converter</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Write a Custom Converter</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>For output formats that are not natively supported by Asciidoctor it is possible to write an own converter in Java.
+To get your own converter that creates string content running in {url-repo}[AsciidoctorJ] these steps are required:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Implement the converter as a subclass of <code>org.asciidoctor.converter.StringConverter</code>.
+Annotate it as a converter for your target format using the annotation <code>@org.asciidoctor.converter.ConverterFor</code>.</p>
+</li>
+<li>
+<p>Register the converter at the <code>ConverterRegistry</code>.</p>
+</li>
+<li>
+<p>Pass the target format name to the <code>Asciidoctor</code> instance when rendering a source file.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>A basic converter that converts to an own text format looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">org.asciidoctor.converter.TextConverter.java</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in write-converter.adoc - include::example$org/asciidoctor/integrationguide/converter/TextConverter.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The annotation <code>@ConverterFor</code> binds the converter to the given target format.
+That means that when this converter is registered and a document should be rendered with the backend name <code>text</code> this converter will be used for conversion.</p>
+</li>
+<li>
+<p>A converter must implement this constructor, because {url-repo}[AsciidoctorJ] will call the constructor with this signature.
+For every conversion a new instance will be created.</p>
+</li>
+<li>
+<p>The method <code>convert()</code> is called with the AST object for the document, i.e. a <code>Document</code> instance, when a document is rendered.</p>
+</li>
+<li>
+<p>The optional parameter <code>transform</code> hints at the transformation to be executed.
+This could be for example the value <code>embedded</code> to indicate that the resulting document should be without headers and footers.
+If it is <code>null</code> the transformation usually is defined by the node type and name.</p>
+</li>
+<li>
+<p>Calls to the method <code>getContent()</code> of a node will recursively call the method <code>convert()</code> with the child nodes again.
+Thereby the converter can collect the rendered child nodes, merge them appropriately and return the rendering of the whole node.</p>
+</li>
+<li>
+<p>Converters can log messages in the same way as <a href="extensions:logging.html">extensions</a>.
+These messages will also be forwarded to build tools like the Asciidoctor Maven plugin and allow <a href="maven-tools:plugin:goals/process-asciidoc.html#configuration-logHandler">failing the build</a> on certain messages.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Finally, the converter can be registered and used for conversion of AsciiDoc documents:</p>
+</div>
+<div class="listingblock">
+<div class="title">Use the TextConverter</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in write-converter.adoc - include::example$org/asciidoctor/integrationguide/converter/TextConverterTest.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Registers the converter class <code>TextConverter</code> for this Asciidoctor instance.
+The given converter is responsible for converting to the target format <code>text</code> because the <code>@ConverterFor</code> annotation of the converter class defines this name.</p>
+</li>
+<li>
+<p>The conversion options <code>backend</code> is set to the value <code>text</code> so that our <code>TextConverter</code> will be used.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Alternatively the converter can be registered automatically once the jar file containing the converter is available on the classpath.
+Therefore a service implementation for the interface <code>org.asciidoctor.converter.spi.ConverterRegistry</code> has to be in the same jar file.
+For the <code>TextConverter</code> this implementation could look like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">org.asciidoctor.integrationguide.converter.TextConverterRegistry</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in write-converter.adoc - include::example$org/asciidoctor/integrationguide/converter/TextConverterRegistry.java[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The jar file must also contain the services file containing the fully qualified class name of the <code>ConverterRegistry</code> implementation to make this service implementation available:</p>
+</div>
+<div class="listingblock">
+<div class="title">META-INF/services/org.asciidoctor.jruby.converter.spi.ConverterRegistry</div>
+<div class="content">
+<pre>Unresolved directive in write-converter.adoc - include::example$converterregistry/META-INF/services/org.asciidoctor.jruby.converter.spi.ConverterRegistry[]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To render a document with this converter the target format name <code>text</code> has to be passed via the option <code>backend</code>.
+But note that it is no longer necessary to explicitly register the converter for the target format.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">File adocFile = ...
+asciidoctor.convertFile(adocFile, Options.builder().backend("text").build());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It is also possible to provide converters for binary formats.
+In this case the converter should extend the generic class <code>org.asciidoctor.converter.AbstractConverter&lt;T&gt;</code> where <code>T</code> is the return type of the method <code>convert()</code>.
+<code>StringConverter</code> is actually a concrete subclass for the type <code>String</code>.</p>
+</div>
+<div class="paragraph">
+<p>Asciidoctor makes some useful information available to the converter via the catalog.
+The catalog is exposed in AsciidoctorJ under the <code>Document</code> via <code>getCatalog()</code> and offers :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>getFootnotes()</code> - returns a list of footnotes that occur in the document.
+Footnotes are available after <code>Document</code> <code>getContent()</code> has been called.
+A converter will typically use this data to render footnotes at the bottom of a document.</p>
+</li>
+<li>
+<p><code>getRefs()</code> - returns a map of ids to document elements.
+Ids are used as a document element target reference 1) to link to and/or 2) for styling, for example by CSS.
+By default, ids are automatically generated and assigned to sections.
+They can also be explicitly assigned by the document author to any document element.
+A converter will typically use this data to lookup ids in support of rendering inline anchors.</p>
+</li>
+</ul>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

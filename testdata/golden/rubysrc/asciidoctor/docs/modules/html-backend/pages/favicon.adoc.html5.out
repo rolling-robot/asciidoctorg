@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Add a Favicon</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Add a Favicon</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>When using Asciidoctor to generate a standalone HTML document (i.e., the <code>standalone</code> option is <code>true</code>), you can instruct the processor to include a link to a favicon by setting the favicon attribute in the document header.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">= Document Title
+:favicon:</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default, the processor will add a link reference of type "icon" that refers to a file named <em>favicon.ico</em> (relative to the HTML document):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;link rel="icon" type="image/x-icon" href="favicon.ico"&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This reference gets added inside the HTML <code>&lt;head&gt;</code> element (which explains why this feature is not available when generating an embeddable HTML document).</p>
+</div>
+<div class="paragraph">
+<p>To modify the name or location of the icon file, simply assign a value to the favicon attribute:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">= Document Title
+:favicon: ./images/favicon/favicon.png</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will now produce the following HTML element:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;link rel="icon" type="image/png" href="./images/favicon/favicon.png"&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice the mimetype is automatically set based on the file extension of the image.</p>
+</div>
+<div class="paragraph">
+<p>The value of the <code>iconsdir</code> attribute is not prepended to the favicon path as it is with icons in the content.
+If you want this directory to be included in the favicon path, you must reference it explicitly:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">:favicon: {iconsdir}/favicon.png</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+If you&#8217;re converting a set of AsciiDoc files in multiple directories for the purpose of making a website, and the favicon is located in a shared location, you&#8217;ll likely want to use a forward slash (<code>/</code>) at the beginning of the favicon path.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re looking for more control over how the favicon is declared, you should use a <a href="ROOT:docinfo.html#head">head docinfo file</a>.
+Keep in mind that if you add an icon link in a head docinfo file and also set the favicon attribute, you&#8217;ll end up with two icon links in the generated HTML document.</p>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

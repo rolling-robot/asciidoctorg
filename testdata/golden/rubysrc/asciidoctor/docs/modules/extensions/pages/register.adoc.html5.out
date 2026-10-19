@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Register Extensions</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Register Extensions</h1>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_register_one_or_more_extensions">Register one or more extensions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>These extensions are registered per document using a callback that feels like a DSL:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">Asciidoctor::Extensions.register do
+  preprocessor FrontMatterPreprocessor
+  tree_processor ShellSessionTreeProcessor
+  postprocessor CopyrightFooterPostprocessor
+  docinfo_processor TrackingCodeDocinfoProcessor if @document.basebackend? 'html'
+  block ShoutBlock
+  block_macro GistBlockMacro if @document.basebackend? 'html'
+  inline_macro ManInlineMacro
+  include_processor UriIncludeProcessor
+end</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Each registered class is instantiated when the <span class="class">Asciidoctor::Document</span> is created.
+Alternately, you can pass an instance of the class when registering the extension.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Caution</div>
+</td>
+<td class="content">
+Extension classes must be defined outside of the register block.
+If you define an extension class inside the register block, it will result in an error on subsequent invocations.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Once an extension class is registered, it is frozen, preventing further modification.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+If you need to store state on a class-based extension instance, assign a new Hash to an instance variable named <code>@state</code> in the constructor, then assign data to the keys of that Hash.
+If you need other extensions to be able to access that state, define a reader for that instance variable (i.e., <code>attr_reader :state</code>).
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You can register more than one processor of each type, though you can only have one processor per custom block or macro.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

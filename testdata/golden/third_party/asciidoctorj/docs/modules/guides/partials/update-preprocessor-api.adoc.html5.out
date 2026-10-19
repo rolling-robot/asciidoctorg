@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Update Preprocessors</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_update_preprocessors">Update Preprocessors</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In earlier versions of AsciidoctorJ (up to 2.5.x), Preprocessors were provided with a <code>Reader</code> object that they had to modify directly.
+Unlike the Ruby implementation, the Java implementation of Asciidoctor did not support Preprocessors to return a new <code>Reader</code>.</p>
+</div>
+<div class="paragraph">
+<p>To address this limitation, AsciidoctorJ 3.0.0 has introduced a fix, enabling Preprocessors to create and return a new <code>Reader</code>.
+This enhancement allows Preprocessors to have more flexibility and enables a cleaner implementation.</p>
+</div>
+<div class="paragraph">
+<p>If you have existing Preprocessors, it is essential to update the signature of their process method to return a Reader object, even if the implementation does not create a new Reader object and returns null.</p>
+</div>
+<div class="paragraph">
+<p>The following example shows how to update a Preprocessor to return a new <code>Reader</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Preprocessor for AsciidoctorJ 2.5.x</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">    public static class MyPreprocessor extends Preprocessor {
+
+        @Override
+        public void process(Document document, PreprocessorReader reader) {
+            // Do something with the reader
+        }
+    }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To ensure compatibility with AsciidoctorJ 3.0.0, the process method of the Preprocessor needs to be modified to return a <code>Reader</code>.
+However, if you wish to maintain the same behavior as before, the method can simply return <code>null</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Preprocessor for AsciidoctorJ 3.x.x</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">    public static class MyPreprocessor extends Preprocessor {
+
+        @Override
+        public Reader process(Document document, PreprocessorReader reader) {
+            // Do something with the reader
+            return null;
+        }
+    }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You may find it helpful to review the methods <code>Processor::newReader</code> and <code>PreprocessorReader::read</code> to simplify your code when creating a new <code>Reader</code> and reading the content of the existing <code>Reader</code>.</p>
+</div>
+<div class="paragraph">
+<p>However, please note that following the steps mentioned above will be sufficient to migrate your existing processor.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

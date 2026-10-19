@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Loading External Gems with GEM_PATH</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Loading External Gems with GEM_PATH</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>By default, AsciidoctorJ comes with all required gems bundled within the jar.
+But in some circumstances like <a href="run-in-osgi.html">OSGi</a> environments you may require to store gems in an external folder and be loaded by AsciidoctorJ.</p>
+</div>
+<div class="paragraph">
+<p>As the Java interface <code>org.asciidoctor.Asciidoctor</code> and its factory <code>org.asciidoctor.Asciidoctor.Factory</code> are agnostic to JRuby there are the interface <code>org.asciidoctor.jruby.AsciidoctorJRuby</code> and <code>org.asciidoctor.jruby.AsciidoctorJRuby.Factory</code> that allow to get an Asciidoctor instance using JRuby with a certain GEM_PATH.
+Note that <code>org.asciidoctor.jruby.AsciidoctorJRuby</code> directly extends <code>org.asciidoctor.Asciidoctor</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example of setting GEM_PATH</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import static org.asciidoctor.jruby.AsciidoctorJRuby.Factory.create;
+import org.asciidoctor.Asciidoctor;
+
+Asciidoctor asciidoctor = create("/my/gem/path"); // <b class="conum">(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Creates an <code>Asciidoctor</code> instance with given <code>GEM_PATH</code> location.</p>
+</li>
+</ol>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

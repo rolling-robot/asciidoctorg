@@ -1,0 +1,109 @@
+= Attributes, Conditionals and Counters
+Jane Doe <jane@example.org>; John Roe
+v2.3, 2021-04-05: Second revision
+:description: A document exercising attribute handling.
+:keywords: asciidoc, attributes
+:product: Widget
+:product-version: 4.2
+:url-home: https://example.org/widget
+:sectnums:
+:sectnumlevels: 3
+:toc: left
+:toclevels: 3
+:experimental:
+:icons: font
+:idprefix: sec-
+:idseparator: -
+:hardbreaks-option!:
+:empty-attr:
+:feature-x:
+
+[abstract]
+{product} {product-version} is documented at {url-home}[the home page].
+Author: {author} ({email}), initials {authorinitials}.
+Second author: {author_2}. Revision {revnumber} on {revdate}: {revremark}.
+
+== Attribute References
+
+The product is {product}. Undefined: {undefined-attr}. Escaped: \{product}.
+
+:product: Gadget
+Redefined product: {product}.
+
+:product!:
+Unset product: {product}.
+
+{set:dynamic:value} Dynamic attribute is {dynamic}.
+{counter:seq} {counter:seq} {counter:seq} -- current {seq}.
+{counter:letters:a} {counter:letters} {counter2:letters} {letters}.
+
+Character replacements: {nbsp}{zwsp}{amp}{lt}{gt}{plus}{brvbar}{vbar}{caret}{tilde}{apostrophe}{backslash}{backtick}{two-colons}{two-semicolons}{cpp}{pp}.
+
+Attribute with formatting: {url-home}[*bold link*, window=_blank].
+
+== Conditionals
+
+ifdef::feature-x[]
+Feature X is enabled.
+endif::feature-x[]
+
+ifndef::feature-y[]
+Feature Y is not enabled.
+endif::feature-y[]
+
+ifdef::feature-x,feature-y[Either X or Y is set.]
+
+ifdef::feature-x+feature-y[]
+Both X and Y are set (should not render).
+endif::feature-x+feature-y[]
+
+ifeval::[{product-version} > 4]
+Version is greater than four.
+endif::[]
+
+ifeval::["{backend}" == "html5"]
+Backend is HTML5.
+endif::[]
+
+ifeval::[{sectnumlevels} + 1 == 4]
+Arithmetic in ifeval works.
+endif::[]
+
+ifdef::empty-attr[]
+Empty attributes are still defined.
+endif::[]
+
+=== Nested Level
+:!sectnums:
+
+Section numbering is now off for subsequent sections.
+
+==== Deep Level
+
+Deep content.
+
+[discrete]
+==== Discrete Heading
+
+Text after discrete heading.
+
+== Passthroughs and Subs
+
+[subs="+attributes"]
+----
+Listing with attributes: {product-version}
+----
+
+[subs=-specialcharacters]
+----
+<b>Not escaped</b>
+----
+
+pass:[<u>raw</u>] and pass:q[<u>*quoted*</u>] and +++<i>triple</i>+++ and +{product-version}+ and `+{literal}+`.
+
+[pass]
+<p class="raw">Raw passthrough paragraph</p>
+
+++++
+<div class="raw-block">raw block</div>
+++++

@@ -1,0 +1,4 @@
+ERROR: docinfo-processor.adoc: line 13: include file not found: {repo}/third_party/asciidoctorj/docs/modules/extensions/pages/example$org/asciidoctor/integrationguide/extension/RobotsDocinfoProcessor.java
+WARN: docinfo-processor.adoc: line 15: no callout found for <1>
+WARN: docinfo-processor.adoc: line 17: no callout found for <2>
+WARN: docinfo-processor.adoc: line 18: no callout found for <3>

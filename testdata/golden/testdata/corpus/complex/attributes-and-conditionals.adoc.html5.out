@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<meta name="description" content="A document exercising attribute handling.">
+<meta name="keywords" content="asciidoc, attributes">
+<meta name="author" content="Jane Doe, John Roe">
+<title>Attributes, Conditionals and Counters</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article toc2 toc-left">
+<div id="header">
+<h1>Attributes, Conditionals and Counters</h1>
+<div class="details">
+<span id="author" class="author">Jane Doe</span><br>
+<span id="email" class="email"><a href="mailto:jane@example.org">jane@example.org</a></span><br>
+<span id="author2" class="author">John Roe</span><br>
+<span id="revnumber">version 2.3,</span>
+<span id="revdate">2021-04-05</span>
+<br><span id="revremark">Second revision</span>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#sec-attribute-references">1. Attribute References</a></li>
+<li><a href="#sec-conditionals">2. Conditionals</a>
+<ul class="sectlevel2">
+<li><a href="#sec-nested-level">2.1. Nested Level</a>
+<ul class="sectlevel3">
+<li><a href="#sec-deep-level">Deep Level</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#sec-passthroughs-and-subs">Passthroughs and Subs</a></li>
+</ul>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="quoteblock abstract">
+<blockquote>
+Widget 4.2 is documented at <a href="https://example.org/widget">the home page</a>.
+Author: Jane Doe (<a href="mailto:jane@example.org">jane@example.org</a>), initials JD.
+Second author: John Roe. Revision 2.3 on 2021-04-05: Second revision.
+</blockquote>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sec-attribute-references">1. Attribute References</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The product is Widget. Undefined: {undefined-attr}. Escaped: {product}.</p>
+</div>
+<div class="paragraph">
+<p>Redefined product: Gadget.</p>
+</div>
+<div class="paragraph">
+<p>Unset product: {product}.</p>
+</div>
+<div class="paragraph">
+<p> Dynamic attribute is value.
+1 2 3&#8201;&#8212;&#8201;current 3.
+a b  c.</p>
+</div>
+<div class="paragraph">
+<p>Character replacements: &#160;&#8203;&<>&#43;&#166;|^~{apostrophe}\`::;;C&#43;&#43;&#43;&#43;.</p>
+</div>
+<div class="paragraph">
+<p>Attribute with formatting: <a href="https://example.org/widget" target="_blank" rel="noopener"><strong>bold link</strong></a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sec-conditionals">2. Conditionals</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Feature X is enabled.</p>
+</div>
+<div class="paragraph">
+<p>Feature Y is not enabled.</p>
+</div>
+<div class="paragraph">
+<p>Either X or Y is set.</p>
+</div>
+<div class="paragraph">
+<p>Version is greater than four.</p>
+</div>
+<div class="paragraph">
+<p>Backend is HTML5.</p>
+</div>
+<div class="paragraph">
+<p>Empty attributes are still defined.</p>
+</div>
+<div class="sect2">
+<h3 id="sec-nested-level">2.1. Nested Level</h3>
+<div class="paragraph">
+<p>Section numbering is now off for subsequent sections.</p>
+</div>
+<div class="sect3">
+<h4 id="sec-deep-level">Deep Level</h4>
+<div class="paragraph">
+<p>Deep content.</p>
+</div>
+<h4 id="sec-discrete-heading" class="discrete">Discrete Heading</h4>
+<div class="paragraph">
+<p>Text after discrete heading.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sec-passthroughs-and-subs">Passthroughs and Subs</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre>Listing with attributes: 4.2</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre><b>Not escaped</b></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><u>raw</u> and <u><strong>quoted</strong></u> and <i>triple</i> and {product-version} and <code>{literal}</code>.</p>
+</div>
+<p class="raw">Raw passthrough paragraph</p>
+<div class="raw-block">raw block</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Version 2.3<br>
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

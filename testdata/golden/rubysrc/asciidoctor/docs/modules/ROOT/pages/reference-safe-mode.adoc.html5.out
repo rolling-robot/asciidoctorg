@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Safe Mode Specific Content</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Safe Mode Specific Content</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Asciidoctor provides access to the current safe mode through built-in attributes.
+You can use these attributes to enable or disable content based on the current safe mode of the processor.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_referencing_safe_modes">Referencing safe modes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <a href="safe-modes.html">safe mode</a> can be referenced by one of the following document attributes:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The value of the <code>safe-mode-name</code> attribute (e.g., unsafe, safe, etc.)</p>
+</li>
+<li>
+<p>The value of the <code>safe-mode-level</code> attribute (e.g., 0, 10, etc.)</p>
+</li>
+<li>
+<p>The presence of the <code>safe-mode-&lt;name&gt;</code> attribute, where <code>&lt;name&gt;</code> is the safe mode name.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The attributes in the next example define replacement text for features that are disabled in high security environments:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">ifdef::safe-mode-secure[]
+Link to chapters instead of including them.
+endif::safe-mode-secure[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This feature is particularly handy for displaying content on GitHub, where the safe mode is set to its most restrictive setting, <a href="safe-modes.html#secure">SECURE</a>.</p>
+</div>
+<div class="paragraph">
+<p>You can set the <a href="cli:set-safe-mode.html">safe mode from the CLI</a> and the <a href="api:set-safe-mode.html">API</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

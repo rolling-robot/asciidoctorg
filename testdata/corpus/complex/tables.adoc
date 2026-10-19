@@ -1,0 +1,88 @@
+= Tables
+
+.Basic table
+[#table-1,cols="1,2a,^3,>1m",options="header,footer",width=80%,frame=ends,grid=rows,stripes=even]
+|===
+|Name |Description |Centered |Code
+
+|Alpha
+|* list in cell
+* another
+|middle
+|x = 1
+
+2+|Spanning two columns
+|centered
+|y
+
+.2+|Row span
+|a
+|b
+|c
+
+|d
+|e
+|f
+
+|Footer 1 |Footer 2 |Footer 3 |Footer 4
+|===
+
+[cols="e,s,l,h,d,v"]
+|===
+|emphasis |strong |literal  text |header |default |verse
+text
+|===
+
+[%autowidth.stretch,cols="<,^,>"]
+|===
+|left |center |right
+3*|repeated
+|===
+
+[format=csv,options=header]
+|===
+Artist,Track,Genre
+Baauer,Harlem Shake,Hip Hop
+"Comma, Inc",Song,"Rock"
+|===
+
+,===
+a,b
+c,d
+,===
+
+:===
+x:y
+:===
+
+[separator=¦]
+|===
+¦custom ¦separator
+|===
+
+.Nested table
+[cols="1a,1"]
+|===
+|
+[cols="2*"]
+!===
+!nested a !nested b
+!===
+|outer
+|===
+
+[%header%footer,cols="2"]
+|===
+|H1 |H2
+|r1 |r2
+|F1 |F2
+|===
+
+[cols="1,1",grid=none,frame=none,caption=]
+|===
+|no grid |no frame
+|===
+
+|===
+| a | b
+|===

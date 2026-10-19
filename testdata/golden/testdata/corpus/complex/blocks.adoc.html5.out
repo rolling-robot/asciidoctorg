@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Blocks</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Blocks</h1>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_delimited_blocks">Delimited Blocks</h2>
+<div class="sectionbody">
+<div id="listing-1" class="listingblock">
+<div class="title">Listing 1. Listing title</div>
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">def hello name
+  puts "Hello, #{name}!" # <b class="conum">(1)</b>
+end
+hello 'world' # <b class="conum">(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Prints a greeting</p>
+</li>
+<li>
+<p>Calls the method</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-python" data-lang="python">def add(a, b):
+    return a + b</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-javascript" data-lang="javascript">console.log("literal-delimited source");</code></pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Literal block
+  preserves   spacing</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Indented literal paragraph.</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Literal styled paragraph.</pre>
+</div>
+</div>
+<div class="exampleblock">
+<div class="title">Example 1. Example title</div>
+<div class="content">
+<div class="paragraph">
+<p>Example block with <strong>formatting</strong>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Nested admonition in example.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<details>
+<summary class="title">Click to reveal</summary>
+<div class="content">
+<div class="paragraph">
+<p>Collapsible content.</p>
+</div>
+</div>
+</details>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Sidebar title</div>
+<div class="paragraph">
+<p>Sidebar content.</p>
+</div>
+</div>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Imagination is more important than knowledge.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Albert Einstein<br>
+<cite>Relativity</cite>
+</div>
+</div>
+<div class="verseblock">
+<pre class="content">The fog comes
+on little cat feet.</pre>
+<div class="attribution">
+&#8212; Carl Sandburg<br>
+<cite>Fog</cite>
+</div>
+</div>
+<div class="quoteblock">
+<blockquote>
+I hold it that a little rebellion now and then is a good thing.
+</blockquote>
+<div class="attribution">
+&#8212; Thomas Jefferson<br>
+<cite>Papers of Thomas Jefferson</cite>
+</div>
+</div>
+<div class="quoteblock">
+<blockquote>
+Paragraph-style quote.
+</blockquote>
+</div>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Open block content.</p>
+</div>
+</div>
+</div>
+<div class="quoteblock abstract">
+<blockquote>
+<div class="paragraph">
+<p>Abstract open block.</p>
+</div>
+</blockquote>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_admonitions">Admonitions</h2>
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+A note paragraph.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+A tip.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+Important.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Caution</div>
+</td>
+<td class="content">
+Caution.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+Warning with a footnote.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+<div class="title">Admonition title</div>
+<div class="paragraph">
+<p>Admonition block with list:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>one</p>
+</li>
+<li>
+<p>two</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_paragraph_variants">Paragraph Variants</h2>
+<div class="sectionbody">
+<div class="paragraph lead">
+<p>Lead paragraph.</p>
+</div>
+<div class="paragraph">
+<p>Line one<br>
+line two</p>
+</div>
+<div class="paragraph">
+<p>Line with forced<br>
+break.</p>
+</div>
+<div class="paragraph">
+<p>Normal paragraph.</p>
+</div>
+<div id="para-id" class="paragraph role-a">
+<div class="title">Paragraph title</div>
+<p>Titled paragraph with id and role.</p>
+</div>
+<hr>
+<div class="page-break"></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_callouts_in_xml">Callouts in XML</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;root&gt; &lt;!--<b class="conum">(1)</b>--&gt;
+  &lt;child/&gt; &lt;!--<b class="conum">(2)</b>--&gt;
+&lt;/root&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The root</p>
+</li>
+<li>
+<p>The child</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. Admonition footnote.
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Migrate from Confluence XHTML to Asciidoctor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Migrate from Confluence XHTML to Asciidoctor</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can convert Atlassian Confluence XHTML pages to Asciidoctor using this Groovy script.</p>
+</div>
+<div class="paragraph">
+<p>The script calls <a href="https://pandoc.org" target="_blank" rel="noopener">Pandoc</a> to convert single or multiple HTML files exported from Confluence to AsciiDoc files.
+You&#8217;ll need Pandoc installed before running this script.
+If you have trouble running this script, you can use the Pandoc command referenced inside the script to convert XHTML files to AsciiDoc manually.</p>
+</div>
+<div class="listingblock">
+<div class="title">convert.groovy</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">Unresolved directive in confluence-xhtml.adoc - include::example$convert.groovy[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This script was created by Cédric Champeau (<a href="https://gist.github.com/melix" target="_blank" rel="noopener">melix</a>).
+You can find the source of this script hosted at this <a href="https://gist.github.com/melix/6020336" target="_blank" rel="noopener">gist</a>.</p>
+</div>
+<div class="paragraph">
+<p>The script is designed to be run locally on HTML files or directories containing HTML files exported from Confluence.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_usage">Usage</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Save the script contents to a <code>convert.groovy</code> file in a working directory.</p>
+</li>
+<li>
+<p>Make the file executable according to your specific OS requirements.</p>
+</li>
+<li>
+<p>Create an <code>html</code> directory for input files and an <code>asciidoc</code> directory for output files, both inside the working directory.</p>
+</li>
+<li>
+<p>Place individual files, or a directory containing files, into the aforementioned <code>html</code> directory.</p>
+</li>
+<li>
+<p>Run <code>groovy convert</code> to convert the files contained inside the <code>html</code> directory.</p>
+</li>
+<li>
+<p>Look for the generated output file in the <code>asciidoc</code> directory and confirm it meets your requirements.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

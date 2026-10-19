@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>AsciidoctorJ: Java Bindings for Asciidoctor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>AsciidoctorJ: Java Bindings for Asciidoctor</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>Asciidoctor is an implementation of the AsciiDoc format in Ruby.
+Thanks to the {url-jruby}[JRuby], an implementation of the Ruby runtime in Java, Asciidoctor can also be executed on a JVM.
+{url-repo}[AsciidoctorJ] bundles all gems that are required for executing Asciidoctor and wraps it into a Java API so that Asciidoctor can be used in Java like any other Java library.
+Additionally, there is a distribution that you can simply download, unzip and execute without worrying about installing the right Ruby runtime, installing gems etc.</p>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

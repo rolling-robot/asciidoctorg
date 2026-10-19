@@ -1,0 +1,9 @@
+ERROR: implement-adapter.adoc: line 14: include file not found: {repo}/third_party/asciidoctorj/docs/modules/syntax-highlighting/pages/example$org/asciidoctor/integrationguide/syntaxhighlighter/HighlightJsHighlighter.java
+WARN: implement-adapter.adoc: line 16: no callout found for <1>
+WARN: implement-adapter.adoc: line 17: no callout found for <2>
+WARN: implement-adapter.adoc: line 18: no callout found for <3>
+ERROR: implement-adapter.adoc: line 26: include file not found: {repo}/third_party/asciidoctorj/docs/modules/syntax-highlighting/pages/example$sources.adoc
+ERROR: implement-adapter.adoc: line 33: include file not found: {repo}/third_party/asciidoctorj/docs/modules/syntax-highlighting/pages/example$org/asciidoctor/integrationguide/syntaxhighlighter/HighlightJsHighlighterTest.java
+WARN: implement-adapter.adoc: line 35: no callout found for <1>
+WARN: implement-adapter.adoc: line 36: no callout found for <2>
+WARN: implement-adapter.adoc: line 37: no callout found for <3>

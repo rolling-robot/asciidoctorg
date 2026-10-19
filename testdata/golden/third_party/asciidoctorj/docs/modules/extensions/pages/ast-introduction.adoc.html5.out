@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Understanding the AST Classes</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Understanding the AST Classes</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>To write extensions or converters for AsciidoctorJ understanding the AST (<em>abstract syntax tree</em>) classes is key.
+The AST classes are the intermediate representation of the document that Asciidoctor creates before rendering to the target format.</p>
+</div>
+<div class="paragraph">
+<p>The following example document demonstrates how an AST will look like to give you an idea how the document and the AST are connected.</p>
+</div>
+<div class="listingblock">
+<div class="title">Example document for the AST</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">Unresolved directive in ast-introduction.adoc - include::example$ast-demo.adoc[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The following image shows the AST and some selected members of the node objects.
+The indentation of a line visualizes the nesting of the nodes like a tree.</p>
+</div>
+<div class="listingblock">
+<div class="title">AST for the example document</div>
+<div class="content">
+<pre>Unresolved directive in ast-introduction.adoc - include::example$ast-demo-result.txt[]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The AST is built from the following types:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>org.asciidoctor.ast.Document</code></dt>
+<dd>
+<p>This is always the root of the document.
+It owns the blocks and sections that make up the document and holds the document attributes.</p>
+</dd>
+<dt class="hdlist1"><code>org.asciidoctor.ast.Section</code></dt>
+<dd>
+<p>This class models sections in the document.
+The member <code>level</code> indicates the nesting level of this section, that is if level is 1 the section is a section, with level 2 it is a subsection, etc.</p>
+</dd>
+<dt class="hdlist1"><code>org.asciidoctor.ast.Block</code></dt>
+<dd>
+<p>Blocks are content in a section, like paragraphs, source listings, images, etc.
+The concrete form of the block is available in the field <code>context</code>.
+Among the possible values are:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>paragraph</code></p>
+</li>
+<li>
+<p><code>listing</code></p>
+</li>
+<li>
+<p><code>literal</code></p>
+</li>
+<li>
+<p><code>open</code></p>
+</li>
+<li>
+<p><code>example</code></p>
+</li>
+<li>
+<p><code>pass</code></p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1"><code>org.asciidoctor.ast.List</code></dt>
+<dd>
+<p>The list node is the container for ordered and unordered lists.
+The type of list is available in the field <code>context</code>, <code>ulist</code> for unordered lists and <code>olist</code> for ordered lists.</p>
+</dd>
+<dt class="hdlist1"><code>org.asciidoctor.ast.ListItem</code></dt>
+<dd>
+<p>A list item represents a single item of a list.</p>
+</dd>
+<dt class="hdlist1"><code>org.asciidoctor.ast.DescriptionList</code></dt>
+<dd>
+<p>The description list node is the container for description lists.
+The context of the node is <code>dlist</code>.</p>
+</dd>
+<dt class="hdlist1"><code>org.asciidoctor.ast.DescriptionListEntry</code></dt>
+<dd>
+<p>A list entry represents a single item of a description list.
+It has multiple terms that are again instances of <code>org.asciidoctor.ast.ListItem</code> and a description that is also an instance of <code>org.asciidoctor.ast.ListItem</code>.</p>
+</dd>
+<dt class="hdlist1"><code>org.asciidoctor.ast.Table</code></dt>
+<dd>
+<p>This represents a table and is probably the most complex node type.
+It owns a list of columns and lists of header, body and footer rows.</p>
+</dd>
+<dt class="hdlist1"><code>org.asciidoctor.ast.Column</code></dt>
+<dd>
+<p>A column defines the style for the column of a table, the width and alignments.</p>
+</dd>
+<dt class="hdlist1"><code>org.asciidoctor.ast.Row</code></dt>
+<dd>
+<p>A row in a table is only a simple owner of a list of table cells.</p>
+</dd>
+<dt class="hdlist1"><code>org.asciidoctor.ast.Cell</code></dt>
+<dd>
+<p>A cell in a table holds the cell content and formatting attributes like colspan, rowspan and alignment as appropriate.
+A special case are cells that have the <code>asciidoctor</code> style.
+These do not contain simple text content, but have another full <code>Document</code> in their member <code>innerDocument</code>.</p>
+</dd>
+<dt class="hdlist1"><code>org.asciidoctor.ast.PhraseNode</code></dt>
+<dd>
+<p>This type is a special case.
+It does not appear in the AST itself as Asciidoctor does not really parse into the block itself.
+Phrase nodes are usually created by inline macro extensions that process macros like <code>issue:1234[]</code> and create links from them.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Nodes are in general only created from within extensions.
+Therefore the abstract base class of all extensions, <code>org.asciidoctor.extension.Processor</code>, has factory methods for every node type.</p>
+</div>
+<div class="paragraph">
+<p>Now that you have learned about the AST structure you can go into the details of writing the extensions.</p>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

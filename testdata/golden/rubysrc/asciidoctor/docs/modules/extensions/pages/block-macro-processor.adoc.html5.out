@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Block Macro Processor Extension Example</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Block Macro Processor Extension Example</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Purpose</dt>
+<dd>
+<p>Create a block macro named <code>gist</code> for embedding a gist.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_sample_with_gist_macro_adoc">sample-with-gist-macro.adoc</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">.My Gist
+gist::123456[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_gistblockmacro">GistBlockMacro</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">class GistBlockMacro &lt; Asciidoctor::Extensions::BlockMacroProcessor
+  use_dsl
+
+  named :gist
+
+  def process parent, target, attrs
+    title_html = (attrs.has_key? 'title') ?
+        %(&lt;div class="title"&gt;#{attrs['title']}&lt;/div&gt;\n) : nil
+
+    html = %(&lt;div class="openblock gist"&gt;
+#{title_html}&lt;div class="content"&gt;
+&lt;script src="https://gist.github.com/#{target}.js"&gt;&lt;/script&gt;
+&lt;/div&gt;
+&lt;/div&gt;)
+
+    create_pass_block parent, html, attrs, subs: nil
+  end
+end</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_usage">Usage</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">Asciidoctor::Extensions.register do
+  block_macro GistBlockMacro if document.basebackend? 'html'
+end
+
+Asciidoctor.convert_file 'sample-with-gist.adoc', safe: :safe</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

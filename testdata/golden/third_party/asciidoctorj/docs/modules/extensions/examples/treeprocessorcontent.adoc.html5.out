@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Untitled</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<div class="paragraph">
+<p>To fetch the content of the URL invoke the following:</p>
+</div>
+<div class="paragraph">
+<p>$ curl -v <a href="http://127.0.0.1:8080" class="bare">http://127.0.0.1:8080</a>
+*   Trying 127.0.0.1&#8230;&#8203;
+* Connected to 127.0.0.1 (127.0.0.1) port 8080 (#0)
+&gt; GET / HTTP/1.1
+&gt; User-Agent: curl/7.41.0
+&gt; Host: 127.0.0.1:8080
+&gt; Accept: <strong>/</strong>
+&gt;
+&lt; HTTP/1.1 200 OK
+&#8230;&#8203;</p>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

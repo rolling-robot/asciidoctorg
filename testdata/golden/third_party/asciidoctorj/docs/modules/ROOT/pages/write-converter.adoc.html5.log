@@ -1,0 +1,12 @@
+ERROR: write-converter.adoc: line 16: include file not found: {repo}/third_party/asciidoctorj/docs/modules/ROOT/pages/example$org/asciidoctor/integrationguide/converter/TextConverter.java
+WARN: write-converter.adoc: line 18: no callout found for <1>
+WARN: write-converter.adoc: line 20: no callout found for <2>
+WARN: write-converter.adoc: line 22: no callout found for <3>
+WARN: write-converter.adoc: line 23: no callout found for <4>
+WARN: write-converter.adoc: line 26: no callout found for <5>
+WARN: write-converter.adoc: line 28: no callout found for <6>
+ERROR: write-converter.adoc: line 37: include file not found: {repo}/third_party/asciidoctorj/docs/modules/ROOT/pages/example$org/asciidoctor/integrationguide/converter/TextConverterTest.java
+WARN: write-converter.adoc: line 39: no callout found for <1>
+WARN: write-converter.adoc: line 41: no callout found for <2>
+ERROR: write-converter.adoc: line 50: include file not found: {repo}/third_party/asciidoctorj/docs/modules/ROOT/pages/example$org/asciidoctor/integrationguide/converter/TextConverterRegistry.java
+ERROR: write-converter.adoc: line 57: include file not found: {repo}/third_party/asciidoctorj/docs/modules/ROOT/pages/example$converterregistry/META-INF/services/org.asciidoctor.jruby.converter.spi.ConverterRegistry

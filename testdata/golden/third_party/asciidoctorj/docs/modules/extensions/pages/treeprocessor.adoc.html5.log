@@ -1,0 +1,8 @@
+ERROR: treeprocessor.adoc: line 14: include file not found: {repo}/third_party/asciidoctorj/docs/modules/extensions/pages/example$treeprocessorcontent.adoc
+ERROR: treeprocessor.adoc: line 21: include file not found: {repo}/third_party/asciidoctorj/docs/modules/extensions/pages/example$treeprocessorresult.adoc
+ERROR: treeprocessor.adoc: line 32: include file not found: {repo}/third_party/asciidoctorj/docs/modules/extensions/pages/example$org/asciidoctor/integrationguide/extension/TerminalCommandTreeprocessor.java
+WARN: treeprocessor.adoc: line 34: no callout found for <1>
+WARN: treeprocessor.adoc: line 35: no callout found for <2>
+WARN: treeprocessor.adoc: line 36: no callout found for <3>
+WARN: treeprocessor.adoc: line 39: no callout found for <4>
+WARN: treeprocessor.adoc: line 43: no callout found for <5>

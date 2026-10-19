@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Block Macro Processor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body id="blockmacroprocessor" class="article">
+<div id="header">
+<h1>Block Macro Processor</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>A block macro is a block having a content like this: <code>gist::mygithubaccount/8810011364687d7bec2c[]</code>.
+During the rendering process of the document Asciidoctor invokes a BlockMacroProcessor that has to create a block computed from this macro.</p>
+</div>
+<div class="paragraph">
+<p>The structure is always like this:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Macro name, e.g. <code>gist</code></p>
+</li>
+<li>
+<p>Two colons <code>::</code></p>
+</li>
+<li>
+<p>A target, <code>mygithubaccount/8810011364687d7bec2c</code></p>
+</li>
+<li>
+<p>Attributes, that are empty in this case, <code>[]</code></p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Our example block macro should embed the GitHub gist that would be available at the URL https://gist.github.com/mygithubaccount/8810011364687d7bec2c.</p>
+</div>
+<div class="paragraph">
+<p>The following block macro processor replaces such a macro with the <code>&lt;script&gt;</code> element that you can also pick from https://gist.github.com for a certain gist.</p>
+</div>
+<div id="GistBlockMacroProcessor" class="listingblock">
+<div class="title">A BlockMacroProcessor that replaces gist block macros</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in block-macro-processor.adoc - include::example$org/asciidoctor/integrationguide/extension/GistBlockMacroProcessor.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The <code>@Name</code> annotation defines the macro name this BlockMacroProcessor should be called for.
+In this case this instance will be called for all block macros that have the name <code>gist</code>.</p>
+</li>
+<li>
+<p>All BlockMacroProcessors must extend the class <code>org.asciidoctor.extension.BlockMacroProcessor</code>.</p>
+</li>
+<li>
+<p>A BlockMacroProcessor must implement the abstract method <code>process</code> that is called by Asciidoctor.
+The method must return a new block that is used be Asciidoctor instead of the block containing the block macro.</p>
+</li>
+<li>
+<p>The implementation constructs the HTML content that should go into the final HTML document.
+That means that the content has to be directly passed through into the result.
+Having said that this example does not work when generating PDF content.</p>
+</li>
+<li>
+<p>The processor creates a new block via the inherited method <code>createBlock()</code>.
+The parent of the new block, a context and the content must be passed.
+As we want to pass through the content directly into the result the context must be <code>pass</code> and the content is the computed HTML string.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+There are many more methods available to create any type of AST node.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now, once it is registered, we would be able to use the new block macro in our document as:</p>
+</div>
+<div id="GistBlockMacroDocument" class="listingblock">
+<div class="title">gist-macro.adoc</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">Unresolved directive in block-macro-processor.adoc - include::example$gist-macro.adoc[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_attributes_and_positional_attributes">Attributes and Positional attributes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As a next step for the gist macro we might want to add support for GitLab Snippets, which are a similar system to Github Gists.
+The property whether we want to embed a Github Gist or a GitLab Snippet can be passed as the first attribute to the macro.</p>
+</div>
+<div class="paragraph">
+<p>GitLab Snippets can also be part of a project.
+This project could be accepted as a second attribute.</p>
+</div>
+<div class="paragraph">
+<p>That way Gists or Snippets could be embedded with our macro with these AsciiDoc block macros:</p>
+</div>
+<div class="listingblock">
+<div class="title">gist-marco-attributes.adoc</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">Unresolved directive in block-macro-processor.adoc - include::example$gist-macro-attributes.adoc[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The first macro shows our original notation for how to embed a Github Gist.</p>
+</div>
+<div class="paragraph">
+<p>The second macro shows how to embed a Snippet from GitLab that is not associated with a project.</p>
+</div>
+<div class="paragraph">
+<p>The third macro shows how to embed a Snippet from GitLab that is associated with the project <code>gitlab-org/gitlab-foss</code>.</p>
+</div>
+<div class="paragraph">
+<p>The last macro shows how to embed a Snippet from GitLab that is associated with the project <code>gitlab-org/gitlab-foss</code> by not using a positional attribute, but instead naming it explicitly.</p>
+</div>
+<div class="paragraph">
+<p>This can be achieved by the following extension:</p>
+</div>
+<div class="listingblock">
+<div class="title">GistBlockMacroPositionalAttributesProcessor</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in block-macro-processor.adoc - include::example$org/asciidoctor/integrationguide/extension/GistBlockMacroPositionalAttributesProcessor.java[tag=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The positional attributes for this are <code>provider</code> and <code>repo</code> in that order.
+These attributes can be either passed by their position, or by name.</p>
+</li>
+<li>
+<p>Based on the values of the two attributes the HTML content to embed the Gist is computed.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

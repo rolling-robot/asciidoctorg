@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Preprocessor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body id="preprocessor" class="article">
+<div id="header">
+<h1>Preprocessor</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>Preprocessors allow to process the raw asciidoctor sources before Asciidoctor parses and converts them.
+A preprocessor could for example make comments visible that should be rendered in drafts.</p>
+</div>
+<div class="paragraph">
+<p>Our example preprocessor does exactly that and will render the comment in the following document as a note.</p>
+</div>
+<div class="listingblock">
+<div class="title">comment.adoc</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">Unresolved directive in preprocessor.adoc - include::example$comment.adoc[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The preprocessor will render the document as if it looked like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">comment-with-note.adoc</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">Unresolved directive in preprocessor.adoc - include::example$comment-with-note.adoc[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The implementation of the preprocessor simply gets the AST node for the document to be created as well as a <code>PreprocessorReader</code>.
+A <code>PreprocessorReader</code> gives access to the raw input, on a per-line basis, allowing to fetch and manipulate content.
+And this is exactly what our Preprocessor does: it fetches the raw content, modifies it and stores it back so that Asciidoctor will only see our modified content.</p>
+</div>
+<div class="listingblock">
+<div class="title">A Preprocessor that renders comments as notes</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in preprocessor.adoc - include::example$org/asciidoctor/integrationguide/extension/CommentPreprocessor.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>All Preprocessors must extend the class <code>org.asciidoctor.extension.Preprocessor</code> and implement the method <code>process()</code>.</p>
+</li>
+<li>
+<p>The implementation gets the whole Asciidoctor source as an array of Strings where each entry corresponds to one line.</p>
+</li>
+<li>
+<p>Every odd occurrence of a comment start is replaced by opening an admonition block, every even occurrence is closing it.
+The new content is collected in a new list.</p>
+</li>
+<li>
+<p>A new Reader containing the processed content is returned so that it replaces the content that was already consumed at the beginning of the method.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>There may be multiple Preprocessors registered and every Preprocessor will be called.
+The order in which the Preprocessors are called is undefined so that all Preprocessors should be independent of each other.</p>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

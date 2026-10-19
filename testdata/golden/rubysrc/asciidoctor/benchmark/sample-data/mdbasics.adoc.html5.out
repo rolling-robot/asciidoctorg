@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<meta name="author" content="John Gruber">
+<title>Markdown: Basics</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Markdown: Basics</h1>
+<div class="details">
+<span id="author" class="author">John Gruber</span><br>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<ul id="ProjectSubmenu">
+    <li><a href="/projects/markdown/" title="Markdown Project Page">Main</a></li>
+    <li><a class="selected" title="Markdown Basics">Basics</a></li>
+    <li><a href="/projects/markdown/syntax" title="Markdown Syntax Documentation">Syntax</a></li>
+    <li><a href="/projects/markdown/license" title="Pricing and License Information">License</a></li>
+    <li><a href="/projects/markdown/dingus" title="Online Markdown Web Form">Dingus</a></li>
+</ul>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_getting_the_gist_of_markdowns_formatting_syntax">Getting the Gist of Markdown&#8217;s Formatting Syntax</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This page offers a brief overview of what it&#8217;s like to use Markdown.
+The <a href="/projects/markdown/syntax">syntax page</a> provides complete, detailed documentation for
+every feature, but Markdown should be very easy to pick up simply by
+looking at a few examples of it in action. The examples on this page
+are written in a before/after style, showing example syntax and the
+HTML output produced by Markdown.</p>
+</div>
+<div class="paragraph">
+<p>It&#8217;s also helpful to simply try Markdown out; the <a href="/projects/markdown/dingus">Dingus</a> is a
+web application that allows you type your own Markdown-formatted text
+and translate it to XHTML.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+This document is itself written using Markdown; you
+can <a href="/projects/markdown/basics.text">see the source for it by adding \'.text' to the URL</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_paragraphs_headers_blockquotes">Paragraphs, Headers, Blockquotes</h3>
+<div class="paragraph">
+<p>A paragraph is simply one or more consecutive lines of text, separated
+by one or more blank lines. (A blank line is any line that looks like a
+blank line&#8201;&#8212;&#8201;a line containing nothing spaces or tabs is considered
+blank.) Normal paragraphs should not be intended with spaces or tabs.</p>
+</div>
+<div class="paragraph">
+<p>Markdown offers two styles of headers: <em>Setext</em> and <em>atx</em>.
+Setext-style headers for &lt;h1&gt; and &lt;h2&gt; are created by
+"underlining" with equal signs (=) and hyphens (-), respectively.
+To create an atx-style header, you put 1-6 hash marks (#) at the
+beginning of the line&#8201;&#8212;&#8201;the number of hashes equals the resulting
+HTML header level.</p>
+</div>
+<div class="paragraph">
+<p>Blockquotes are indicated using email-style \'&gt;' angle brackets.</p>
+</div>
+<div class="listingblock">
+<div class="title">Markdown:</div>
+<div class="content">
+<pre>A First Level Header
+====================
+
+A Second Level Header
+---------------------
+
+Now is the time for all good men to come to
+the aid of their country. This is just a
+regular paragraph.
+
+The quick brown fox jumped over the lazy
+dog's back.
+
+### Header 3
+
+&gt; This is a blockquote.
+&gt;
+&gt; This is the second paragraph in the blockquote.
+&gt;
+&gt; ## This is an H2 in a blockquote</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="title">Output:</div>
+<div class="content">
+<pre>&lt;h1&gt;A First Level Header&lt;/h1&gt;
+
+&lt;h2&gt;A Second Level Header&lt;/h2&gt;
+
+&lt;p&gt;Now is the time for all good men to come to
+the aid of their country. This is just a
+regular paragraph.&lt;/p&gt;
+
+&lt;p&gt;The quick brown fox jumped over the lazy
+dog's back.&lt;/p&gt;
+
+&lt;h3&gt;Header 3&lt;/h3&gt;
+
+&lt;blockquote&gt;
+    &lt;p&gt;This is a blockquote.&lt;/p&gt;
+
+    &lt;p&gt;This is the second paragraph in the blockquote.&lt;/p&gt;
+
+    &lt;h2&gt;This is an H2 in a blockquote&lt;/h2&gt;
+&lt;/blockquote&gt;</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_phrase_emphasis">Phrase Emphasis</h3>
+<div class="paragraph">
+<p>Markdown uses asterisks and underscores to indicate spans of emphasis.</p>
+</div>
+<div class="listingblock">
+<div class="title">Markdown:</div>
+<div class="content">
+<pre>Some of these words *are emphasized*.
+Some of these words _are emphasized also_.
+
+Use two asterisks for **strong emphasis**.
+Or, if you prefer, __use two underscores instead__.</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="title">Output:</div>
+<div class="content">
+<pre>&lt;p&gt;Some of these words &lt;em&gt;are emphasized&lt;/em&gt;.
+Some of these words &lt;em&gt;are emphasized also&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;Use two asterisks for &lt;strong&gt;strong emphasis&lt;/strong&gt;.
+Or, if you prefer, &lt;strong&gt;use two underscores instead&lt;/strong&gt;.&lt;/p&gt;</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_lists">Lists</h3>
+<div class="paragraph">
+<p>Unordered (bulleted) lists use asterisks, pluses, and hyphens (*,
++, and -) as list markers. These three markers are
+interchangeable; this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>*   Candy.
+*   Gum.
+*   Booze.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>+   Candy.
++   Gum.
++   Booze.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>-   Candy.
+-   Gum.
+-   Booze.</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>all produce the same output:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;ul&gt;
+&lt;li&gt;Candy.&lt;/li&gt;
+&lt;li&gt;Gum.&lt;/li&gt;
+&lt;li&gt;Booze.&lt;/li&gt;
+&lt;/ul&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ordered (numbered) lists use regular numbers, followed by periods, as
+list markers:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>1.  Red
+2.  Green
+3.  Blue</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="title">Output:</div>
+<div class="content">
+<pre>&lt;ol&gt;
+&lt;li&gt;Red&lt;/li&gt;
+&lt;li&gt;Green&lt;/li&gt;
+&lt;li&gt;Blue&lt;/li&gt;
+&lt;/ol&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you put blank lines between items, you&#8217;ll get &lt;p&gt; tags for the
+list item text. You can create multi-paragraph list items by indenting
+the paragraphs by 4 spaces or 1 tab:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>*   A list item.
+
+    With multiple paragraphs.
+
+*   Another item in the list.</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="title">Output:</div>
+<div class="content">
+<pre>&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;A list item.&lt;/p&gt;
+&lt;p&gt;With multiple paragraphs.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Another item in the list.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_links">Links</h3>
+<div class="paragraph">
+<p>Markdown supports two styles for creating links: <em>inline</em> and
+<em>reference</em>. With both styles, you use square brackets to delimit the
+text you want to turn into a link.</p>
+</div>
+<div class="paragraph">
+<p>Inline-style links use parentheses immediately after the link text.
+For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>This is an [example link](http://example.com/).</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="title">Output:</div>
+<div class="content">
+<pre>&lt;p&gt;This is an &lt;a href="http://example.com/"&gt;
+example link&lt;/a&gt;.&lt;/p&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Optionally, you may include a title attribute in the parentheses:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>This is an [example link](http://example.com/ "With a Title").</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="title">Output:</div>
+<div class="content">
+<pre>&lt;p&gt;This is an &lt;a href="http://example.com/" title="With a Title"&gt;
+example link&lt;/a&gt;.&lt;/p&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Reference-style links allow you to refer to your links by names, which
+you define elsewhere in your document:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>I get 10 times more traffic from [Google][1] than from
+[Yahoo][2] or [MSN][3].
+
+[1]: http://google.com/        "Google"
+[2]: http://search.yahoo.com/  "Yahoo Search"
+[3]: http://search.msn.com/    "MSN Search"</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="title">Output:</div>
+<div class="content">
+<pre>&lt;p&gt;I get 10 times more traffic from &lt;a href="http://google.com/"
+title="Google"&gt;Google&lt;/a&gt; than from &lt;a href="http://search.yahoo.com/"
+title="Yahoo Search"&gt;Yahoo&lt;/a&gt; or &lt;a href="http://search.msn.com/"
+title="MSN Search"&gt;MSN&lt;/a&gt;.&lt;/p&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The title attribute is optional. Link names may contain letters,
+numbers and spaces, but are <em>not</em> case sensitive:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>I start my morning with a cup of coffee and
+[The New York Times][NY Times].
+
+[ny times]: http://www.nytimes.com/</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="title">Output:</div>
+<div class="content">
+<pre>&lt;p&gt;I start my morning with a cup of coffee and
+&lt;a href="http://www.nytimes.com/"&gt;The New York Times&lt;/a&gt;.&lt;/p&gt;</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_images">Images</h3>
+<div class="paragraph">
+<p>Image syntax is very much like link syntax.</p>
+</div>
+<div class="listingblock">
+<div class="title">Inline (titles are optional):</div>
+<div class="content">
+<pre>![alt text](/path/to/img.jpg "Title")</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Reference-style:</div>
+<div class="content">
+<pre>![alt text][id]
+
+[id]: /path/to/img.jpg "Title"</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Both of the above examples produce the same output:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>&lt;img src="/path/to/img.jpg" alt="alt text" title="Title" /&gt;</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_code">Code</h3>
+<div class="paragraph">
+<p>In a regular paragraph, you can create code span by wrapping text in
+backtick quotes. Any ampersands (&amp;) and angle brackets (&lt; or
+&gt;) will automatically be translated into HTML entities. This makes
+it easy to use Markdown to write about HTML example code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>I strongly recommend against using any `&lt;blink&gt;` tags.
+
+I wish SmartyPants used named entities like `&amp;mdash;`
+instead of decimal-encoded entities like `&amp;#8212;`.</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="title">Output:</div>
+<div class="content">
+<pre>&lt;p&gt;I strongly recommend against using any
+&lt;code&gt;&amp;lt;blink&amp;gt;&lt;/code&gt; tags.&lt;/p&gt;
+
+&lt;p&gt;I wish SmartyPants used named entities like
+&lt;code&gt;&amp;amp;mdash;&lt;/code&gt; instead of decimal-encoded
+entities like &lt;code&gt;&amp;amp;#8212;&lt;/code&gt;.&lt;/p&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To specify an entire block of pre-formatted code, indent every line of
+the block by 4 spaces or 1 tab. Just like with code spans, &amp;, &lt;,
+and &gt; characters will be escaped automatically.</p>
+</div>
+<div class="listingblock">
+<div class="title">Markdown:</div>
+<div class="content">
+<pre>If you want your page to validate under XHTML 1.0 Strict,
+you've got to put paragraph tags in your blockquotes:
+
+    &lt;blockquote&gt;
+        &lt;p&gt;For example.&lt;/p&gt;
+    &lt;/blockquote&gt;</pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="title">Output:</div>
+<div class="content">
+<pre>&lt;p&gt;If you want your page to validate under XHTML 1.0 Strict,
+you've got to put paragraph tags in your blockquotes:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;lt;blockquote&amp;gt;
+    &amp;lt;p&amp;gt;For example.&amp;lt;/p&amp;gt;
+&amp;lt;/blockquote&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

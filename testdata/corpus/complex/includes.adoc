@@ -1,0 +1,43 @@
+= Includes
+:includedir: includes
+
+include::{includedir}/chapter.adoc[leveloffset=+1]
+
+== Tagged Regions
+
+[source,ruby]
+----
+include::includes/code.rb[tag=method]
+----
+
+[source,ruby]
+----
+include::includes/code.rb[tags=method;extra,indent=2]
+----
+
+[source,ruby]
+----
+include::includes/code.rb[tags=**;!extra]
+----
+
+[source,ruby]
+----
+include::includes/code.rb[lines=1..3;7]
+----
+
+== Missing and Optional
+
+include::includes/does-not-exist.adoc[]
+
+include::includes/also-missing.adoc[opts=optional]
+
+== Nested Include
+
+include::includes/nested.adoc[]
+
+== CSV Table from Include
+
+[%header,format=csv]
+|===
+include::includes/data.csv[]
+|===

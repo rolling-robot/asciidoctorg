@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Syntax Highlighting</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Syntax Highlighting</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>AsciiDoc defines a style of listing block known as a <a href="asciidoc:verbatim:source-blocks.html">source block</a> for adding source code snippets intended to be colorized by a syntax highlighter to a document.
+Here&#8217;s a simple example of a source block:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">[source,ruby]
+----
+puts "Hello, World!"
+----</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If a language is specified on a listing block, the source style is implied.
+Therefore, it can be excluded in this case.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">[,ruby]
+----
+puts "Hello, World!"
+----</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s how we expect it to appear:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">puts "Hello, World!"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It&#8217;s up to an AsciiDoc processor such as Asciidoctor to apply the syntax highlighting to this source block, a process referred to as <a href="asciidoc:verbatim:source-highlighter.html">source highlighting</a>.
+Asciidoctor provides adapters that integrate with several popular syntax highlighter libraries to perform this task.
+It also provides an interface for implementing a custom syntax highlighter adapter.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_syntax_highlighter_types">Syntax highlighter types</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Asciidoctor supports two types of syntax highlighters: client-side and build-time.
+Let&#8217;s explore each type and how they work.</p>
+</div>
+<div class="paragraph">
+<p>A <strong class="term">client-side syntax highlighter</strong> performs syntax highlighting in the browser as the page is loading.
+Asciidoctor does not invoke the syntax highlighter itself.
+Instead, it focuses on adding the assets to the generated HTML so the browser can load the syntax highlighter and run it.
+For this type of syntax highlighter, Asciidoctor passes the contents of the source block through to the output as is.
+It also adds metadata to the element so that the syntax highlighter knows to highlight it and which language it is.
+Unfortunately, Asciidoctor does not process callout numbers in the source block in this case, so they may cause the syntax highlighter to get tripped up.</p>
+</div>
+<div class="paragraph">
+<p>A <strong class="term">build-time syntax highlighter</strong> performs syntax highlighting during AsciiDoc conversion.
+Asciidoctor does invoke the syntax highlighter in this case.
+It also takes care of hiding the callout numbers from the syntax highlighter, ensuring they are put back in the proper place afterwards.
+What Asciidoctor emits into the output is the result produced by the syntax highlighter, which are the tokens enclosed in <code>&lt;span&gt;</code> elements to apply color and other formatting (either inline or via CSS classes).
+These syntax highlighters tend to support more features because Asciidoctor has greater control over the process.</p>
+</div>
+<div class="sect2">
+<h3 id="_client_side_vs_build_time">Client-side vs build-time</h3>
+<div class="paragraph">
+<p>There are benefits and drawbacks of each type.
+The benefit of a client-side syntax highlighter is that does not require installing any additional libraries.
+It also makes conversion faster and makes it produce smaller output since the syntax highlighting is deferred until page load.
+The main drawback is that callouts in the source block can be mangled by the syntax highlighter or confuse it.
+The benefits of a build-time syntax highlighter are that you have more control over syntax highlighting and can enable additional features such as line numbers and line highlighting.
+The main drawback is that it requires installing an extra library, it slows down conversion, and causes the output to be larger.</p>
+</div>
+<div class="paragraph">
+<p>You should try each syntax highlighter and find the one that works best for you.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_built_in_syntax_highlighter_adapters">Built-in syntax highlighter adapters</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Syntax Highlighter</th>
+<th class="tableblock halign-left valign-top">Required Gem</th>
+<th class="tableblock halign-left valign-top">Compatible Converters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">Client-side</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Highlight.js</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>n/a</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HTML, Reveal.js</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top" rowspan="3"><p class="tableblock">Build-time</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CodeRay</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">coderay (&gt;= 1.1)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HTML, PDF, EPUB3, Reveal.js</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Pygments</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">pygments.rb (&gt;= 1.2)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HTML, PDF, EPUB3, Reveal.js</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rouge</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">rouge (&gt;= 2)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HTML, PDF, EPUB3, Reveal.js</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Asciidoctor does not apply syntax highlighting when generating DocBook.
+The assumption is that this is a task the DocBook toolchain can handle.
+The DocBook converter generates a <code>&lt;programlisting&gt;</code> element for the source block and passes through the source language as specified in the AsciiDoc.
+It&#8217;s then up to the DocBook toolchain to apply syntax highlighting to the contents of that tag.</p>
+</div>
+<div class="paragraph">
+<p>You can explore these integrations in depth on the <a href="highlightjs.html">highlightjs.html</a>, <a href="rouge.html">rouge.html</a>, <a href="pygments.html">pygments.html</a>, and <a href="coderay.html">coderay.html</a> pages.</p>
+</div>
+<div class="paragraph">
+<p>You can also create your own integration by making a <a href="custom.html">custom.html</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_custom_subs_on_source_blocks">Custom subs on source blocks</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You should not mix syntax highlighting with AsciiDoc text formatting (i.e., the <code>quotes</code> and <code>macros</code> substitutions).
+In many converters, these two operations are mutually exclusive.</p>
+</div>
+<div class="listingblock">
+<div class="title">Improper use of custom substitutions on a source block</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">[,java,subs=+quotes]
+----
+interface OrderRepository extends CrudRepository&lt;Order,Long&gt; {
+
+  *List&lt;Order&gt;* findByCategory(String category);
+
+  Order findById(long id);
+}
+----</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The additional markup introduced by AsciiDoc text formatting may confuse the syntax highlighter and lead to unexpected results.
+While it may work in some syntax highlighters in the HTML backend (which perhaps know how to work around the formatting tags), it will most certainly fail when converting to other formats such as PDF.</p>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re going to customize the substitutions on a source block using the <code>subs</code> attribute, you should limit those substitutions to attribute replacements (<code>attributes</code>).</p>
+</div>
+<div class="listingblock">
+<div class="title">Valid use of custom substitutions on a source block</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">[,java,subs=attributes+]
+----
+interface {model}Repository extends CrudRepository&lt;{model},Long&gt; {
+
+  {model} findById(long id);
+}
+----</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you still need to emphasize certain tokens in the block of code, you should do so by creating a custom lexer or formatter for the syntax highlighting library that understands these additional semantics and perhaps even hints.
+In other words, work through the syntax highlighter so it&#8217;s added during the highlighting process, giving the syntax highlighter full knowledge as to what&#8217;s going on.
+Another option is to use a <a href="custom.html">custom syntax highlighter adapter</a>.</p>
+</div>
+<div class="paragraph">
+<p>Before trying to get the syntax highlighter to recognize new tokens, make sure it doesn&#8217;t already recognize them.
+If it does, it may just be a matter of customizing the syntax highlighter theme to apply different formatting to those tokens.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

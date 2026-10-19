@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Inline Macro Processor Extension Example</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Inline Macro Processor Extension Example</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Purpose</dt>
+<dd>
+<p>Create an inline macro named <code>man</code> that links to another man page.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_sample_with_man_link_adoc">sample-with-man-link.adoc</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">See man:gittutorial[7] to get started.</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_manpageinlinemacro">ManpageInlineMacro</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">class ManInlineMacro &lt; Asciidoctor::Extensions::InlineMacroProcessor
+  use_dsl
+
+  named :man
+  name_positional_attributes 'volnum'
+
+  def process parent, target, attrs
+    doc = parent.document
+    text = manname = target
+    suffix = (volnum = attrs['volnum']) ? %((#{volnum})) : ''
+    if doc.basebackend? 'html'
+      target = %(#{manname}#{doc.outfilesuffix})
+      doc.register :links, target
+      node = create_anchor parent, text, type: :link, target: target
+    elsif doc.backend == 'manpage'
+      node = create_inline parent, :quoted, manname, type: :strong
+    else
+      node = create_inline parent, :quoted, manname
+    end
+    create_inline parent, :quoted, %(#{node.convert}#{suffix})
+  end
+end</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_usage">Usage</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">Asciidoctor::Extensions.register do
+  inline_macro ManInlineMacro
+end
+
+Asciidoctor.convert_file 'sample-with-man-link.adoc', safe: :safe</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_tips_techniques">Tips &amp; Techniques</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_apply_substitutions">Apply substitutions</h3>
+<div class="paragraph">
+<p>By the time an inline macro is processed, most substitutions have already been applied (since macros is one of the last substitutions).
+In order to get the processor to apply substitutions to the text of the Inline node returned by the extension, you must specify those extensions on the node instance itself.</p>
+</div>
+<div class="paragraph">
+<p>You can specify substitutions to apply to the text of the node using the <code>subs</code> attribute.
+This attribute accepts a symbol, an array of symbols, or a comma-separated string.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s say that we want normal substitutions to be applied to the text.
+Here&#8217;s how that can be done:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">create_inline_pass parent, '*https://example.org[Learn more]*',
+  attributes: { 'subs' =&gt; :normal }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This inline passthrough node will produce a link that has link text with strong emphasis (i.e., bold).</p>
+</div>
+<div class="paragraph">
+<p>You can also specify the substitutions as a string, which is parsed just like the value of the subs attribute on a block.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">create_inline_pass parent, '*https://example.org[Learn more]*',
+  attributes: { 'subs' =&gt; 'quotes,macros' }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can specify whichever substitutions you want applied, and in what order.</p>
+</div>
+<div class="paragraph">
+<p>Instead of creating an inline passthrough node, you can also create a span of formatted text with additional substitutions applied.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">create_inline parent, :quoted, 'https://asciidoctor.org is _awesome_!',
+  attributes: { 'subs' =&gt; :quotes }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>:quoted</code> primary type represents a span of formatted text.
+In this case, we don&#8217;t need to apply the <code>macros</code> substitution since links have not yet been converted.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

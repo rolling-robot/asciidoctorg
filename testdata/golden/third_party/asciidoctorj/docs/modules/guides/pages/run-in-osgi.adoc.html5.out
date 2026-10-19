@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Using AsciidoctorJ in an OSGi environment</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Using AsciidoctorJ in an OSGi environment</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>In a non OSGi context, the following snippet will successfully create an Asciidoctor object:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import static org.asciidoctor.Asciidoctor.Factory.create;
+import org.asciidoctor.Asciidoctor;
+
+Asciidoctor asciidoctor = create();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In an OSGi context it will not work because JRuby needs some paths to find the Asciidoctor gems.
+In order to make it work, you will need to specify the Asciidoctor gems path using the JavaEmbedUtils class.
+We will update the previous snippet of code to specify this path:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import static org.asciidoctor.jruby.AsciidoctorJRuby.Factory.create;
+import org.asciidoctor.Asciidoctor;
+
+Asciidoctor asciidoctor = create(Arrays.asList("uri:classloader:/gems/asciidoctor-2.2.0/lib")); // <b class="conum">(1)</b><b class="conum">(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p><code>uri:classloader:/gems/asciidoctor-&lt;version&gt;/lib</code> specifies where the gems for Asciidoctor are located.
+Actually this path is located inside the <code>asciidoctorj-&lt;version&gt;.jar</code> file</p>
+</li>
+<li>
+<p>The version here differs from the AsciidoctorJ version as it corresponds to the version of Asciidoctor, not the AsciidoctorJ one.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+We consider this code to be placed inside an OSGi bundle
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This solution has pros and cons:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Pros:</em> you don&#8217;t need to extract the gems located in the asciidoctorj binary ;</p>
+</li>
+<li>
+<p><em>Cons:</em></p>
+<div class="ulist">
+<ul>
+<li>
+<p>the version of asciidoctor is hard coded ;</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

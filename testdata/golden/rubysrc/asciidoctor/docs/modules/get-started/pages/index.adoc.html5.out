@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Convert Your First AsciiDoc File</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Convert Your First AsciiDoc File</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Assumptions:</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p>&#10003; You&#8217;ve installed Asciidoctor.</p>
+</li>
+<li>
+<p>&#10003; You&#8217;ve confirmed that the Asciidoctor command line interface (CLI) is available on your PATH.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>On this page, you&#8217;ll learn how to run Asciidoctor on an AsciiDoc document and convert it to HTML.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_generate_html_using_the_default_converter">Generate HTML using the default converter</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Let&#8217;s generate HTML 5 using Asciidoctor&#8217;s default converter and stylesheet from an AsciiDoc document.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>To follow along with the steps below, copy the contents of <a href="#ex-my-doc">my-document.adoc</a> into a new plain text file or use your own AsciiDoc document.</p>
+<div id="ex-my-doc" class="listingblock">
+<div class="title">my-document.adoc</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">link:html-backend:example$my-document.adoc[role=include,tags=title;body]</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Make sure to save the file with the <em>.adoc</em> file extension.</p>
+</li>
+<li>
+<p>Open a terminal and switch (<code>cd</code>) into the directory where your AsciiDoc document is saved.</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ cd directory-name</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Call Asciidoctor with the <code>asciidoctor</code> command, followed by file name of the AsciiDoc document.
+Since HTML 5 is Asciidoctor&#8217;s default output, we don&#8217;t need to specify a converter.</p>
+<div class="openblock">
+<div class="content">
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor my-document.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As long as the document didn&#8217;t contain any syntax errors, you won&#8217;t see any messages printed to your terminal.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Type <code>ls</code> to list the files in the directory.</p>
+<div class="openblock">
+<div class="content">
+<div class="literalblock">
+<div class="content">
+<pre>$ ls
+my-document.adoc  my-document.html</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see a new file named <em class="path">my-document.html</em>.
+Asciidoctor derives the name of the output file from the name of the input document.</p>
+</div>
+</div>
+</div>
+</li>
+<li>
+<p>Open <em class="path">my-document.html</em> in your web browser.
+The converted document should look like the example below.</p>
+<div class="openblock">
+<div class="content">
+<div class="imageblock">
+<div class="content">
+<img src="html-backend:my-document.png" alt="html backend:my document">
+</div>
+</div>
+<div class="paragraph">
+<p>The document&#8217;s text, titles, and link is styled by the default Asciidoctor stylesheet, which is embedded in the HTML output.
+As a result, you could save <em class="path">my-document.html</em> to any computer and it will look the same.</p>
+</div>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+Most of the examples in the general documentation use the CLI, but there are usually corresponding API examples under <a href="api:index.html">api:index.html</a>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,12 @@
+ERROR: asciidoctor-api-options.adoc: line 15: include file not found: {repo}/third_party/asciidoctorj/docs/modules/ROOT/pages/example$org/asciidoctor/integrationguide/OptionsTest.java
+WARN: asciidoctor-api-options.adoc: line 17: no callout found for <1>
+WARN: asciidoctor-api-options.adoc: line 18: no callout found for <2>
+WARN: asciidoctor-api-options.adoc: line 19: no callout found for <3>
+ERROR: asciidoctor-api-options.adoc: line 111: include file not found: {repo}/third_party/asciidoctorj/docs/modules/ROOT/pages/example$org/asciidoctor/integrationguide/OptionsTest.java
+ERROR: asciidoctor-api-options.adoc: line 133: include file not found: {repo}/third_party/asciidoctorj/docs/modules/ROOT/pages/partial$safe-modes.adoc
+ERROR: asciidoctor-api-options.adoc: line 141: include file not found: {repo}/third_party/asciidoctorj/docs/modules/ROOT/pages/example$org/asciidoctor/integrationguide/OptionsTest.java
+WARN: asciidoctor-api-options.adoc: line 143: no callout found for <1>
+WARN: asciidoctor-api-options.adoc: line 144: no callout found for <2>
+ERROR: asciidoctor-api-options.adoc: line 221: include file not found: {repo}/third_party/asciidoctorj/docs/modules/ROOT/pages/example$org/asciidoctor/integrationguide/OptionsTest.java
+WARN: asciidoctor-api-options.adoc: line 223: no callout found for <1>
+WARN: asciidoctor-api-options.adoc: line 224: no callout found for <2>

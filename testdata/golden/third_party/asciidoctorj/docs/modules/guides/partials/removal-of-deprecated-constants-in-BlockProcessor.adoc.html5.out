@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Removal of deprecated constants from org.asciidoctor.extension.BlockProcessor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_removal_of_deprecated_constants_from_org_asciidoctor_extension_blockprocessor">Removal of deprecated constants from <code>org.asciidoctor.extension.BlockProcessor</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>All constants in <code>org.asciidoctor.extension.BlockProcessor</code> class that were marked as <code>@Deprecated</code> have been removed.</p>
+</div>
+<div class="paragraph">
+<p>You can find the new values in <code>org.asciidoctor.extension.Contexts</code> interface.
+See the table below for the equivalencies.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Deprecated value</th>
+<th class="tableblock halign-left valign-top">Contexts value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CONTEXTS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">KEY</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CONTEXT_OPEN</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OPEN</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CONTEXT_EXAMPLE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">EXAMPLE</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CONTEXT_SIDEBAR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SIDEBAR</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CONTEXT_LITERAL</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LITERAL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CONTEXT_LISTING</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">LISTING</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CONTEXT_QUOTE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">QUOTE</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CONTEXT_PASS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PASS</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CONTEXT_PARAGRAPH</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PARAGRAPH</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

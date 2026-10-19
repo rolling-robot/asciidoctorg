@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Asciidoctor Mathematical</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Asciidoctor Mathematical</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://github.com/asciidoctor/asciidoctor-mathematical">Asciidoctor Mathematical</a> is an Asciidoctor extension that provides an alternate solution for converting STEM expressions in an AsciiDoc document into a displayable format.
+It has the benefit of working across all converters.</p>
+</div>
+<div class="paragraph">
+<p>The library is called Asciidoctor Mathematical because it relies on the Mathematical library to parse and transform (aka render) LaTeX expressions.
+It also uses the AsciiMath library to convert AsciiMath notation to LaTeX so Mathematical can process it.</p>
+</div>
+<div class="paragraph">
+<p>This page explains how Asciidoctor Mathematical works, how to install it and activate it, and where to go to learn more information about it.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_it_works">How it works</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The library works by visiting each STEM node in the parsed document and converting it to an image, effectively replacing the STEM node with an image node.
+This takes the burden of transforming the STEM expressions off of the converter.
+All the converter sees are image nodes that reference the generated images.</p>
+</div>
+<div class="paragraph">
+<p>Upon visiting each STEM node, the extension first extracts the expression source.
+If the expression is written in AsciiMath, the extension uses the AsciiMath library to convert that expression to LaTeX.
+The extension then passes the expression to Mathematical to render it as an image.
+The image is sized automatically to accommodate the rendered expression and, if necessary, resized to fit within the line.
+Once the image is generated, the extension replaces the STEM node in the parsed document with an image node that references the generated image.</p>
+</div>
+<div class="paragraph">
+<p>When the extension finishes processing all the STEM nodes, it unsets the <code>stem</code> attribute on the document to indicate no further STEM processing should be performed on the document.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_benefits_and_drawbacks">Benefits and drawbacks</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Since Asciidoctor Mathematical replaces all STEM nodes with image nodes, it serves as an all-purpose solution for STEM processing.
+All converters know how do deal with image nodes.
+The extension can be used with the built-in converters as well as add-on converters such as PDF and EPUB3.</p>
+</div>
+<div class="paragraph">
+<p>The main drawback of Asciidoctor Mathematical when compared to MathJax is that you don&#8217;t have a lot of control over the size and resolution of the images it generates.
+It also lacks the interactivity with the expression that MathJax provides.
+So when you&#8217;re converting to HTML, MathJax is going to give you a better result.</p>
+</div>
+<div class="paragraph">
+<p>Another drawback when compared to MathJax is that it requires installing an extra library, and that library can be difficult to install.
+Nonetheless, if you need it and you&#8217;re up for the challenge, that&#8217;s where we&#8217;re headed next.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_install">Install</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Asciidoctor Mathematical is distributed as a gem named <a href="https://rubygems.org/gems/asciidoctor-mathematical" target="_blank" rel="noopener">asciidoctor-mathematical</a>.
+You can install it using the Ruby packaging tools (gem or bundle).</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ gem install asciidoctor-mathematical</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>However, you may run into difficulty installing this gem.
+Asciidoctor Mathematical depends on Mathematical, which is a native gem.
+In other words, Mathematical must be recompiled during installation, which requires access to build tools and native development libraries on the host system.
+Furthermore, this compilation currently only works on Linux.
+You cannot install this gem on Windows.
+Please refer to the <a href="https://github.com/asciidoctor/asciidoctor-mathematical/#installation">installation section</a> in the Asciidoctor Mathematical documentation to learn which system tools and development libraries you need in order to install it.</p>
+</div>
+<div class="paragraph">
+<p>If you run into problems installing this gem, or need to use it on Windows, consider using the <a href="https://github.com/asciidoctor/docker-asciidoctor">Asciidoctor Docker container</a>.
+The Asciidoctor Docker container launches with the asciidoctor-mathematical gem preinstalled.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_activate">Activate</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Once Asciidoctor Mathematical is installed, you can activate the extension when invoking Asciidoctor using the <code>-r</code> flag:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -r asciidoctor-mathematical stem-sample.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re invoking Asciidoctor via the API, you must require the gem before invoking Asciidoctor:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'asciidoctor-mathematical'
+
+Asciidoctor.convert_file 'stem-sample.adoc', safe: :safe</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the extension is activated, it will automatically find STEM nodes in the parsed document and replace them with images.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_improve_image_resolution">Improve image resolution</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To get the best quality output and maximize speed of conversion, you should configure Asciidoctor Mathematical to generate SVG files.
+You control this setting using the <code>mathematical-format</code> AsciiDoc attribute as follows:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -r asciidoctor-mathematical -a mathematical-format=svg stem-sample.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The extension will now generate SVG images instead of PNG images.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_more_info">More info</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To learn more about how to use this extension and the options it provides, see the <a href="https://github.com/asciidoctor/asciidoctor-mathematical">project&#8217;s README</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

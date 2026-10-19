@@ -1,0 +1,68 @@
+'\" t
+.\"     Title: tool
+.\"    Author: Jane Doe
+.\" Generator: Asciidoctor 2.1.0.alpha.0
+.\"      Date: 2020-01-01
+.\"    Manual: Tool Manual
+.\"    Source: Tool 1.0
+.\"  Language: English
+.\"
+.TH "TOOL" "1" "2020-01-01" "Tool 1.0" "Tool Manual"
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.ss \n[.ss] 0
+.nh
+.ad l
+.de URL
+\fI\\$2\fP <\\$1>\\$3
+..
+.als MTO URL
+.if \n[.g] \{\
+.  mso www.tmac
+.  am URL
+.    ad l
+.  .
+.  am MTO
+.    ad l
+.  .
+.  LINKSTYLE blue R < >
+.\}
+.SH "NAME"
+tool \- does things
+.SH "SYNOPSIS"
+.sp
+\fBtool\fP [\fIOPTION\fP].\|.\|. \fIFILE\fP.\|.\|.
+.SH "OPTIONS"
+.sp
+\fB\-v, \-\-verbose\fP
+.RS 4
+Be verbose.
+.RE
+.sp
+\fB\-o\fP \fIFILE\fP
+.RS 4
+Write output to \fIFILE\fP.
+.RE
+.SH "EXAMPLE"
+.sp
+.if n .RS 4
+.nf
+.fam C
+$ tool \-v input.txt
+.fam
+.fi
+.if n .RE
+.SH "EXIT STATUS"
+.sp
+\fB0\fP
+.RS 4
+Success.
+.RE
+.sp
+\fB1\fP
+.RS 4
+Failure.
+.RE
+.SH "AUTHOR"
+.sp
+Jane Doe

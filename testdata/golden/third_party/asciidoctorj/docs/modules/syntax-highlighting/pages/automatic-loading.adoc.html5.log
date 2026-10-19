@@ -1,0 +1,5 @@
+ERROR: automatic-loading.adoc: line 14: include file not found: {repo}/third_party/asciidoctorj/docs/modules/syntax-highlighting/pages/example$org/asciidoctor/integrationguide/syntaxhighlighter/HighlightJsExtension.java
+WARN: automatic-loading.adoc: line 16: no callout found for <1>
+WARN: automatic-loading.adoc: line 17: no callout found for <2>
+WARN: automatic-loading.adoc: line 19: no callout found for <3>
+ERROR: automatic-loading.adoc: line 26: include file not found: {repo}/third_party/asciidoctorj/docs/modules/syntax-highlighting/pages/example$syntaxhighlighterregistry/META-INF/services/org.asciidoctor.jruby.syntaxhighlighter.spi.SyntaxHighlighterRegistry

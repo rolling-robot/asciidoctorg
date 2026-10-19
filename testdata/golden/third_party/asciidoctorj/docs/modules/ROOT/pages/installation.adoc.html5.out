@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Installation</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Installation</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>To start using AsciidoctorJ, you need to add the required dependency to the dependency management system of your choice, Maven, Gradle or Apache Ivy.
+If you don&#8217;t use a Dependency Management system please check the dependency graph and add all jars in it to your classpath.</p>
+</div>
+<div class="listingblock">
+<div class="title">Declaring the dependency in a Maven build file (i.e., pom.xml)</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.asciidoctor&lt;/groupId&gt;
+    &lt;artifactId&gt;asciidoctorj&lt;/artifactId&gt;
+    &lt;version&gt;{artifact-version}&lt;/version&gt; &lt;!--<b class="conum">(1)</b>--&gt;
+  &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Declaring the dependency in a Gradle build file (e.g., build.gradle)</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">dependencies {
+  compile 'org.asciidoctor:asciidoctorj:{artifact-version}'
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Declaring the dependency in an SBT build file (e.g., build.sbt)</div>
+<div class="content">
+<pre class="highlight"><code class="language-scala" data-lang="scala">libraryDependencies += "org.asciidoctor" % "asciidoctorj" % "{artifact-version}" // <b class="conum">(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Specifying the version of AsciidoctorJ implicitly selects the version of Asciidoctor</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="title">Declaring the dependency in a Leiningen build file (e.g., project.clj)</div>
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">:dependencies [[org.asciidoctor/asciidoctorj "{artifact-version}"]]</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>In addition to using AsciidoctorJ directly, you can invoke it as part of your build using the Maven or Gradle plugin.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://asciidoctor.org/docs/install-and-use-asciidoctor-maven-plugin">How to Install and Use the Asciidoctor Maven Plugin</a></p>
+</li>
+<li>
+<p><a href="https://asciidoctor.org/docs/install-and-use-asciidoctor-gradle-plugin">How to Install and Use the Asciidoctor Gradle Plugin</a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The versions of Asciidoctor and AsciidoctorJ no longer align since version 1.6.0 of AsciidoctorJ.
+Please check the corresponding release notes to find out which version of Asciidoctor is packaged if you are embedding the library.
+If you use the distribution you can call <code>asciidoctorj --version</code> to get the version of Asciidoctor that is embedded in AsciidoctorJ.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

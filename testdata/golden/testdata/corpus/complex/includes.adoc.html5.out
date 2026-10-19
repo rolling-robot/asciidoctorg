@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Includes</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Includes</h1>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_included_chapter">Included Chapter</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Content from an included file with attribute includes.</p>
+</div>
+<div class="sect2">
+<h3 id="_included_subsection">Included Subsection</h3>
+<div class="paragraph">
+<p>More included content.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_tagged_regions">Tagged Regions</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">def greet name
+  "Hello, #{name}"
+end</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">  def greet name
+    "Hello, #{name}"
+  end
+  EXTRA = 1</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">def greet name
+  "Hello, #{name}"
+end
+puts greet 'you'</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby"># tag::method[]
+def greet name
+  "Hello, #{name}"
+EXTRA = 1</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_missing_and_optional">Missing and Optional</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Unresolved directive in includes.adoc - include::includes/does-not-exist.adoc[]</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_nested_include">Nested Include</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Nested level one.</p>
+</div>
+<div class="paragraph">
+<p>Nested level two, resolved relative to the including file.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_csv_table_from_include">CSV Table from Include</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">alpha</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">beta</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

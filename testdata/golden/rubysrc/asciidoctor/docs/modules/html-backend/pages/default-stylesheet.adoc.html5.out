@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Default Stylesheet</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Default Stylesheet</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>When you use the HTML converter to generate a standalone HTML document, Asciidoctor includes a default stylesheet to ensure the HTML looks presentable right out of the box.
+This feature gets you up and running quickly by giving you a result you can preview or publish without having to do any additional work.</p>
+</div>
+<div class="paragraph">
+<p>This page covers why the default is necessary, how to apply it, and how to build on it so you don&#8217;t have to create a stylesheet from scratch.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The default stylesheet that Asciidoctor provides is just that, <em>a default</em>.
+If you prefer a different style, you can customize it, extend it, or replace it with an entirely different one.
+When replacing the default stylesheet, it&#8217;s important to understand that it does provide support for numerous features in AsciiDoc, as covered in the next section.
+You&#8217;ll need to include these required styles when developing your own stylesheet if you want these features to continue to work.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_why_provide_a_default">Why provide a default?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Asciidoctor includes a default stylesheet to provide a nice out-of-the-box experience when generating HTML from AsciiDoc.
+But there&#8217;s more to it.
+There are elements of AsciiDoc that require stylesheet support.</p>
+</div>
+<div class="paragraph">
+<p>One example is to honor <strong>built-in roles</strong>, such as <code>text-center</code>.
+In order for a role to take effect, it needs a companion CSS class in the stylesheet.
+To satisfy the expectations of a built-in role, a stylesheet is required.</p>
+</div>
+<div class="paragraph">
+<p>You may have noticed the floating anchors next to section titles when you hover over them.
+Although the HTML to make them is there, it&#8217;s the stylesheet that brings them to life.</p>
+</div>
+<div class="paragraph">
+<p>Another example is to implement <strong>list marker styles</strong>.
+AsciiDoc allows you to specify the marker for a list using a block style (e.g., <code>loweralpha</code>).
+However, HTML does not apply these markers by default.
+Rather, it&#8217;s something that the stylesheet provides.</p>
+</div>
+<div class="paragraph">
+<p>The default stylesheet also applies <strong>borders and shading to table cells</strong> to support all combinations of the frame, grid, and stripes attributes.</p>
+</div>
+<div class="paragraph">
+<p>Yet another example is the <strong>TOC position</strong>.
+To position the TOC on the left or right requires help from the stylesheet to change the layout of the page so the TOC appears as a sidebar.
+It&#8217;s the stylesheet that handles that task.</p>
+</div>
+<div class="paragraph">
+<p>In order for the AsciiDoc experience to be complete when generating HTML, a stylesheet is required.
+The default stylesheet not only completes this experience, but also serves as a reference for the styles a custom stylesheet must provide.</p>
+</div>
+<div class="sect2">
+<h3 id="_web_fonts">Web fonts</h3>
+<div class="paragraph">
+<p>The default stylesheet ensures that the same fonts are selected across all platforms.</p>
+</div>
+<div class="paragraph">
+<p>By default, the browser relies on system fonts.
+But system fonts vary widely by platform, so users end up getting a very different experience.
+That&#8217;s where web fonts come in.</p>
+</div>
+<div class="paragraph">
+<p>When the default stylesheet is used, the converter adds additional HTML to load open source fonts from Google Fonts.
+The default stylesheet, in turn, specifies a preference for these fonts.</p>
+</div>
+<div class="paragraph">
+<p>The web fonts used by the default stylesheet are as follows:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Noto Serif</dt>
+<dd>
+<p>body text (default)</p>
+</dd>
+<dt class="hdlist1">Open Sans</dt>
+<dd>
+<p>headings</p>
+</dd>
+<dt class="hdlist1">Droid Sans Mono</dt>
+<dd>
+<p>monospaced phrases and verbatim blocks</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Loading and preferring these web fonts ensures everyone sees the same result.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_usage">Usage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When generating HTML, there&#8217;s nothing special you need to do to apply the default stylesheet.
+Asciidoctor automatically embeds the default stylesheet into the <code>&lt;head&gt;</code> of the generated HTML when you run the <code>asciidoctor</code> command.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor document.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Since no stylesheet is specified, Asciidoctor uses the default stylesheet (which is located at <em class="path">data/stylesheets/asciidoctor.css</em> inside the installed gem).</p>
+</div>
+<div class="paragraph">
+<p>When you view the generated HTML file, <em class="path">document.html</em>, you&#8217;ll see styled HTML, as shown here:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="default-stylesheet.png" alt="default stylesheet">
+</div>
+</div>
+<div class="paragraph">
+<p>If you want Asciidoctor to generate HTML that links to the default stylesheet instead of embedding it in the HTML, you can instruct it to do so by setting the <code>linkcss</code> and <code>copycss</code> attributes as follows:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -a linkcss -a copycss document.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When using the API, Asciidoctor already links to the stylesheet by default instead of embedding it (due to the default safe mode).
+However, Asciidoctor does not copy the stylesheet to the output directory.
+You would have to put it there yourself.
+Otherwise, the browser will not be able to find the stylesheet.</p>
+</div>
+<div class="paragraph">
+<p>To solve this problem, set the safe mode to server or lower (e.g., server, safe, or unsafe) and Asciidoctor will embed the default stylesheet, like when using the <code>asciidoctor</code> command.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'asciidoctor'
+
+Asciidoctor.convert_file 'document.adoc', safe: :safe</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_disable_or_modify_the_web_fonts">Disable or modify the web fonts</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When the default stylesheet is used, the converter adds a <code>&lt;link&gt;</code> element specialized by the attribute <code>rel="stylesheet"</code> to load web fonts from Google Fonts.
+You can disable this link by unsetting the <code>webfonts</code> document attribute from the CLI, API, or document header.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -a webfonts! document.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With the web fonts absent, the browser will drop back to the fallback system fonts specified in the stylesheet.
+But this also provides an opportunity to use <a href="#customize-docinfo">docinfo</a> to load the web fonts from a different source.</p>
+</div>
+<div class="paragraph">
+<p>Rather than disabling the link, you can also use the <code>webfonts</code> attribute to change which fonts are loaded.
+When set, the value of the <code>webfonts</code> attribute is used as the value of the <code>family</code> query string parameter in the font-loader URL.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s say you want to use Ubuntu Mono instead of Droid Sans Mono for monospaced text.
+You would set the <code>webfonts</code> attribute as follows:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor \
+-a webfonts="Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CUbuntu+Mono:400" \
+document.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case, you would still need to use <a href="#customize-docinfo">docinfo</a> to instruct the stylesheet to use the new font.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_customize_the_default_stylesheet">Customize the default stylesheet</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>What if the default stylesheet is not exactly to your liking, but you don&#8217;t want to go off and create a custom stylesheet from scratch?
+Can you customize it?
+Indeed, you can.</p>
+</div>
+<div class="paragraph">
+<p>There are at least two ways to customize the default stylesheet.
+One way is to add auxiliary styles using docinfo.
+Another way is to create a custom stylesheet, but import the default stylesheet as a starting point.</p>
+</div>
+<div class="sect2">
+<h3 id="customize-docinfo">Auxiliary styles with docinfo</h3>
+<div class="paragraph">
+<p>Adding auxiliary styles is a great use case for <a href="ROOT:docinfo.html">docinfo</a>.
+The docinfo feature in AsciiDoc allows you to inject auxiliary content from a file into various places in the HTML output.
+In this case, we&#8217;re interested in the "head" position, which injects content at the bottom of the <code>&lt;head&gt;</code> element.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s say you want to change the color of headings (and other heading-like titles) to match the color of paragraph text.
+Start by creating a file named <em class="path">docinfo.html</em> (head is the default location) and populate it with a <code>&lt;style&gt;</code> element with the necessary styles.</p>
+</div>
+<div class="listingblock">
+<div class="title">docinfo.html</div>
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;style&gt;
+h1, h2, h3, h4, h5, h6, #toctitle,
+.sidebarblock &gt; .content &gt; .title {
+  color: rgba(0, 0, 0, 0.8);
+}
+&lt;/style&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now tell Asciidoctor to look for and load the docinfo file using the <code>docinfo</code> attribute:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -a docinfo=shared document.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>&lt;style&gt;</code> element in your docinfo file will be inserted directly below the default stylesheet in the generated HTML.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="customize-targets">Make more elements addressable from CSS</h3>
+<div class="paragraph">
+<p>If you want to style specific elements in your content, you need to make them addressable from CSS.
+In other words, it must be possible to target them using a CSS selector.
+There are two mechanisms in AsciiDoc that enable you to do this:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">id</dt>
+<dd>
+<p>You can add an ID to almost any element in AsciiDoc using the <a href="asciidoc:attributes:ids.html">ID attribute</a>.
+The ID attribute in AsciiDoc translates to the <code>id</code> attribute in HTML.
+You can then target that element (and only that element) from CSS in order to modify its style using the syntax <code>#&lt;id&gt;</code>, where <code>&lt;id&gt;</code> is the value you specify.
+Each ID can only be used once in a document.</p>
+</dd>
+<dt class="hdlist1">role</dt>
+<dd>
+<p>You can add a role to almost any element in AsciiDoc using the <a href="asciidoc:attributes:role.html">role attribute</a>.
+The role attribute in AsciiDoc translates to the <code>class</code> attribute in HTML.
+You can then target that element (and any other elements that share the same role) from CSS in order to modify its style using the syntax <code>.&lt;role&gt;</code>, where <code>&lt;role&gt;</code> is the value you specify.
+A role can be used many times in the document.
+You can even target different elements that share the same role individually in the stylesheet by adding the element name (e.g., <code>span.appname</code>) or additional roles (e.g., <code>.varname.global</code>).</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>For any ID or role you introduce, you must provide custom styles for it in order for it to have any visual effect.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="customize-extend">Extend the default stylesheet</h3>
+<div class="paragraph">
+<p>Instead of writing a custom stylesheet from scratch, you can import the default stylesheet and add overrides for any styles you want to change (leveraging the cascading nature of CSS).
+This is also a good way to use the default stylesheet, but load web fonts from a different CDN.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s again change the color of headings (and other heading-like titles) to match the color of paragraph text.
+Start by creating a stylesheet named <em class="path">my-asciidoctor.css</em>.
+Next, add an <code>@import</code> declaration to import the default stylesheet.
+We use a CDN here to pull the default stylesheet directly out of the repository, but you can put it anywhere the browser can access it.
+Then, add another <code>@import</code> declaration to import the web fonts the default stylesheet uses (which are not imported by the default stylesheet).
+Finally, add your overrides below those <code>@import</code> directives.
+Here&#8217;s how that looks altogether.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-css" data-lang="css">@import "https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700";
+@import "https://cdn.jsdelivr.net/gh/asciidoctor/asciidoctor@{page-component-version}/data/stylesheets/asciidoctor-default.css";
+
+h1, h2, h3, h4, h5, h6, #toctitle,
+.sidebarblock &gt; .content &gt; .title {
+  color: rgba(0, 0, 0, 0.8);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now tell Asciidoctor to use your custom stylesheet instead of the default one:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -a stylesheet=my-asciidoctor.css document.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Asciidoctor will now embed the contents of your custom stylesheet instead of the default one.
+However, Asciidoctor will not embed the contents of the default stylesheet.
+Instead, the browser will fetch it from the location specified by the <code>@import</code> directive.
+You can avoid this network call by putting the default stylesheet in the same directory as your custom stylesheet and linking to it using <code>@import "asciidoctor.css"</code>.</p>
+</div>
+<div class="paragraph">
+<p>To obtain the compiled default stylesheet, you can either <a href="https://cdn.jsdelivr.net/gh/asciidoctor/asciidoctor@{page-component-version}/data/stylesheets/asciidoctor-default.css" target="_blank" rel="noopener">download it</a> from the source repository, or you can use the following <code>asciidoctor</code> command (or equivalent) to write it to the current directory:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ echo | asciidoctor -o $TMPDIR/out.html -a linkcss -a copycss - &amp;&amp; cp $TMPDIR/asciidoctor.css .</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternately, you can use this script to write the default stylesheet to the working directory:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'asciidoctor'
+
+Asciidoctor::Stylesheets.instance.write_primary_stylesheet '.'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also download the <a href="https://github.com/asciidoctor/asciidoctor/blob/v{page-component-version}.x/src/stylesheets/asciidoctor.css" target="_blank" rel="noopener">source of the default stylesheet</a> if you want to use it as a starting point for developing a custom stylesheet.</p>
+</div>
+<div class="paragraph">
+<p>To learn more about how to apply a custom stylesheet, see <a href="custom-stylesheet.html">custom-stylesheet.html</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_are_there_different_themes">Are there different themes?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The default stylesheet does not provide different themes.
+You may be interested in trying the themes provided by the <a href="https://github.com/darshandsoni/asciidoctor-skins" target="_blank" rel="noopener">Asciidoctor Skins</a> project.
+These stylesheets take the approach of loading the default stylesheet (from a CDN), then overlaying additional styles to produce a variety of themes.
+You also have the option of downloading the <a href="https://github.com/asciidoctor/asciidoctor/blob/v{page-component-version}.x/src/stylesheets/asciidoctor.css" target="_blank" rel="noopener">source of the default stylesheet</a> and customizing it to suit your needs.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Caution</div>
+</td>
+<td class="content">
+The Asciidoctor Skins project is hosted outside of the Asciidoctor organization.
+As such, it&#8217;s not guaranteed to be compatible with the latest Asciidoctor release.
+If there are problems with the stylesheets it provides, please report it to that project.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To learn how to apply a custom stylesheet, see <a href="custom-stylesheet.html">custom-stylesheet.html</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Install Using Ruby Packaging</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Install Using Ruby Packaging</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Using Ruby packaging entails making use of commands provided by Ruby (<code>gem</code> and <code>bundle</code>) to install gems.
+A gem is a packaged Ruby application or library, often retrieved from {url-rubygems}[RubyGems.org^].</p>
+</div>
+<div class="paragraph">
+<p>The benefit of using Ruby packaging to install Asciidoctor is that it&#8217;s universal.
+Provided you have configured Ruby correctly, Ruby packaging works the same way across all Ruby runtimes and operating systems.
+This page explains how to use Ruby packaging to install Asciidoctor from the <strong>asciidoctor</strong> gem.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+Unless you&#8217;re running in a container (Docker, podman, OCI), <em>never</em> install gems using <code>gem install</code> as the root user.
+Doing so will almost certainly interfere with, and possibly corrupt, the Ruby installation on your system.
+We strongly advise you to use <a href="#_bundler">Bundler</a> to manage your gems within a project (or an RVM gemset to scope the install to your user/home directory).
+The <code>gem install</code> instructions are provided for when you&#8217;re running in a container or when your using RVM (ideally with a gemset).
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configure_ruby_packaging">Configure Ruby packaging</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you&#8217;re using Linux, the best way to ensure Ruby is configured to use Ruby packaging is to install Ruby using a Ruby version manager.
+We recommend that you set up {url-rvm}[RVM^] and use it to install Ruby in your home directory (i.e., user space).
+Once that is done, you can safely use the <code>gem</code> or <code>bundle</code> commands to install or update the Asciidoctor gem, or any other gem for that matter.
+When using Ruby managed by RVM, gems are installed in a location isolated from the system (so you don&#8217;t need root/administrator access).</p>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re using Windows, you can install Ruby using Chocolatey or the RubyInstaller.
+You will not be able to use RVM if you are using Windows.</p>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re using macOS, you can install Asciidoctor directly using Homebrew, though using RVM is also an option.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gem-install">gem install</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Once you&#8217;ve installed Ruby (and have activated it using <code>rvm use {ruby-version}</code> if you&#8217;re using RVM), open a terminal and type:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ gem install asciidoctor</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Unresolved directive in ruby-packaging.adoc - include::partial$success.adoc[]</p>
+</div>
+<div class="sect2">
+<h3 id="pre-release">Install a prerelease version</h3>
+<div class="paragraph">
+<p>To install a prerelease version of Asciidoctor (e.g., a release candidate), include the <code>--pre</code> option when running the <code>gem install</code> command:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ gem install asciidoctor --pre</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>--pre</code> option will select the prerelease version of Asciidoctor instead of the latest stable version.
+Note that it&#8217;s possible that the prerelease version is older than the latest stable version if no recent prerelease version is available.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_bundler">Bundler</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Bundler creates a virtual environment that scopes the installation of gems to the current project.
+Here&#8217;s how you can use it to install and run Asciidoctor.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a Gemfile in the root folder of your project (or the current directory):</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ bundle init</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Add the <code>asciidoctor</code> gem to the bottom of your Gemfile as follows:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">gem 'asciidoctor'
+# or specify the version explicitly
+# gem 'asciidoctor', '{release-version}'</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Save the Gemfile</p>
+</li>
+<li>
+<p>Open a terminal and install the gem using:</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ bundle install</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>To upgrade the gem, specify the new version in the Gemfile and run <code>bundle install</code> again.
+Using <code>bundle update</code> (without specifying a gem) is <strong>not</strong> recommended as it will also update other gems, which may not be the desired result.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+Once you install using Bundler, you must run any executables provided by the gems (e.g., <code>asciidoctor</code>) from the directory where <em class="path">Gemfile</em> is located and also prefix the executable name with <code>bundle exec</code> (e.g., <code>bundle exec asciidoctor</code>).
+The <code>bundle exec</code> prefix tells Ruby to use the gems defined in the <em class="path">Gemfile</em>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>If you want to understand more about Bundler and <code>bundle exec</code> and when to use them, see the article <a href="https://www.ombulabs.com/blog/ruby/learning/understanding-bundler.html" target="_blank" rel="noopener">Understanding Bundler</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gem-update">Upgrade using gem update</h2>
+<div class="sectionbody">
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Caution</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You&#8217;re advised against using the <code>gem update</code> command to update a gem managed by the package manager.
+Doing so puts the system into an inconsistent state as the package manager can no longer track the files (which get installed under <em class="path">/usr/local</em>).
+Simply put, system gems should only be updated by the package manager.</p>
+</div>
+<div class="paragraph">
+<p>If you want to use a version of Asciidoctor that is newer than what is installed by the package manager, you should use {url-rvm}[RVM^] to install Ruby in your home directory (i.e., user space).
+Then, you can safely use the <code>gem</code> command to install or update the Asciidoctor gem.
+When using RVM, gems are installed in a location isolated from the system.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You can upgrade Asciidoctor using the gem <code>update</code> command:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ gem update asciidoctor</pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you accidentally use <code>gem install</code> instead of <code>gem update</code>, then you&#8217;ll end up with both versions installed.
+To remove the older version, use the following <code>gem</code> command:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ gem cleanup asciidoctor</pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="gem-uninstall">Uninstall using gem uninstall</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can uninstall Asciidoctor using the gem <code>uninstall</code> command:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ gem uninstall -x asciidoctor</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>-x</code> option silences the confirmation to remove the <code>asciidoctor</code> executable, instead removing it automatically.
+In other words, it enables a complete uninstall.</p>
+</div>
+<div class="paragraph">
+<p>If you have multiple versions of Asciidoctor installed, you will be prompted to specify which version you want to uninstall.</p>
+</div>
+<div class="literalblock output">
+<div class="content">
+<pre>Select gem to uninstall:
+ 1. asciidoctor-2.0.15
+ 2. asciidoctor-2.0.16
+ 3. All versions
+&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can uninstall a specific version, or all versions.
+Type one of the numbers at the prompt (<code>&gt;</code>) and press kbd:[Enter].</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

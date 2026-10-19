@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Untitled</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<div class="ulist">
+<ul>
+<li>
+<p>Help &amp; Guides</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Updating to New Releases</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="api-migration-guide-v25x-to-v30.html">api-migration-guide-v25x-to-v30.html</a></p>
+</li>
+<li>
+<p><a href="extension-migration-guide-16-to-20.html">extension-migration-guide-16-to-20.html</a></p>
+</li>
+<li>
+<p><a href="extension-migration-guide-15-to-16.html">extension-migration-guide-15-to-16.html</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Running in Frameworks</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="run-in-osgi.html">run-in-osgi.html</a></p>
+</li>
+<li>
+<p><a href="run-in-wildfly.html">run-in-wildfly.html</a></p>
+</li>
+<li>
+<p><a href="run-with-springboot.html">run-with-springboot.html</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><a href="access-jruby-instance.html">access-jruby-instance.html</a></p>
+</li>
+<li>
+<p><a href="load-ruby-library.html">load-ruby-library.html</a></p>
+</li>
+<li>
+<p><a href="gem-path.html">gem-path.html</a></p>
+</li>
+<li>
+<p><a href="optimization.html">optimization.html</a></p>
+</li>
+<li>
+<p><a href="use-prerelease-version.html">use-prerelease-version.html</a></p>
+</li>
+<li>
+<p><a href="use-snapshot-version.html">use-snapshot-version.html</a></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

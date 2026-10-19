@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Pipe Content Through the CLI</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Pipe Content Through the CLI</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>In addition to converting files, the Asciidoctor CLI can read content from standard input (STDIN) and/or write content to standard output (STDOUT).
+This feature is called piping.</p>
+</div>
+<div class="paragraph">
+<p>Using the <code>-</code> flag, you can pipe content to the <code>asciidoctor</code> command.
+This flag tells Asciidoctor read the source from standard input (STDIN).
+For example:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ echo 'content' | asciidoctor -</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Any variation of STDIN will work.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This command is effectively the same as:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ echo 'content' | asciidoctor -o - -</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When reading source from STDIN, Asciidoctor doesn&#8217;t have a reference to an input file.
+Therefore, it sends the converted text to standard output (STDOUT) by default.</p>
+</div>
+<div class="paragraph">
+<p>If, instead, you want to write the full document to an output file, you specify it using the <code>-o</code> flag.
+For example, the following command writes a standalone HTML document to <em class="path">output.html</em> instead of STDOUT:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ echo 'content' | asciidoctor -o output.html -</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When you pipe content to the <code>asciidoctor</code> command, it no longer has a concept of where the document is located.
+Therefore, relative references such as includes may not work as expected.
+To resolve this problem, you should specify an absolute base directory using the <code>-B</code> option:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ echo 'content' | asciidoctor -B /path/to/basedir -o output.html -</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternately, you can set an artificial document directory by passing an absolute path to the <code>docdir</code> attribute:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ echo 'content' | asciidoctor -a docdir=/path/to/docdir -o output.html -</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Try both approaches to determine which one suits your needs better.</p>
+</div>
+<div class="paragraph">
+<p>When piping source from STDIN to STDOUT through the <code>asciidoctor</code> command, you often just want the converted body (i.e., embeddable HTML).
+To produce that variant, add the <code>-e</code> flag, short for <code>--embedded</code> (previously the <code>-s</code> flag):</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ echo 'content' | asciidoctor -e -</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or perhaps you want to include the doctitle as well:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ echo -e '= Document Title\n\ncontent' | asciidoctor -e -a showtitle -</pre>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

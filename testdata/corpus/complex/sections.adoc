@@ -1,0 +1,57 @@
+= Book Title: A Subtitle
+:doctype: book
+:sectnums:
+:partnums:
+:toc:
+:sectanchors:
+:sectlinks:
+:appendix-caption: Appx
+:chapter-signifier: Chapter
+
+[preface]
+= Preface
+
+Preface content.
+
+= Part One
+
+[partintro]
+Part introduction.
+
+== First Chapter
+
+Chapter content.
+
+=== Section 1.1
+
+[[custom-id,Custom Reftext]]
+==== Section with custom id
+
+Content.
+
+== Second Chapter
+
+[sect1]
+=== Section 2.1
+
+[appendix]
+= First Appendix
+
+Appendix content.
+
+[glossary]
+== Glossary
+
+[glossary]
+mud:: wet, cold dirt
+
+[bibliography]
+== Bibliography
+
+* [[[taoup]]] Eric Steven Raymond. _The Art of Unix Programming_.
+* [[[walsh-muellner,DocBook Guide]]] Norman Walsh & Leonard Muellner.
+
+See <<taoup>> and <<walsh-muellner>>.
+
+[index]
+== Index

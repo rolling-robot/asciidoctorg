@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Static Syntax Highlighting During Conversion</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Static Syntax Highlighting During Conversion</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>The examples we looked at until now did the actual syntax highlighting in the browser.
+But there are also cases where it is desirable to highlight the source during conversion, either because the syntax highlighter is implemented in Java, or syntax highlighting should also work when JavaScript is not enabled at the client.
+The following example uses {url-prismjs}[prism.js] to show how to achieve this:</p>
+</div>
+<div class="paragraph">
+<p>When a <code>SyntaxHighlighterAdapter</code> also implements the interface <code>org.asciidoctor.syntaxhighlighter.Highlighter</code> it will be called to convert the raw source text to HTML.
+The example uses {url-prismjs}[prism.js] which is also a JavaScript library.
+But now we will call this library during document conversion and only add the css part in the resulting HTML, so that the highlighted source will appear correctly even if JavaScript is disabled on the client.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in static-during-conversion.adoc - include::example$org/asciidoctor/integrationguide/syntaxhighlighter/PrismJsHighlighter.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>A syntax highlighter that wants to statically convert the source text has to implement the interface <code>org.asciidoctor.syntaxhighlighter.Highlighter</code>.</p>
+</li>
+<li>
+<p>We use the Nashorn JavaScript engine to run prism.js.</p>
+</li>
+<li>
+<p>When rendering to a file and the attributes <code>:linkcss</code> and <code>:copycss</code> are set the css file of prism.js should be written to disk.
+Otherwise we include the content in a <code>&lt;style/&gt;</code> element.</p>
+</li>
+<li>
+<p><code>highlight()</code> is the only method required by the <code>Highlighter</code> interface.
+It gets the node to be converted, the source, the language and additional options.
+Here we invoke the prism.js API to convert the plain source text to static HTML, that uses the classes defined in the css.
+This is returned in a <code>HighlightResult</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Then we can use the highlighter just like in the previous examples.
+We just have to register it and use the correct value for the attribute <code>:source-highlighter</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in static-during-conversion.adoc - include::example$org/asciidoctor/integrationguide/syntaxhighlighter/PrismJsHighlighterTest.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Register our prism.js highlighter and set the attribute <code>:source-highlighter</code> to its name to use it.</p>
+</li>
+<li>
+<p>Test that the source code has been formatted statically to <code>&lt;span/&gt;</code> elements.</p>
+</li>
+</ol>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

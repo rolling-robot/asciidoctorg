@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Converters</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Converters</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>After Asciidoctor parses an AsciiDoc document, it uses a converter to generate the output format of your choice, such as HTML, DocBook, or PDF.
+Asciidoctor includes a handful of <a href="available.html#built-in">built-in converters</a>.
+The Asciidoctor project provides <a href="available.html#add-on">additional converters</a> that you can add on, which are distributed separately.
+You also have the option to <a href="custom.html">create your own converter</a> or to use one published by a third party.</p>
+</div>
+<div class="paragraph">
+<p>When working with converters, it&#8217;s important to understand the distinction between a converter and a backend.
+This page explains that difference while also providing more background on how converters function.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_is_a_converter">What is a converter?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A converter takes AsciiDoc and transforms it into a different format.
+More specifically, it processes each node (i.e., block or inline element) in a parsed AsciiDoc document in document order and returns a converted fragment, which the processor combines to create the output document.
+Each converter produces a specific output format, such as HTML or DocBook XML.</p>
+</div>
+<div class="paragraph">
+<p>Asciidoctor provides several built-in converters and a facility for adding additional converters.</p>
+</div>
+<div class="paragraph">
+<p>In addition to generating traditional articles and books from AsciiDoc documents, you can also use Asciidoctor to create HTML-based slide decks, static websites, and documentation sites.
+When using these add-on converters, you may need to include some additional structure rules to a document.
+However, nothing in this structure restricts you from being able to publish the content as a normal document, too.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_is_a_backend">What is a backend?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Each converter is correlated with an output format using a backend identifier.
+From the user&#8217;s perspective, the backend represents the desired output format.
+A converter will register itself with a backend identifier to claim that it produces that output format.
+For example, the backend identifier for the built-in HTML 5 converter is <code>html5</code>.
+Thus, from the processor&#8217;s perspective, the backend is the value it uses to identify which converter to use.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The term <code>backend</code> is often used interchangeably with the name of a converter.
+For example, you might hear &#8220;the html5 backend&#8221; when someone is talking about the HTML 5 converter.
+However, there&#8217;s an important distinction between these terms.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>A <a href="custom.html">custom converter</a> can either introduce or reclaim a backend identifier.
+Since it&#8217;s possible for a converter to reclaim a backend identifier, we can&#8217;t say that a backend universally equates to a given converter.
+Rather, the backend identifier informs the processor which converter to select to handle the requested backend based on what&#8217;s currently registered.</p>
+</div>
+<div class="paragraph">
+<p>The user selects which converter to use to convert a document by specifying the <code>backend</code> document attribute, <code>-b</code> (<code>--backend</code>) command line option, or <code>backend</code> API option (e.g., <code>--backend=docbook5</code>).
+The <code>html5</code> and <code>docbook5</code> backends can be referred to using the aliases <code>html</code> and <code>docbook</code>, respectively.</p>
+</div>
+<div class="paragraph">
+<p>In summary, a converter is a software component that handles the conversion from a parsed AsciiDoc document to a publishable output format.
+The backend represents the user&#8217;s intent to transform the AsciiDoc document to a given format (e.g., <code>html5</code> for HTML 5).
+That backend also serves as an identifier that tells the processor which converter to use.
+More than one converter can bind to (i.e., stake claim to) the same backend in order to provide the user with alternatives for generating a given output format.
+For example, the backend <code>pdf</code> could be satisfied by Asciidoctor PDF, but it may also be mapped to a different implementation.
+The last converter that registers itself with a backend wins.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

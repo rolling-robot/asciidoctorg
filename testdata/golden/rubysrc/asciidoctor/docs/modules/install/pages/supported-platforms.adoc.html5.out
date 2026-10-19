@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Supported Platforms and System Requirements</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Supported Platforms and System Requirements</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Asciidoctor operates on Linux, macOS, and Windows and requires one of the supported Ruby implementations listed in the next section.</p>
+</div>
+<div class="paragraph">
+<p>Our general policy is to align Asciidoctor&#8217;s support of a platform version with the upstream project&#8217;s lifecycle schedule for that version.
+When a platform version reaches the end of active support by its maintainers or its end of life&#8212;&#8203;which ever comes first&#8212;&#8203;Asciidoctor no longer supports it.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ruby_runtimes">Ruby runtimes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Asciidoctor requires one of the following implementations of {url-ruby}[Ruby^].</p>
+</div>
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Supported Runtime</th>
+<th class="tableblock halign-left valign-top">Supported Versions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ruby</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#8805; 2.7</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JRuby</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#8805; 9.4</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TruffleRuby</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#8805; 22.2</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_operating_systems">Operating systems</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Supported OS</th>
+<th class="tableblock halign-left valign-top">Supported Versions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ubuntu</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#8805; 18.04 LTS</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Fedora</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#8805; 36</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">macOS</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#8805; macOS 11 (Big Sur)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Microsoft</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&#8805; Windows 10<br>
+Windows Server 2019</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>While the community tests Asciidoctor on a variety of Linux distributions, it&#8217;s only officially tested on Ubuntu and Fedora.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_system_encoding">System encoding</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Asciidoctor assumes you&#8217;re using UTF-8 encoding.
+To minimize encoding problems, make sure the default encoding of your system is set to UTF-8.</p>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re using a non-English Windows environment, you may bump into an <code>Encoding::UndefinedConversionError</code> when invoking Asciidoctor.
+To solve this issue, we recommend overriding the default external and internal character encodings to <code>utf-8</code>.
+You can do so by setting the <code>RUBYOPT</code> environment variable as follows:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>RUBYOPT="-E utf-8:utf-8"</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once you make this change, all your Unicode headaches should be behind you.</p>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re using an IDE like Eclipse, make sure you set the encoding to UTF-8 there as well.
+Asciidoctor is optimized to work with UTF-8 as the default encoding.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

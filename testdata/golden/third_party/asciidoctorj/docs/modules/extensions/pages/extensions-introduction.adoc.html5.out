@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Extensions API</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Extensions API</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>One of the major improvements to Asciidoctor recently is the extensions API.
+AsciidoctorJ brings this extension API to the JVM environment allowing us to write extensions in Java instead of Ruby.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you are migrating existing extensions to a newer version, please see the guides:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="guides:extension-migration-guide-16-to-20.html">guides:extension-migration-guide-16-to-20.html</a></p>
+</li>
+<li>
+<p><a href="guides:extension-migration-guide-15-to-16.html">guides:extension-migration-guide-15-to-16.html</a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Writing an extension is as simple as creating a Java class and sub-classing from one of the extension points.
+However, to explore the full potential it&#8217;s recommended to:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Have a brief understanding of the AsciidoctorJ conversion process and internal representation of the document.
+In short, extensions allow you to tap into the conversion process to make modifications to enhance the generated content.</p>
+</li>
+<li>
+<p>Write an extension class.
+This is as simple as creating a subclass from one of the extension points listed below.</p>
+</li>
+<li>
+<p>Register your class to make AsciidoctorJ converter aware of it.
+There several options depending on the use case.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Asciidoctor provides eight types of extension points.
+Each extension point has an abstract class in Java that maps to the extension API in Ruby.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. AsciidoctorJ extension APIs</caption>
+<colgroup>
+<col width="20%">
+<col width="40%">
+<col width="40%">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Class</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="include-processor.html">include-processor.html</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.asciidoctor.extension.IncludeProcessor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Intercepts <code>include::[]</code> lines</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="preprocessor.html">preprocessor.html</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.asciidoctor.extension.Preprocessor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allows you to modify the asciidoc text before parsing</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="block-macro-processor.html">block-macro-processor.html</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.asciidoctor.extension.BlockMacroProcessor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Processes block macros like <code>bibliography::[]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="block-processor.html">block-processor.html</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.asciidoctor.extension.BlockProcessor</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Processes an arbitrary block based on it&#8217;s style such as</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>[prohibited]
+--
+Do not enter
+--</pre>
+</div>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="treeprocessor.html">treeprocessor.html</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.asciidoctor.extension.Treeprocessor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Modify the AST after parsing.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="inline-macro-processor.html">inline-macro-processor.html</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.asciidoctor.extension.InlineMacroProcessor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Processes inline macros like <code>btn:[]</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="postprocessor.html">postprocessor.html</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.asciidoctor.extension.Postprocessor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Modifies the backend-specific output document.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code><a href="docinfo-processor.html">docinfo-processor.html</a></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.asciidoctor.extension.DocinfoProcessor</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Insert content into the <code>header</code> element or the end of the body element (html), or the <code>info</code> element or at the end of the document (docbook).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

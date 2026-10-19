@@ -1,0 +1,106 @@
+= Lists
+
+== Unordered
+
+* Level one
+** Level two
+*** Level three
+**** Level four
+***** Level five
+* Back to one
++
+Attached paragraph.
++
+----
+attached listing
+----
+
+- Hyphen list
+- second
+
+[square]
+* Square style
+
+* [x] checked
+* [ ] unchecked
+* [*] checked star
+
+[%interactive]
+* [x] interactive checked
+* [ ] interactive unchecked
+
+== Ordered
+
+. One
+. Two
+.. Two A
+.. Two B
+... Two B i
+. Three
+
+[start=4]
+. Four
+. Five
+
+[%reversed]
+. Reversed one
+. Reversed two
+
+[loweralpha]
+. alpha a
+. alpha b
+
+[upperroman]
+. roman I
+. roman II
+
+1. explicit one
+2. explicit two
+
+== Description Lists
+
+CPU:: The brain.
+RAM:: Memory.
+SSD::: Nested storage.
+
+[horizontal]
+Term A:: Horizontal definition A
+Term B::
+Definition on next line
+
+[qanda]
+What is it?:: It is a test.
+Why?:: Because.
+
+Term with list::
+* item a
+* item b
+
+Multiple terms::
+Second term:: Shared definition
+
+== Complex Nesting
+
+. Step one
++
+[source,sh]
+----
+$ make
+----
+. Step two
+* nested bullet
++
+NOTE: Attached admonition.
+. Step three
++
+--
+Open block in list item.
+
+Second paragraph.
+--
+
+* item
+
+//-
+
+* separate list after comment

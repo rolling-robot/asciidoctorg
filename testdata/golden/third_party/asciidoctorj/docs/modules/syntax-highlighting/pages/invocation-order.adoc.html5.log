@@ -1,0 +1,2 @@
+ERROR: invocation-order.adoc: line 8: include file not found: {repo}/third_party/asciidoctorj/docs/modules/syntax-highlighting/pages/example$syntax-highlighting-order.adoc
+ERROR: invocation-order.adoc: line 13: include file not found: {repo}/third_party/asciidoctorj/docs/modules/syntax-highlighting/pages/example$syntax-highlighting-order-output.txt

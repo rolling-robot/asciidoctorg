@@ -1,0 +1,2 @@
+ERROR: verbatim-line-wrap.adoc: line 21: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/html-backend/pages/example$wrap.adoc
+ERROR: verbatim-line-wrap.adoc: line 28: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/html-backend/pages/example$wrap.adoc

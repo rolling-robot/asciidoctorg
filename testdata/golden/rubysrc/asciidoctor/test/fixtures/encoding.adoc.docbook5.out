@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?asciidoc-toc?>
+<?asciidoc-numbered?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0" xml:lang="en">
+<info>
+<title>Überschrift</title>
+<date>2020-01-01</date>
+</info>
+<simpara>Gregory Romé has written an AsciiDoc plugin for the Redmine project management application.</simpara>
+<simpara><link xl:href="https://github.com/foo-users/foo">https://github.com/foo-users/foo</link>
+へと <literal>vicmd</literal> キーマップを足してみている試み、
+アニメーションgifです。</simpara>
+<simpara>tag::romé[]
+Gregory Romé has written an AsciiDoc plugin for the Redmine project management application.
+end::romé[]</simpara>
+<section xml:id="_überschrift">
+<title>Überschrift</title>
+<itemizedlist>
+<listitem>
+<simpara>Codierungen sind verrückt auf älteren Versionen von Ruby</simpara>
+</listitem>
+</itemizedlist>
+</section>
+</article>

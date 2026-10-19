@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Using a pre-release version</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Using a pre-release version</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>Pre-release versions of <code>AsciidoctorJ</code> are published to oss.sonatype.org.
+The exact location of the repository will be announced.
+Final releases are released to both Maven Central.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s how to use a pre-release version in Maven:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">    &lt;repositories&gt;
+        &lt;repository&gt;
+            &lt;id&gt;staging&lt;/id&gt;
+            &lt;url&gt;https://oss.sonatype.org/content/repositories/orgasciidoctor-1234&lt;/url&gt; <b class="conum">(1)</b>
+            &lt;releases&gt;
+                &lt;enabled&gt;true&lt;/enabled&gt;
+            &lt;/releases&gt;
+        &lt;/repository&gt;
+    &lt;/repositories&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The exact URL differs for every build</p>
+</li>
+</ol>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

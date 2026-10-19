@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Distribution</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Distribution</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>AsciidoctorJ is published to Maven Central.
+The artifact information can be found in the tables below.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Artifact information for AsciidoctorJ in Maven Central</caption>
+<colgroup>
+<col width="20%">
+<col width="20%">
+<col width="20%">
+<col width="40%">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Group Id</th>
+<th class="tableblock halign-left valign-top">Artifact Id</th>
+<th class="tableblock halign-center valign-top">Version</th>
+<th class="tableblock halign-left valign-top">Download</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.asciidoctor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.asciidoctor/asciidoctorj/{artifact-version}/versions">asciidoctorj</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.asciidoctor/asciidoctorj/{artifact-version}">{artifact-version}</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://search.maven.org/remotecontent?filepath=org/asciidoctor/asciidoctorj/{artifact-version}/asciidoctorj-{artifact-version}.pom">pom</a> <a href="https://search.maven.org/remotecontent?filepath=org/asciidoctor/asciidoctorj/{artifact-version}/asciidoctorj-{artifact-version}.jar">jar</a> <a href="https://search.maven.org/remotecontent?filepath=org/asciidoctor/asciidoctorj/{artifact-version}/asciidoctorj-{artifact-version}-javadoc.jar">javadoc (jar)</a> <a href="https://search.maven.org/remotecontent?filepath=org/asciidoctor/asciidoctorj/{artifact-version}/asciidoctorj-{artifact-version}-sources.jar">sources (jar)</a> <a href="https://search.maven.org/remotecontent?filepath=org/asciidoctor/asciidoctorj/{artifact-version}/asciidoctorj-{artifact-version}-bin.zip">distribution (zip)</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.asciidoctor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.asciidoctor/asciidoctorj-api/{artifact-version}/versions">asciidoctorj-api</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://central.sonatype.com/artifact/org.asciidoctor/asciidoctorj-api/{artifact-version}">{artifact-version}</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://search.maven.org/remotecontent?filepath=org/asciidoctor/asciidoctorj-api/{artifact-version}/asciidoctorj-api-{artifact-version}.pom">pom</a> <a href="https://search.maven.org/remotecontent?filepath=org/asciidoctor/asciidoctorj-api/{artifact-version}/asciidoctorj-api-{artifact-version}.jar">jar</a> <a href="https://search.maven.org/remotecontent?filepath=org/asciidoctor/asciidoctorj-api/{artifact-version}/asciidoctorj-api-{artifact-version}-javadoc.jar">javadoc (jar)</a> <a href="https://search.maven.org/remotecontent?filepath=org/asciidoctor/asciidoctorj-api/{artifact-version}/asciidoctorj-api-{artifact-version}-sources.jar">sources (jar)</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.asciidoctor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">asciidoctorj-epub3</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">{asciidoctorj-epub3-version}</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.asciidoctor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">asciidoctorj-pdf</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">{asciidoctorj-pdf-version}</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Caution</div>
+</td>
+<td class="content">
+The artifactId changed to <code>asciidoctorj</code> starting in 1.5.0.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

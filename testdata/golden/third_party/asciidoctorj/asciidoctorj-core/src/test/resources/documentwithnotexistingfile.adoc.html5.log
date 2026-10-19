@@ -1,0 +1,4 @@
+ERROR: documentwithnotexistingfile.adoc: line 3: include file not found: {repo}/third_party/asciidoctorj/asciidoctorj-core/src/test/resources/unexistingdoc.adoc
+ERROR: documentwithnotexistingfile.adoc: line 5: include file not found: {repo}/third_party/asciidoctorj/asciidoctorj-core/src/test/resources/unexistingdoc.adoc
+WARN: documentwithnotexistingfile.adoc: line 7: cannot include contents of URI: https://raw.githubusercontent.com/asciidoctor/asciidoctorj/e47a2c01c563fa624ca61e1bc58e264a114f7fb5/asciidoctorj-core/src/test/resources/rendersample.asciidoc (allow-uri-read attribute not enabled)
+ERROR: documentwithnotexistingfile.adoc: line 9: include file not found: {repo}/third_party/asciidoctorj/asciidoctorj-core/src/test/resources/unexistingdoc.adoc

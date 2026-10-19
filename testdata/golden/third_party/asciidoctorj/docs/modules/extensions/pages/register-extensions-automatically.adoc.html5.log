@@ -1,0 +1,5 @@
+ERROR: register-extensions-automatically.adoc: line 14: include file not found: {repo}/third_party/asciidoctorj/docs/modules/extensions/pages/example$org/asciidoctor/integrationguide/extension/TerminalCommandExtension.java
+WARN: register-extensions-automatically.adoc: line 16: no callout found for <1>
+WARN: register-extensions-automatically.adoc: line 17: no callout found for <2>
+WARN: register-extensions-automatically.adoc: line 18: no callout found for <3>
+ERROR: register-extensions-automatically.adoc: line 25: include file not found: {repo}/third_party/asciidoctorj/docs/modules/extensions/pages/example$extensionregistry/META-INF/services/org.asciidoctor.jruby.extension.spi.ExtensionRegistry

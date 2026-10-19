@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<meta name="author" content="Dan Allen, Sarah White">
+<title>Asciidoctor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Asciidoctor</h1>
+<div class="details">
+<span id="author" class="author">Dan Allen</span><br>
+<span id="email" class="email"><a href="https://github.com/mojavelinux">@mojavelinux</a></span><br>
+<span id="author2" class="author">Sarah White</span><br>
+<span id="email2" class="email"><a href="https://github.com/graphitefriction">@graphitefriction</a></span><br>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://asciidoctor.org">Asciidoctor</a> is a fast, open source, Ruby-based text processor for parsing AsciiDoc&#174; into a document model and converting it to output formats such as HTML 5, DocBook 5, manual pages, PDF, EPUB 3, and other formats.</p>
+</div>
+<div class="paragraph">
+<p>Asciidoctor also has an ecosystem of extensions, converters, build plugins, and tools to help you author and publish content written in <a href="https://docs.asciidoctor.org/asciidoctor/latest/#relationship-to-asciidoc">AsciiDoc</a>.
+You can find the documentation for these projects at <a href="https://docs.asciidoctor.org" class="bare">https://docs.asciidoctor.org</a>.</p>
+</div>
+<div class="paragraph">
+<p>In addition to running on Ruby, Asciidoctor can be executed on a JVM using <a href="https://github.com/asciidoctor/asciidoctorj">AsciidoctorJ</a> or in any JavaScript environment using <a href="https://github.com/asciidoctor/asciidoctor.js">Asciidoctor.js</a>.</p>
+</div>
+<div class="paragraph">
+<p>This document is also available in the following languages:<br>
+<a href="README-zh_CN.adoc">简体中文</a>
+|
+<a href="README-de.adoc">Deutsch</a>
+|
+<a href="README-fr.adoc">Français</a>
+|
+<a href="README-jp.adoc">日本語</a></p>
+</div>
+<div class="ulist compact">
+<div class="title">Key documentation</div>
+<ul>
+<li>
+<p><a href="https://docs.asciidoctor.org/asciidoctor/latest/">Asciidoctor Documentation</a></p>
+</li>
+<li>
+<p><a href="https://docs.asciidoctor.org/asciidoc/latest/">AsciiDoc Language Documentation</a></p>
+</li>
+<li>
+<p><a href="https://docs.asciidoctor.org/asciidoc/latest/syntax-quick-reference/">AsciiDoc Syntax Quick Reference</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sponsors">Sponsors</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We want to recognize our <a href="https://asciidoctor.org/supporters">sponsors</a> for their commitment to improving the state of technical documentation by supporting this project.
+Thank you sponsors!
+Without your generous support, Asciidoctor would not be possible.</p>
+</div>
+<div class="paragraph">
+<p>You can support this project by becoming a sponsor through <a href="https://opencollective.com/asciidoctor">OpenCollective</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="asciidoc-processing-and-built-in-converters">AsciiDoc Processing and Built-in Converters</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>AsciiDoc is the language.<br>
+Asciidoctor is the processor.</p>
+</div>
+<div class="paragraph">
+<p>Asciidoctor reads the AsciiDoc source, as shown in the panel on the left in the image below, and converts it to publishable formats, such as HTML 5, as shown rendered in the panel on the right.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="https://cdn.jsdelivr.net/gh/asciidoctor/asciidoctor/screenshot.png" alt="Preview of AsciiDoc source and corresponding rendered HTML">
+</div>
+</div>
+<div class="paragraph">
+<p>Asciidoctor provides built-in <a href="https://docs.asciidoctor.org/asciidoctor/latest/converters/">converters</a> for three output formats by default: <a href="https://docs.asciidoctor.org/asciidoctor/latest/html-backend/">HTML 5</a>, <a href="https://docs.asciidoctor.org/asciidoctor/latest/docbook-backend/">DocBook 5</a>, and <a href="https://docs.asciidoctor.org/asciidoctor/latest/manpage-backend/">man page</a> (short for manual page).
+Additional converters, such as PDF and EPUB 3, are provided by separate gems.
+Asciidoctor also provides an out-of-the-box HTML experience complete with a <a href="https://docs.asciidoctor.org/asciidoctor/latest/html-backend/default-stylesheet/">default stylesheet</a> and built-in integrations like Font Awesome (for icons), highlight.js, Rouge, and Pygments (for source highlighting), and MathJax (for STEM processing).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="asciidoctor-ecosystem">Asciidoctor Ecosystem</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Although Asciidoctor is written in Ruby, it does not mean you need Ruby to use it.
+Asciidoctor can be executed on a JVM using <a href="https://docs.asciidoctor.org/asciidoctorj/latest/">AsciidoctorJ</a> or in any JavaScript environment (including the browser) using <a href="https://docs.asciidoctor.org/asciidoctor.js/latest/">Asciidoctor.js</a>.</p>
+</div>
+<div class="paragraph">
+<p>Installing an Asciidoctor processor is just the beginning of your publishing experience.
+Asciidoctor gives you access to a ecosystem of extensions and tools, ranging from add-on converters, to extended syntax, to build plugins, to integrated writing and preview environments:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.asciidoctor.org/diagram-extension/latest/">Asciidoctor Diagram</a></p>
+</li>
+<li>
+<p><a href="https://docs.asciidoctor.org/maven-tools/latest/">Maven plugin and site module</a></p>
+</li>
+<li>
+<p><a href="https://github.com/asciidoctor/asciidoctor-gradle-plugin">Gradle plugin</a></p>
+</li>
+<li>
+<p><a href="https://docs.asciidoctor.org/asciidoclet/latest/">Asciidoclet</a></p>
+</li>
+<li>
+<p><a href="https://docs.asciidoctor.org/reveal.js-converter/latest/">reveal.js converter</a></p>
+</li>
+<li>
+<p><a href="https://docs.asciidoctor.org/epub3-converter/latest/">EPUB 3 converter</a></p>
+</li>
+<li>
+<p><a href="https://intellij-asciidoc-plugin.ahus1.de/docs">IntelliJ plugin</a></p>
+</li>
+<li>
+<p><a href="https://docs.asciidoctor.org/asciidoctor/latest/tooling/#web-browser-add-ons-preview-only">web browser extensions</a></p>
+</li>
+<li>
+<p><a href="https://github.com/asciidoctor">and more</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Asciidoctor is the successor to AsciiDoc.py.
+If you&#8217;re using AsciiDoc.py, see <a href="https://docs.asciidoctor.org/asciidoctor/latest/migrate/asciidoc-py/">Migrate from AsciiDoc.py</a> to learn how to upgrade to Asciidoctor.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="requirements">Requirements</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Asciidoctor works on Linux, macOS and Windows and requires one of the following implementations of <a href="https://www.ruby-lang.org">Ruby</a>:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>CRuby (aka MRI) 2.7 - 4.0</p>
+</li>
+<li>
+<p>JRuby 9.4.0 - 10.1.2</p>
+</li>
+<li>
+<p>TruffleRuby (GraalVM)</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you&#8217;re using a non-English Windows environment, you may bump into an <code>Encoding::UndefinedConversionError</code> when invoking Asciidoctor.
+To solve this issue, we recommend overriding the default external and internal character encodings to <code>utf-8</code>.
+You can do so by setting the <code>RUBYOPT</code> environment variable as follows:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>RUBYOPT="-E utf-8:utf-8"</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once you make this change, all your Unicode headaches should be behind you.</p>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re using an IDE like Eclipse, make sure you set the encoding to UTF-8 there as well.
+Asciidoctor is optimized to work with UTF-8 as the default encoding.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="installation">Installation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Asciidoctor is packaged and distributed to RubyGems.org as a RubyGem (aka gem) named <a href="https://rubygems.org/gems/asciidoctor" target="_blank" rel="noopener">asciidoctor</a>.
+The asciidoctor gem can be installed on all major operating systems using Ruby packaging tools (gem or bundle).
+Asciidoctor is also distributed as a Docker image, as a package for numerous Linux distributions, and as a package for macOS (via Homebrew and MacPorts).</p>
+</div>
+<div class="sect2">
+<h3 id="linux-package-managers">Linux package managers</h3>
+<div class="paragraph">
+<p>The version of Asciidoctor installed by the package manager may not match the latest release of Asciidoctor.
+Consult the package repository for your distribution to find out which version is packaged per distribution release.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://pkgs.alpinelinux.org/packages?name=asciidoctor">Alpine Linux (asciidoctor)</a></p>
+</li>
+<li>
+<p><a href="https://www.archlinux.org/packages/?name=asciidoctor">Arch Linux (asciidoctor)</a></p>
+</li>
+<li>
+<p><a href="https://packages.debian.org/sid/asciidoctor">Debian (asciidoctor)</a></p>
+</li>
+<li>
+<p><a href="https://apps.fedoraproject.org/packages/rubygem-asciidoctor">Fedora (asciidoctor)</a></p>
+</li>
+<li>
+<p><a href="https://software.opensuse.org/package/rubygem-asciidoctor">OpenSUSE (rubygem-asciidoctor)</a></p>
+</li>
+<li>
+<p><a href="https://packages.ubuntu.com/search?keywords=asciidoctor">Ubuntu (asciidoctor)</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you want to use a version of Asciidoctor that&#8217;s newer than what is installed by the package manager, see the <a href="#gem-install">gem installation instructions</a>.</p>
+</div>
+<div class="sect3">
+<h4 id="apk-alpine-linux">apk (Alpine Linux)</h4>
+<div class="paragraph">
+<p>To install the gem on Alpine Linux, open a terminal and type:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo apk add asciidoctor</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="pacman-arch-linux">pacman (Arch Linux)</h4>
+<div class="paragraph">
+<p>To install the gem on Arch-based distributions, open a terminal and type:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo pacman -S asciidoctor</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="apt">APT</h4>
+<div class="paragraph">
+<p>On Debian and Debian-based distributions such as Ubuntu, use APT to install Asciidoctor.
+To install the package, open a terminal and type:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo apt-get install -y asciidoctor</pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="dnf">DNF</h4>
+<div class="paragraph">
+<p>On RPM-based Linux distributions, such as Fedora, CentOS, and RHEL, use the DNF package manager to install Asciidoctor.
+To install the package, open a terminal and type:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo dnf install -y asciidoctor</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="macos">macOS</h3>
+<div class="sect3">
+<h4 id="homebrew">Homebrew</h4>
+<div class="paragraph">
+<p>You can use <a href="https://brew.sh">Homebrew</a>, the macOS package manager, to install Asciidoctor.
+If you don&#8217;t have Homebrew on your computer, complete the <a href="https://brew.sh">installation instructions</a> first.</p>
+</div>
+<div class="paragraph">
+<p>Once Homebrew is installed, you&#8217;re ready to install the <code>asciidoctor</code> gem.
+Open a terminal and type:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ brew install asciidoctor</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Homebrew installs the <code>asciidoctor</code> gem into an exclusive prefix that&#8217;s independent of system gems.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="macports">MacPorts</h4>
+<div class="paragraph">
+<p>You can also use <a href="https://www.macports.org">MacPorts</a>, another package manager for macOS, to install Asciidoctor.
+If you don&#8217;t have MacPorts on your computer, complete the <a href="https://www.macports.org/install.php">installation instructions</a> first.</p>
+</div>
+<div class="paragraph">
+<p>Once MacPorts is installed, you&#8217;re ready to install the <code>asciidoctor</code> gem via the <a href="https://ports.macports.org/port/asciidoctor/">Asciidoctor port</a>.
+Open a terminal and type:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo port install asciidoctor</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="windows">Windows</h3>
+<div class="paragraph">
+<p>To use Asciidoctor with Windows, you have two options.</p>
+</div>
+<div class="sect3">
+<h4 id="chocolatey">Chocolatey</h4>
+<div class="paragraph">
+<p>When you already use <a href="https://chocolatey.org">chocolatey</a> on your machine, you can use:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>choco install ruby</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then follow <a href="#gem-install">gem installation instructions</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="rubyinstaller">Rubyinstaller</h4>
+<div class="paragraph">
+<p>Or you use the <a href="https://rubyinstaller.org/downloads/">Rubyinstaller</a>, download the package for your Windows Version and after the installation go ahead with <a href="#gem-install">gem installation instructions</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="gem-install">gem install</h3>
+<div class="paragraph">
+<p>Before installing Asciidoctor using <code>gem install</code>, you should set up <a href="https://rvm.io">RVM</a> (or similar) to install Ruby in your home directory (i.e., user space).
+Then, you can safely use the <code>gem</code> command to install or update the Asciidoctor gem, or any other gem for that matter.
+When using RVM, gems are installed in a location isolated from the system.
+(You should never use the gem command to install system-wide gems).</p>
+</div>
+<div class="paragraph">
+<p>Once you&#8217;ve installed Ruby using RVM, and you have activated it using <code>rvm use 3.0</code>, open a terminal and type:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ gem install asciidoctor</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you want to install a pre-release version (e.g., a release candidate), use:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ gem install asciidoctor --pre</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="docker">Docker</h3>
+<div class="paragraph">
+<p>See <a href="https://github.com/asciidoctor/docker-asciidoctor">Installing Asciidoctor using Docker</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="bundler">Bundler</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a Gemfile in the root folder of your project (or the current directory)</p>
+</li>
+<li>
+<p>Add the <code>asciidoctor</code> gem to your Gemfile as follows:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">source 'https://rubygems.org'
+gem 'asciidoctor'
+# or specify the version explicitly
+# gem 'asciidoctor', '2.0.22'</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Save the Gemfile</p>
+</li>
+<li>
+<p>Open a terminal and install the gem using:</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ bundle</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>To upgrade the gem, specify the new version in the Gemfile and run <code>bundle</code> again.
+Using <code>bundle update</code> (without specifying a gem) is <strong>not</strong> recommended as it will also update other gems, which may not be the desired result.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="upgrade">Upgrade</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you installed Asciidoctor using a package manager, your operating system is probably configured to automatically update packages, in which case you don&#8217;t need to update the gem manually.</p>
+</div>
+<div class="sect2">
+<h3 id="apk-alpine-linux-2">apk (Alpine Linux)</h3>
+<div class="paragraph">
+<p>To upgrade the gem, use:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo apk add -u asciidoctor</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="apt-2">APT</h3>
+<div class="paragraph">
+<p>To upgrade the gem, use:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo apt-get upgrade -y asciidoctor</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="dnf-2">DNF</h3>
+<div class="paragraph">
+<p>To upgrade the gem, use:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo dnf update -y asciidoctor</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="homebrew-macos">Homebrew (macOS)</h3>
+<div class="paragraph">
+<p>To upgrade the gem, use:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ brew update
+$ brew upgrade asciidoctor</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="macports-macos">MacPorts (macOS)</h3>
+<div class="paragraph">
+<p>To upgrade the gem, use:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo port selfupdate
+$ sudo port upgrade asciidoctor</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="gem-install-2">gem install</h3>
+<div class="paragraph">
+<p>If you previously installed Asciidoctor using the <code>gem</code> command, you&#8217;ll need to manually upgrade Asciidoctor when a new version is released.
+You can upgrade the gem by typing:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ gem install asciidoctor</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When you install a new version of the gem using <code>gem install</code>, you end up with multiple versions installed.
+Use the following command to remove the old versions:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ gem cleanup asciidoctor</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="usage">Usage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If the Asciidoctor gem installed successfully, the <code>asciidoctor</code> command line interface (CLI) will be available on your PATH.
+To verify it&#8217;s available, run the following in your terminal:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor --version</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You should see information about the Asciidoctor version and your Ruby environment printed in the terminal.</p>
+</div>
+<div class="literalblock output">
+<div class="content">
+<pre>Asciidoctor 2.0.22 [https://asciidoctor.org]
+Runtime Environment (ruby 3.0.1p64 [x86_64-linux]) (lc:UTF-8 fs:UTF-8 in:UTF-8 ex:UTF-8)</pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="command-line-interface-cli">Command line interface (CLI)</h3>
+<div class="paragraph">
+<p>The <code>asciidoctor</code> command allows you to invoke Asciidoctor from the command line (i.e., a terminal).</p>
+</div>
+<div class="paragraph">
+<p>The following command converts the file README.adoc to HTML and saves the result to the file README.html in the same directory.
+The name of the generated HTML file is derived from the source file by changing its file extension to <code>.html</code>.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor README.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can control the Asciidoctor processor by adding various flags and switches, which you can learn about using:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor --help</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For instance, to write the file to a different directory, use:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -D output README.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>asciidoctor</code> <a href="https://asciidoctor.org/man/asciidoctor">man page</a> provides a complete reference of the command line interface.</p>
+</div>
+<div class="paragraph">
+<p>Refer to the following resources to learn more about how to use the <code>asciidoctor</code> command.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.asciidoctor.org/asciidoctor/latest/cli/">Process AsciiDoc using the CLI</a></p>
+</li>
+<li>
+<p><a href="https://docs.asciidoctor.org/asciidoctor/latest/cli/options/">CLI options</a></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="ruby-api">Ruby API</h3>
+<div class="paragraph">
+<p>Asciidoctor also provides an API.
+The API is intended for integration with other Ruby software, such as Rails, GitHub, and GitLab, as well as other languages, such as Java (via AsciidoctorJ) and JavaScript (via Asciidoctor.js).</p>
+</div>
+<div class="paragraph">
+<p>To use Asciidoctor in your application, you first need to require the gem:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'asciidoctor'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can then convert an AsciiDoc source file to an HTML file using:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">Asciidoctor.convert_file 'README.adoc', to_file: true, safe: :safe</code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+When using Asciidoctor via the API, the default safe mode is <code>:secure</code>.
+In secure mode, several core features are disabled, including the <code>include</code> directive.
+If you want to enable these features, you&#8217;ll need to explicitly set the safe mode to <code>:server</code> (recommended) or <code>:safe</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You can also convert an AsciiDoc string to embeddable HTML (for inserting in an HTML page) using:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">content = '_Zen_ in the art of writing https://asciidoctor.org[AsciiDoc].'
+Asciidoctor.convert content, safe: :safe</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you want the full HTML document, enable the <code>header_footer</code> option as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">content = '_Zen_ in the art of writing https://asciidoctor.org[AsciiDoc].'
+html = Asciidoctor.convert content, header_footer: true, safe: :safe</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you need access to the parsed document, you can split the conversion into discrete steps:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">content = '_Zen_ in the art of writing https://asciidoctor.org[AsciiDoc].'
+document = Asciidoctor.load content, header_footer: true, safe: :safe
+puts document.doctitle
+html = document.convert</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Keep in mind that if you don&#8217;t like the output Asciidoctor produces, <em>you can change it!</em>
+Asciidoctor supports custom converters that can handle converting from the parsed document to the generated output.</p>
+</div>
+<div class="paragraph">
+<p>One easy way to customize the output piecemeal is by using the template converter.
+The template converter allows you to supply a <a href="https://github.com/rtomayko/tilt">Tilt</a>-supported template file to handle converting any node in the document.</p>
+</div>
+<div class="paragraph">
+<p>However you go about it, you <em>can</em> have 100% control over the output.
+For more information about how to use the API or to customize the output, see:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://docs.asciidoctor.org/asciidoctor/latest/api/">Process AsciiDoc using the API</a></p>
+</li>
+<li>
+<p><a href="https://docs.asciidoctor.org/asciidoctor/latest/api/options/">API options</a></p>
+</li>
+<li>
+<p><a href="https://docs.asciidoctor.org/asciidoctor/latest/safe-modes/">Safe modes</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="contributing">Contributing</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>New contributors are always welcome!
+If you discover errors or omissions in the source code, documentation, or website content, please don&#8217;t hesitate to submit an issue or open a pull request with a fix.</p>
+</div>
+<div class="paragraph">
+<p>Here are some ways <strong>you</strong> can contribute:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>by using prerelease (alpha, beta or preview) versions</p>
+</li>
+<li>
+<p>by reporting bugs</p>
+</li>
+<li>
+<p>by suggesting new features</p>
+</li>
+<li>
+<p>by writing or editing documentation</p>
+</li>
+<li>
+<p>by writing code with tests&#8201;&#8212;&#8201;<em>No patch is too small.</em></p>
+<div class="ulist">
+<ul>
+<li>
+<p>fix typos</p>
+</li>
+<li>
+<p>add comments</p>
+</li>
+<li>
+<p>clean up inconsistent whitespace</p>
+</li>
+<li>
+<p>write tests!</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>by refactoring code</p>
+</li>
+<li>
+<p>by fixing <a href="https://github.com/asciidoctor/asciidoctor/issues">issues</a></p>
+</li>
+<li>
+<p>by reviewing patches</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The <a href="CONTRIBUTING.adoc">Contributing</a> guide provides information on how to create, style, and submit issues, feature requests, code, and documentation to Asciidoctor.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="getting-help">Getting Help</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Asciidoctor is developed to help you easily write and publish your content.
+But we can&#8217;t do it without your input.
+If you need assistance or want to provide feedback, please follow the links to the resources listed on the <a href="https://docs.asciidoctor.org/about/support/">Get Help</a> page in the docs.
+Here&#8217;s a quick summary:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Project chat (Zulip)</dt>
+<dd>
+<p><a href="https://chat.asciidoctor.org" class="bare">https://chat.asciidoctor.org</a></p>
+</dd>
+<dt class="hdlist1">Discussion list (archived)</dt>
+<dd>
+<p><a href="https://discuss.asciidoctor.org" class="bare">https://discuss.asciidoctor.org</a></p>
+</dd>
+<dt class="hdlist1">Social media (Twitter)</dt>
+<dd>
+<p>Follow <a href="https://twitter.com/asciidoctor">@asciidoctor</a> or search the <a href="https://twitter.com/search?f=tweets&amp;q=%23asciidoctor">#asciidoctor</a> hashtag</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The Asciidoctor organization on GitHub hosts the project&#8217;s source code, issue tracker, and sub-projects.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Source repository (git)</dt>
+<dd>
+<p><a href="https://github.com/asciidoctor/asciidoctor" class="bare">https://github.com/asciidoctor/asciidoctor</a></p>
+</dd>
+<dt class="hdlist1">Issue tracker</dt>
+<dd>
+<p><a href="https://github.com/asciidoctor/asciidoctor/issues" class="bare">https://github.com/asciidoctor/asciidoctor/issues</a></p>
+</dd>
+<dt class="hdlist1">Asciidoctor organization on GitHub</dt>
+<dd>
+<p><a href="https://github.com/asciidoctor" class="bare">https://github.com/asciidoctor</a></p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="code-of-conduct">Code of Conduct</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The core Asciidoctor project is governed by the <a href="https://github.com/asciidoctor/.github/blob/HEAD/CODE-OF-CONDUCT.md">Code of Conduct</a> for the Asciidoctor community of projects.
+By participating, you&#8217;re agreeing to honor this code.
+Let&#8217;s work together to make this a welcoming, professional, inclusive, and safe environment for everyone.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="versioning-and-release-policy">Versioning and Release Policy</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This project adheres to semantic versioning (<strong>major.minor.patch</strong>).
+Typically, patch releases are only made for the current minor release.
+However, exceptions are made on a case-by-case basis to address security vulnerabilities and other high-priority issues.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="copyright-and-license">Copyright and License</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Copyright &#169; 2012-present Dan Allen, Sarah White, Ryan Waldron, and the individual contributors to Asciidoctor.
+Use of this software is granted under the terms of the MIT License.</p>
+</div>
+<div class="paragraph">
+<p>See the <a href="LICENSE">LICENSE</a> for the full license text.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="authors">Authors</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Asciidoctor</strong> is led by <a href="https://github.com/mojavelinux">Dan Allen</a> and <a href="https://github.com/graphitefriction">Sarah White</a> and has received contributions from <a href="https://github.com/asciidoctor/asciidoctor/graphs/contributors">many individuals</a> in Asciidoctor&#8217;s awesome community.
+The project was initiated in 2012 by <a href="https://github.com/erebor">Ryan Waldron</a> based on a prototype written by <a href="https://github.com/nickh">Nick Hengeveld</a> for the Git website.</p>
+</div>
+<div class="paragraph">
+<p><strong>AsciiDoc.py</strong> was started and maintained by Stuart Rackham from <a href="https://github.com/asciidoc-py/asciidoc-py2/blob/HEAD/CHANGELOG.txt">2002 to 2013</a> and has received contributions from many individuals in the <a href="https://github.com/asciidoc-py/asciidoc-py2/graphs/contributors">AsciiDoc.py community</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="trademarks">Trademarks</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>AsciiDoc&#174; and AsciiDoc Language&#8482; are trademarks of the Eclipse Foundation, Inc.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="changelog">Changelog</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="unreleased">Unreleased</h3>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Enhancements</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Introduce 4+ tilde (<code>~</code>) delimiter for open blocks; restrict masquerading to partintro and abstract (#1121)</p>
+</li>
+<li>
+<p>Allow the CLI to control the logging level using the <code>--log-level</code> option (#3868)</p>
+</li>
+<li>
+<p>Ignore <code>--log-level</code> CLI option if <code>-q</code> is specified; ignore <code>-v</code> CLI option if <code>--log-level</code> is specified (#3868)</p>
+</li>
+<li>
+<p>Add support for inline linenums mode when using Rouge as source highlighter (<code>rouge-linenums-mode=inline</code>) (#3641)</p>
+</li>
+<li>
+<p>Look up asset dir attribute (i.e., <code>imagesdir</code> or <code>iconsdir</code>) on node to resolve asset path prefix, inheriting from document if not otherwise set (#3661) (<strong>@mogztter</strong>)</p>
+</li>
+<li>
+<p>Omit meta generator tag in HTML output if <code>reproducible</code> document attribute is set (#4143) (<strong>@rpavlik</strong>)</p>
+</li>
+<li>
+<p>Add <code>--sourcemap</code> option to the CLI to enable the <code>:sourcemap</code> option on the parser (#3569) (<strong>@hackingotter</strong>)</p>
+</li>
+<li>
+<p>Allow section ID to be unset by assigning an empty value to the <code>id</code> block attribute (#4139)</p>
+</li>
+<li>
+<p>Allow section to override toclevels for itself and descendant sections (#2618)</p>
+</li>
+<li>
+<p>Add support for dropping principal text of list item if empty in an ordered or unordered list when converting to man page (#4182)</p>
+</li>
+<li>
+<p>Don&#8217;t add empty line before block content if principal text of dlist item is not specified when converting to man page (#4182)</p>
+</li>
+<li>
+<p>Add support for role on thematic break in HTML converter (#4101)</p>
+</li>
+<li>
+<p>Add support for link=self on image macros (#3656)</p>
+</li>
+<li>
+<p>Alias Inline#content to Inline#text so Inline node quacks like other nodes (#3220)</p>
+</li>
+<li>
+<p>Add support for skipping TOML front matter (Hugo) when <code>skip-front-matter</code> attribute is set (#4300) (<strong>@abhinav</strong>)</p>
+</li>
+<li>
+<p>Add support for Wistia using the video macro</p>
+</li>
+<li>
+<p>Skip front matter in included content if skip-front-matter option is set on include directive (#3437)</p>
+</li>
+<li>
+<p>Allow handles? method on include processor to accept doc as first argument; mixin adapter to support old method signature (#2895)</p>
+</li>
+<li>
+<p>Take start value into account when validating explicit numbering on ordered list (#3252)</p>
+</li>
+<li>
+<p>Allow ordered list with explicit numbering to set start value using first item (#2218)</p>
+</li>
+<li>
+<p>Pass through id attribute defined on inline image to output (#4311)</p>
+</li>
+<li>
+<p>Add cxx attribute for C++ as preferred alternative to cpp (#4442)</p>
+</li>
+<li>
+<p>Don&#8217;t add highlight class to pre tag when <code>nohighlight</code> option is set (highlight.js only) (#4804)</p>
+</li>
+<li>
+<p>Propogate role on document to h1 tag in embedded HTML output (#4837)</p>
+</li>
+<li>
+<p>Add <code>nopip</code> option to video macro to disable picture in picture functionality (#3935)</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Compliance</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Set minimum supported Ruby version to 2.7</p>
+</li>
+<li>
+<p>Remove outdated Ruby stdlib extensions</p>
+</li>
+<li>
+<p>Don&#8217;t promote level-0 special section at start of document to document title (#4151)</p>
+</li>
+<li>
+<p>Disallow the use of dot (<code>.</code>) in the name of a named element attribute (#4147)</p>
+</li>
+<li>
+<p>Disallow the use of the left square bracket in an attribute list on formatted text (#4306)</p>
+</li>
+<li>
+<p>Update stylesheet to use break-after in place of page-break-before/after/inside (#3466)</p>
+</li>
+<li>
+<p>Change deprecated Droid Sans Mono font to its successor Noto Sans Mono (#4586)</p>
+</li>
+<li>
+<p>Only apply table strips to rows in table body (i.e., tbody) (#3881)</p>
+</li>
+<li>
+<p>Add support for the link attribute on block image macro when converting to DocBook (#4870) (<strong>@youdie006</strong>)</p>
+</li>
+<li>
+<p>Switch to the portable <code>cgi/escape</code> require from stdlib to provide CGI.escape, CGI.escapeHTML, and, (in Ruby 3.2+) CGI.escapeURIComponent</p>
+</li>
+<li>
+<p>Remove the runtime dependency on the <code>logger</code> gem; extend Logger from the <code>logger</code> gem if loaded, otherwise extend the minimal built-in <code>BasicLogger</code> (#4684) (<strong>@ggrossetie</strong>)</p>
+</li>
+<li>
+<p>Set default severity level for MemoryLogger and NullLogger to unknown instead of warn</p>
+</li>
+<li>
+<p>Add seemingly meaningless referrerpolicy="strict-origin-when-cross-origin" attribute to iframe of embedded YouTube video (#4711)</p>
+</li>
+<li>
+<p>Include keywords in info element of DocBook output (#4866)</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Improvements</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Use width attribute to set table and column width instead of inline style (#4160)</p>
+</li>
+<li>
+<p>Layout lines of a source block with table-based line numbering as rows in the table when using Rouge as source highlighter (#4130)</p>
+</li>
+<li>
+<p>Remove duplicate selectors in default stylesheet; enable stylelint rule to check for them</p>
+</li>
+<li>
+<p>Use CSS class instead of inline style to apply page break behavior (#4051)</p>
+</li>
+<li>
+<p>Set width of line number table column of source block to 0.01% to restrict width and force table to span available width (#4137)</p>
+</li>
+<li>
+<p>Consolidate styles applied to primary containers (<code>#header</code>, <code>#content</code>, <code>#footnotes</code>, <code>#footer</code>) in default stylesheet (#4169)</p>
+</li>
+<li>
+<p>Constrain width of <code>&lt;svg&gt;</code> element to container in default stylesheet</p>
+</li>
+<li>
+<p>Target <code>&lt;object&gt;</code> element with image more accurately in default stylesheet</p>
+</li>
+<li>
+<p>Remove form styles from the default stylesheet (#4186)</p>
+</li>
+<li>
+<p>Set linenums option on source block when line numbering is enabled (#3313)</p>
+</li>
+<li>
+<p>Warn if include target is remote and <code>allow-uri-read</code> attribute is not set (#2284)</p>
+</li>
+<li>
+<p>Don&#8217;t split value of <code>-r</code> CLI option; treat as single path (#4425)</p>
+</li>
+<li>
+<p>Add single and double role hint to <code>&lt;quote&gt;</code> tag in DocBook output (#2947)</p>
+</li>
+<li>
+<p>Use safe navigation to avoid crashing when querying for extensions (#2973)</p>
+</li>
+<li>
+<p>Remove empty line at top of table cells in manpage output (#4482) (<strong>@strager</strong>)</p>
+</li>
+<li>
+<p>Return <code>nil</code> if name passed to <code>Asciidoctor::SafeMode.value_for_name</code> is not recognized (#3526)</p>
+</li>
+<li>
+<p>Modify default stylesheet to honor text-* roles on quote blocks</p>
+</li>
+<li>
+<p>Add title attribute to admonition icon image like a font-based icon (#4820)</p>
+</li>
+<li>
+<p>Prevent admonition icon image from being selected when selecting surrounding text (i.e., <code>user-select: none</code>) (#4824)</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Bug Fixes</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>When skip-front-matter document attribute is set, only skip front matter in primary document, not included content (#3437)</p>
+</li>
+<li>
+<p>When normalizing toclevels, detect part even when book starts with special section (#4814)</p>
+</li>
+<li>
+<p>Add parts at correct level in TOC even when book starts with special section (#2262)</p>
+</li>
+<li>
+<p>Retrieve docfile attribute from document for warning message when asset cannot be found or read (#4873)</p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div class="sect2">
+<h3 id="2-0-26-2025-10-24-mojavelinux">2.0.26 (2025-10-24) - @mojavelinux</h3>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Improvement</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Use MathJax config recommended by MathJax itself; see <a href="https://docs.mathjax.org/en/latest/output/html.html#html-support" class="bare">https://docs.mathjax.org/en/latest/output/html.html#html-support</a> (#4424)</p>
+</li>
+<li>
+<p>Use thin space between dots of an ellipsis (U+2026) in manpage output (#4568)</p>
+</li>
+</ul>
+</div>
+</dd>
+<dt class="hdlist1">Bug Fixes</dt>
+<dd>
+<div class="ulist">
+<ul>
+<li>
+<p>Don&#8217;t use text of span as value of xreflabel when node has ID in DocBook output (#4539)</p>
+</li>
+<li>
+<p>Resolve attribute references (attributes substitution) in attrlist of toc macro (#4806)</p>
+</li>
+<li>
+<p>Cite stem macro specifically in warning message when macro has invalid substitutions (#4808)</p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="sect3">
+<h4 id="details">Details</h4>
+<div class="paragraph">
+<p><a href="https://github.com/asciidoctor/asciidoctor/releases/tag/v2.0.26">git tag</a> | <a href="https://github.com/asciidoctor/asciidoctor/compare/v2.0.25...v2.0.26">full diff</a></p>
+</div>
+<div class="paragraph">
+<p>Refer to the <a href="CHANGELOG.adoc">CHANGELOG</a> for a complete list of changes in older releases.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

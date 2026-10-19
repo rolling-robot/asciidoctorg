@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Generate an HTML TOC</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Generate an HTML TOC</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Asciidoctor&#8217;s HTML5 converter has a built-in method for generating an HTML TOC.
+This TOC generator can also be used as a general purpose API.
+This logic is available via the <code>convert_outline</code> method (which is the convert method for the <code>outline</code> node) on the HTML5 converter.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_usage">Usage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>convert_outline</code> method accepts a Document object and an optional Hash of options and it returns HTML.
+It can be resolved and invoked as a general purpose method using the following snippet of code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">document = Asciidoctor.load_file 'document-with-sections.adoc', safe: :safe
+html_toc = (Asciidoctor::Converter.create 'html5').convert_outline document
+puts html_toc</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example of what this method produces:</p>
+</div>
+<div class="listingblock output">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;ul class="sectlevel1"&gt;
+&lt;li&gt;&lt;a href="#_section_a"&gt;Section A&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#_section_b"&gt;Section B&lt;/a&gt;
+&lt;ul class="sectlevel2"&gt;
+&lt;li&gt;&lt;a href="#_subsection"&gt;Subsection&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href="#_section_c"&gt;Section C&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also access the <code>convert_outline</code> method on the converter instance by way of the Document API:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">document = Asciidoctor.load_file 'document-with-sections.adoc', safe: :safe
+html_toc = document.converter.convert_outline document</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re using a composite converter, you can use the generic <code>convert</code> method to ensure the call is run through the converter chain.
+To do so, invoke the <code>convert</code> method and pass in the Document object and the node name <code>outline</code>.
+This, in turn, will call <code>convert_outline</code> on the converter in the chain that responds to this method.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">document = Asciidoctor.load_file 'document-with-sections.adoc', safe: :safe
+html_doc = document.converter.convert document, 'outline'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also use this method inside any converter template (e.g., Slim, Haml, or ERB) to generate and embed a TOC:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">= converter.convert document, 'outline'</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_options">Options</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>convert_outline</code> method accepts the following options:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">sectnumlevels</dt>
+<dd>
+<p>the number of section levels to number (defaults to the value of the <code>sectnumlevels</code> attribute.</p>
+</dd>
+<dt class="hdlist1">toclevels</dt>
+<dd>
+<p>the depth of the TOC (defaults to the value of the <code>toclevels</code> attribute)</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example of how you can generate an HTML TOC with the depth limited to 1 for the previously loaded document:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">html_toc = document.converter.convert_outline document, toclevels: 1</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

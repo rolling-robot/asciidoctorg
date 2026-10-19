@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Command Line Interface</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Command Line Interface</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>There are three basic ways to make AsciidoctorJ available as a command line tool.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Manual installation using the binary distribution.</p>
+</li>
+<li>
+<p>Automated installation using a package manager like <a href="https://sdkman.io" target="_blank" rel="noopener">SDKMAN</a> or <a href="https://chocolatey.org" target="_blank" rel="noopener">Chocolatey</a>.</p>
+</li>
+<li>
+<p>Directly running AsciidoctorJ using JBang.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_manual_distribution_installation">Manual distribution installation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you download from a <a href="distribution.html">distribution</a> (zip or tar), you can get started straight away from the command line.</p>
+</div>
+<div class="paragraph">
+<p>First, extract the downloaded file.
+That puts everything in directory <code>asciidoctorj-{artifact-version}</code>.
+Within that directory are the <code>bin</code> and <code>lib</code> directories.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>bin</code> contains the executables&#8201;&#8212;&#8201;<code>asciidoctorj</code> for Linux and macOS, and <code>asciidoctorj.bat</code> for Windows.</p>
+</li>
+<li>
+<p><code>lib</code> contains the supporting libraries.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Verify the application runs by specifying the appropriate executable with no parameters;
+it should display the various run options available (i.e., help).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>Linux: asciidoctorj-{artifact-version}/bin/asciidoctorj
+Windows: asciidoctorj-{artifact-version}\bin\asciidoctorj.bat</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Next, say you want to convert an AsciiDoc (.adoc) file to a pdf.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>Linux: asciidoctorj-{artifact-version}/bin/asciidoctorj -b pdf README.adoc
+Windows: asciidoctorj-{artifact-version}\bin\asciidoctorj.bat -b pdf README.adoc</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Boom! That should convert the README to a PDF named README.pdf.
+To create a PDF with a different name&#8201;&#8212;&#8201;say, READTHIS.pdf&#8201;&#8212;&#8201;just add the -o switch:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>Linux: asciidoctorj-{artifact-version}/bin/asciidoctorj -b pdf -o READTHIS.pdf README.adoc
+Windows: asciidoctorj-{artifact-version}\bin\asciidoctorj.bat -b pdf -o READTHIS.pdf README.adoc</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_automated_distribution_installation">Automated distribution installation</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_linux_and_macos">Linux and MacOS</h3>
+<div class="paragraph">
+<p>A <a href="https://sdkman.io">SDKMAN!</a> candidate is available for easy installation in Linux and MacOS.
+This will install the binary distribution and set up the PATH automatically.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sdk install asciidoctorj
+$ asciidoctorj -b pdf README.adoc</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_windows">Windows</h3>
+<div class="paragraph">
+<p>A <a href="https://chocolatey.org">Chocolatey</a> package is available which installs the
+asciidoctorj-{artifact-version}-bin.zip Maven artifact along with a
+binary shim in %ChocolateyInstall%\bin which lets you run AsciidoctorJ
+from the command line.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>C:\&gt; choco install asciidoctorj
+C:\&gt; where asciidoctorj
+C:\ProgramData\chocolatey\bin\asciidoctorj.exe
+C:\&gt; asciidoctorj -b pdf README.adoc</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_running_asciidoctorj_using_jbang">Running AsciidoctorJ using JBang</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>{url-jbang}[JBang] enables you to run AsciidoctorJ without needing to install it first. As an added benefit, JBang automatically uses the most recent version of AsciidoctorJ, updating it automatically on subsequent runs.</p>
+</div>
+<div class="listingblock">
+<div class="title">Linux and MacOS</div>
+<div class="content">
+<pre class="highlight"><code class="language-shellscript" data-lang="shellscript"> $ jbang run asciidoctorj@asciidoctor -b pdf README.adoc</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Windows</div>
+<div class="content">
+<pre class="highlight"><code class="language-shellscript" data-lang="shellscript">C:\&gt; jbang run asciidoctorj@asciidoctor -b pdf README.adoc</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

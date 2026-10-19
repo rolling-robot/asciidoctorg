@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Inline Macro Processor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body id="inlineprocessor" class="article">
+<div id="header">
+<h1>Inline Macro Processor</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>An inline macro is very similar to a block macro.
+But instead of being replaced by a block created by a BlockMacroProcessor it is replaced by a phrase node that is simply a part of a block, e.g. in the middle of a sentence.
+An example for an inline macro is <code>issue:333[repo=asciidoctor/asciidoctorj]</code>.</p>
+</div>
+<div class="paragraph">
+<p>The structure is always like this:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Macro name, e.g. <code>issue</code></p>
+</li>
+<li>
+<p>One colon, i.e. <code>:</code>.
+This is what distinguishes it from a block macro even if it is alone in a paragraph.</p>
+</li>
+<li>
+<p>An optional target, e.g. <code>333</code></p>
+</li>
+<li>
+<p>Optional attributes, e.g. <code>[repo=asciidoctor/asciidoctorj]</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Our example inline macro processor should create a link to the issue #333 of the repository <code>asciidoctor/asciidoctorj</code> on GitHub.
+If the attribute <code>repo</code> in the macro is empty it should fall back to the document attribute <code>repo</code>.</p>
+</div>
+<div class="paragraph">
+<p>So for the following document our inline macro processor should create links to the issue #333 of the repository <code>asciidoctor/asciidoctorj</code> and to the issue #2 for the repository <code>asciidoctor/asciidoctorj-groovy-dsl</code>.</p>
+</div>
+<div id="IssueInlineMacroDocument" class="listingblock">
+<div class="title">issue-inline-macro.adoc</div>
+<div class="content">
+<pre>Unresolved directive in inline-macro-processor.adoc - include::example$issue-inline-macro.adoc[]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The InlineMacroProcessor for these macros looks like this:</p>
+</div>
+<div id="IssueInlineMacroProcessor" class="listingblock">
+<div class="title">An InlineMacroProcessor that replaces issue macros with links</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in inline-macro-processor.adoc - include::example$org/asciidoctor/integrationguide/extension/IssueInlineMacroProcessor.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The <code>@Name</code> annotation defines the macro name this InlineMacroProcessor should be called for.
+In this case this instance will be called for all inline macros that have the name <code>issue</code>.</p>
+</li>
+<li>
+<p>All InlineMacroProcessors must extend the class <code>org.asciidoctor.extension.InlineMacroProcessor</code>.</p>
+</li>
+<li>
+<p>A InlineMacroProcessor must implement the abstract method <code>process</code> that is called by Asciidoctor.
+The method must return the rendered result of this macro.</p>
+</li>
+<li>
+<p>The implementation constructs and returns a new phrase node that is a link, i.e. an <code>anchor</code> via the method <code>createPhraseNode()</code>.
+The third parameter <code>target</code> defines that the text to render this link is the target of the macro, that means that the link will be rendered as  <code>333</code> or <code>2</code>.
+The last parameter, the options, must contain the target of the line, i.e. the referenced URL, and that the type of the anchor is a link.
+It could also be a ':xref', a ':ref', or a ':bibref'.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_creating_phrase_nodes">Creating phrase nodes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The example above has shown how to create a link from a macro.
+But there are several other things that an InlineMacroProcessor can create like icons, inline images etc.
+Even though the following examples might not make much sense, they show how phrase nodes have to be created for the different use cases.</p>
+</div>
+<div class="sect2">
+<h3 id="_create_keyboard_macros">Create keyboard macros</h3>
+<div class="paragraph">
+<p>To create keyboard icons like kbd:[Ctrl+T] which can be created directly in Asciidoctor via <code>kbd:[Ctrl+T]</code> you create the PhraseNode as shown below.
+The example assumes that the macro is called with the macro name <code>ctrl</code> and a key as the target, e.g. <code>ctrl:S[]</code>, and creates kbd:[Ctrl + S] from it.</p>
+</div>
+<div id="KeyboardInlineMacroProcessor" class="listingblock">
+<div class="title">Create a phrase node for keys</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in inline-macro-processor.adoc - include::example$org/asciidoctor/integrationguide/extension/KeyboardInlineMacroProcessor.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The attributes of the PhraseNode must contain the keys to be shown as a list for the attribute key <code>keys</code>.</p>
+</li>
+<li>
+<p>Create a PhraseNode with context <code>kbd</code> and no text and return it.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_button_or_menu_selection_macros">Create button or menu selection macros</h3>
+<div class="paragraph">
+<p>To create a menu selection as described at <a href="asciidoc:macros:ui-macros.html">asciidoc:macros:ui-macros.html</a> a processor would create a PhraseNode with the <code>menu</code> context.
+The following processor would render the macro <code>rightclick:New|Class[]</code> like this: menu:New[Class].</p>
+</div>
+<div id="ContextMenuInlineMacroProcessor" class="listingblock">
+<div class="title">Create a phrase node for menu selections.</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in inline-macro-processor.adoc - include::example$org/asciidoctor/integrationguide/extension/ContextMenuInlineMacroProcessor.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The attributes of the PhraseNode must contain the key <code>menu</code> referring to the first menu selection, <code>submenus</code> referring to a possibly empty list of submenu selections, and finally the key <code>menuitem</code> referring to the final menu item selection.</p>
+</li>
+<li>
+<p>Create and return an PhraseNode with context <code>menu</code> and no text.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_inline_images">Create inline images</h3>
+<div class="paragraph">
+<p>To create an inline image the PhraseNode must have the context <code>image</code>.
+The following example assumes that there is a site http://foo.bar that serves images given as the target of the macro.
+That means the MacroProcessor should replace the macro <code>foo:1234</code> to an image element that refers to http://foo.bar/1234.</p>
+</div>
+<div id="ImageInlineMacroProcessor" class="listingblock">
+<div class="title">Create a PhraseNode for inline image.</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in inline-macro-processor.adoc - include::example$org/asciidoctor/integrationguide/extension/ImageInlineMacroProcessor.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>For an inline image the option <code>type</code> must have the value <code>image</code>.</p>
+</li>
+<li>
+<p>The URL of the image must be set via the option <code>target</code>.</p>
+</li>
+<li>
+<p>Optional attributes <code>alt</code> for alternative text, <code>width</code> and <code>height</code> are set in the node attributes.
+Other possible attributes include <code>title</code> to define the title attribute of the <code>img</code> element when rendering to HTML.
+When setting the attribute <code>link</code> to any value the node will be converted to a link to that image, where the window can be defined via the attribute <code>window</code>.</p>
+</li>
+<li>
+<p>Create and return a PhraseNode with context <code>image</code> and no text.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>We said at the start of this section that the target (the x in <code>menu:x[]</code>) is optional.
+If you want a macro that does not have a target (for example <code>cite:[brown79]</code>), add the following annotation to your class:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">@Name("cite")
+@Format(SHORT)
+class CiteInlineMacroProcessor extends InlineMacroProcessor {
+  ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>With the SHORT format, the attributes are not parsed, and the 'target' that is passed to your macro is the value between the brackets ("brown79").</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_positional_attributes">Positional attributes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The first example here has shown how to access named attributes.
+But AsciiDoc also supports positional attributes where the meaning is implicitly derived from the position in the attribute list.
+In that example the attribute <code>repo</code> might also be defined as the first attribute so that the inline macro might also be written as  <code>issue:333[asciidoctor/asciidoctorj]</code>.</p>
+</div>
+<div class="paragraph">
+<p>The following extension accepts the attribute <code>repo</code> as a positional attribute:</p>
+</div>
+<div class="listingblock">
+<div class="title">Accept positional attributes in an inline macro</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in inline-macro-processor.adoc - include::example$org/asciidoctor/integrationguide/extension/IssueInlineMacroPositionalAttributesProcessor.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The annotation <code>@PositionalAttributes</code> defines the positional attributes and their order.
+If the macro accepted a second positional attribute <code>comment</code> the annotation would be <code>@PositionalAttributes({"repo", "comment"})</code>.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>This extension will accept the macros in this document:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">Unresolved directive in inline-macro-processor.adoc - include::example$issue-inline-macro-positional.adoc[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

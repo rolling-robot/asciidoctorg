@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Optimization</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Optimization</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>JRuby may start slower than expected versus the C-based Ruby implementation (MRI).
+Fortunately, JRuby offers flags that can improve the start time and tune applications.
+Several Java flags can also be used in conjunction with or apart from the JRuby flags in order to improve the start time even more.</p>
+</div>
+<div class="paragraph">
+<p>For small tasks such as converting an AsciiDoc document, two JRuby flags can drastically improve the start time:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. JRuby flags</caption>
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">jruby.compat.version</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">RUBY1_9</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">jruby.compile.mode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">OFF</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>When using AsciidoctorJ via the API these flags have to be set as system properties when creating the <code>org.asciidoctor.Asciidoctor</code> instance:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">System.setProperty("jruby.compat.version", "RUBY1_9");
+System.setProperty("jruby.compile.mode", "OFF");
+Asciidoctor asciidoctor = Asciidoctor.Factory.create();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When starting AsciidoctorJ via the CLI these options can be defined in the files <code>.jrubyrc</code> that are loaded from the current working directory and the home directory of the user.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ cat ./.jrubyrc
+compat.version=RUBY1_9
+compile.mode=OFF
+$ ./asciidoctorj -V
+AsciidoctorJ 1.5.2 [https://asciidoctor.org]
+Runtime Environment: jruby 1.7.20 (1.9.3)</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The properties in these <code>.jrubyrc</code> files do not contain the prefix <code>jruby.</code>.
+The property values also must not have trailing blanks!
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Alternatively you can also set any system properties using the environment variable <code>ASCIIDOCTORJ_OPTS</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ export ASCIIDOCTORJ_OPTS=-Djruby.compat.version=RUBY1_9
+$ asciidoctorj -V
+AsciidoctorJ 1.5.2 [https://asciidoctor.org]
+Runtime Environment: jruby 1.7.20 (1.9.3)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The Java flags available for improving start time depend on whether your working on a 32- or 64-bit processor and your JDK version.
+Let&#8217;s see a summary of these flags and in which environments they can be used.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Java flags</caption>
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">JDK</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-client</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">32 bit Java</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-Xverify:none</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">32/64 bit Java</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-XX:+TieredCompilation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">32/64 bit Java SE 7</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">-XX:TieredStopAtLevel=1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">32/64 bit Java SE 7</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="title">Setting flags for Java SE 6</div>
+<div class="content">
+<pre class="highlight"><code class="language-shell" data-lang="shell">export JAVA_OPTS="-Xverify:none -client"</code></pre>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

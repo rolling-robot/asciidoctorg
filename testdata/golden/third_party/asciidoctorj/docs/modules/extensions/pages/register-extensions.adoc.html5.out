@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Register Extensions</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Register Extensions</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>Now that we have our extensions ready, we only need to register them.
+There are 3 ways to do so, and all of them can combined freely to suit your needs.
+Two are manual and one automatic.</p>
+</div>
+<div class="paragraph">
+<p>Also, at any moment, you can clear the configuration using <code>unregisterAllExtensions()</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Asciidoctor asciidoctor = Asciidoctor.Factory.create();
+asciidoctor.unregisterAllExtensions();</code></pre>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Locate Files</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Locate Files</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>AsciidoctorJ offers a collection of utilities called <code>DirectoryWalkers</code> for scenarios where sources may be organized in special ways.</p>
+</div>
+<div class="paragraph">
+<p>Unresolved directive in locating-files.adoc - include::partial$directory-walkers.adoc[]</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+You can also create your own DirectoryWalkers by extending <code>AbstractDirectoryWalker</code> class or <code>DirectoryWalker</code> interface.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_asciidocdirectorywalker_class">AsciiDocDirectoryWalker class</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A utility class <code>AsciiDocDirectoryWalker</code> is available for searching the AsciiDoc files present in a root folder and its subfolders.
+<code>AsciiDocDirectoryWalker</code> locates all files that end with <code>.adoc</code>, <code>.ad</code>, <code>.asciidoc</code> or <code>.asc</code>.
+Also it ignores all files starting with underscore (<code>_</code>).</p>
+</div>
+<div class="listingblock">
+<div class="title">Locating AsciiDoc files with <code>AsciiDocDirectoryWalker</code></div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import java.util.List;
+import org.asciidoctor.AsciiDocDirectoryWalker;
+
+DirectoryWalker directoryWalker = new AsciiDocDirectoryWalker("docs"); // <b class="conum">(1)</b>
+List&lt;File&gt; asciidocFiles = directoryWalker.scan(); // <b class="conum">(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Defines which parent directory is used for searching.</p>
+</li>
+<li>
+<p>Returns a list of all AsciiDoc files found in root folder and its subfolders.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_globdirectorywalker_class">GlobDirectoryWalker class</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A utility class <code>GlobDirectoryWalker</code> is available for searching the AsciiDoc files present in a root folder and scanning using a <code>Glob</code> expression.
+<code>GlobDirectoryWalker</code> locates all files that end with <code>.adoc</code>, <code>.ad</code>, <code>.asciidoc</code> or <code>.asc</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Locating AsciiDoc files with <code>GlobDirectoryWalker</code></div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">import java.util.List;
+import org.asciidoctor.GlobDirectoryWalker;
+
+DirectoryWalker directoryWalker = new GlobDirectoryWalker("docs", "**/*.adoc"); // <b class="conum">(1)</b>
+List&lt;File&gt; asciidocFiles = directoryWalker.scan(); // <b class="conum">(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Defines which parent directory is used for searching and the glob expression.</p>
+</li>
+<li>
+<p>Returns a list of all AsciiDoc files matching given glob expression.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

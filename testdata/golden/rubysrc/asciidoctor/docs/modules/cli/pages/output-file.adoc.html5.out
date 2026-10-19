@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Specify an Output File</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Specify an Output File</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>By default, the Asciidoctor CLI writes the converted output file to the same directory as the input file.
+If an output file is not specified, the name of the output file is derived from the input file by replacing its file extension with the file extension that matches the output format (e.g., replacing .adoc with .html).</p>
+</div>
+<div class="paragraph">
+<p>You can instruct the Asciidoctor CLI to write content to a different output file (or directory).
+There are several circumstances when you&#8217;ll want to specify a different output file:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>You want to write the output file to a different name, perhaps to append a qualifier such as a version string.</p>
+</li>
+<li>
+<p>You want to write the output file to a different directory.</p>
+</li>
+<li>
+<p>You are piping content to the CLI, but want to write the output to a file (in this case, an output file is required).</p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Caution</div>
+</td>
+<td class="content">
+If you specify the output file as a relative path, it will be resolved relative to the current working directory instead of the directory of the input file (i.e., specifying the output file implicitly sets the output directory too).
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To specify the output file, you&#8217;ll use the <code>-o</code> option.
+For example, let&#8217;s say we want to convert <em class="path">mydoc.adoc</em> and write the output to a filename that includes the current date.
+You&#8217;d use:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -o mydoc-$(date +%Y-%m-%d).html mydoc.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>We could write it to another folder as well by prefixing the output file with a folder name:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -o build/mydoc-$(date +%Y-%m-%d).html mydoc.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you only want to specify the output directory, but let the filename be defaulted, use the <code>-D</code> option:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -D build mydoc.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>-D</code> option can also be used when processing multiple input files:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -D build *.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you are piping content to the CLI, the default is to write the output to STDOUT.
+If you want to write the output to a file in this case, you have to specify one:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ cat mydoc.adoc | asciidoctor -o build/mydoc-$(date +%Y-%m-%d).html -</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>See <a href="io-piping.html">io-piping.html</a> to learn more.</p>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?asciidoc-toc?>
+<?asciidoc-numbered?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0" xml:lang="en">
+<info>
+<title>Document Title</title>
+<date>2020-01-01</date>
+<author>
+<personname>
+<firstname>Doc</firstname>
+<surname>Writer</surname>
+</personname>
+<email>thedoc@asciidoctor.org</email>
+</author>
+<authorinitials>DW</authorinitials>
+</info>
+<simpara>Preamble paragraph.</simpara>
+<note>
+<simpara>This is test, only a test.</simpara>
+</note>
+<section xml:id="_lists">
+<title>Lists</title>
+<itemizedlist>
+<title>Unordered, basic</title>
+<listitem>
+<simpara>Edgar Allan Poe</simpara>
+</listitem>
+<listitem>
+<simpara>Sheri S. Tepper</simpara>
+</listitem>
+<listitem>
+<simpara>Bill Bryson</simpara>
+</listitem>
+</itemizedlist>
+<itemizedlist>
+<title>Unordered, max nesting</title>
+<listitem>
+<simpara>level 1</simpara>
+<itemizedlist>
+<listitem>
+<simpara>level 2</simpara>
+<itemizedlist>
+<listitem>
+<simpara>level 3</simpara>
+<itemizedlist>
+<listitem>
+<simpara>level 4</simpara>
+<itemizedlist>
+<listitem>
+<simpara>level 5</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+</itemizedlist>
+</listitem>
+</itemizedlist>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara>level 1</simpara>
+</listitem>
+</itemizedlist>
+<itemizedlist mark="none">
+<title>Checklist</title>
+<listitem>
+<simpara>&#10003; checked</simpara>
+</listitem>
+<listitem>
+<simpara>&#10003; also checked</simpara>
+</listitem>
+<listitem>
+<simpara>&#10063; not checked</simpara>
+</listitem>
+<listitem>
+<simpara>normal list item</simpara>
+</listitem>
+</itemizedlist>
+<orderedlist numeration="arabic">
+<title>Ordered, basic</title>
+<listitem>
+<simpara>Step 1</simpara>
+</listitem>
+<listitem>
+<simpara>Step 2</simpara>
+</listitem>
+<listitem>
+<simpara>Step 3</simpara>
+</listitem>
+</orderedlist>
+<orderedlist numeration="arabic">
+<title>Ordered, nested</title>
+<listitem>
+<simpara>Step 1</simpara>
+</listitem>
+<listitem>
+<simpara>Step 2</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Step 2a</simpara>
+</listitem>
+<listitem>
+<simpara>Step 2b</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Step 3</simpara>
+</listitem>
+</orderedlist>
+<orderedlist numeration="arabic">
+<title>Ordered, max nesting</title>
+<listitem>
+<simpara>level 1</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>level 2</simpara>
+<orderedlist numeration="lowerroman">
+<listitem>
+<simpara>level 3</simpara>
+<orderedlist numeration="upperalpha">
+<listitem>
+<simpara>level 4</simpara>
+<orderedlist numeration="upperroman">
+<listitem>
+<simpara>level 5</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>level 1</simpara>
+</listitem>
+</orderedlist>
+<variablelist>
+<title>Labeled, single-line</title>
+<varlistentry>
+<term>first term</term>
+<listitem>
+<simpara>definition of first term</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>section term</term>
+<listitem>
+<simpara>definition of second term</simpara>
+</listitem>
+</varlistentry>
+</variablelist>
+<variablelist>
+<title>Labeled, multi-line</title>
+<varlistentry>
+<term>first term</term>
+<listitem>
+<simpara>definition of first term</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>second term</term>
+<listitem>
+<simpara>definition of second term</simpara>
+</listitem>
+</varlistentry>
+</variablelist>
+<qandaset>
+<title>Q&amp;A</title>
+<qandaentry>
+<question>
+<simpara>What is Asciidoctor?</simpara>
+</question>
+<answer>
+<simpara>An implementation of the AsciiDoc processor in Ruby.</simpara>
+</answer>
+</qandaentry>
+<qandaentry>
+<question>
+<simpara>What is the answer to the Ultimate Question?</simpara>
+</question>
+<answer>
+<simpara>42</simpara>
+</answer>
+</qandaentry>
+</qandaset>
+<variablelist>
+<title>Mixed</title>
+<varlistentry>
+<term>Operating Systems</term>
+<listitem>
+<variablelist>
+<varlistentry>
+<term>Linux</term>
+<listitem>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Fedora</simpara>
+<itemizedlist>
+<listitem>
+<simpara>Desktop</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara>Ubuntu</simpara>
+<itemizedlist>
+<listitem>
+<simpara>Desktop</simpara>
+</listitem>
+<listitem>
+<simpara>Server</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+</orderedlist>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>BSD</term>
+<listitem>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>FreeBSD</simpara>
+</listitem>
+<listitem>
+<simpara>NetBSD</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</varlistentry>
+</variablelist>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>Cloud Providers</term>
+<listitem>
+<variablelist>
+<varlistentry>
+<term>PaaS</term>
+<listitem>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>OpenShift</simpara>
+</listitem>
+<listitem>
+<simpara>CloudBees</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>IaaS</term>
+<listitem>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Amazon EC2</simpara>
+</listitem>
+<listitem>
+<simpara>Rackspace</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</varlistentry>
+</variablelist>
+</listitem>
+</varlistentry>
+</variablelist>
+<itemizedlist>
+<title>Unordered, complex</title>
+<listitem>
+<simpara>level 1</simpara>
+<itemizedlist>
+<listitem>
+<simpara>level 2</simpara>
+<itemizedlist>
+<listitem>
+<simpara>level 3
+This is a new line inside an unordered list using &#43; symbol.
+We can even force content to start on a separate line&#8230;&#8203;<?asciidoc-br?>
+Amazing, isn&#8217;t it?</simpara>
+<itemizedlist>
+<listitem>
+<simpara>level 4</simpara>
+<simpara>The &#43; symbol is on a new line.</simpara>
+<itemizedlist>
+<listitem>
+<simpara>level 5</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+</itemizedlist>
+</listitem>
+</itemizedlist>
+</listitem>
+</itemizedlist>
+</listitem>
+</itemizedlist>
+</section>
+</article>

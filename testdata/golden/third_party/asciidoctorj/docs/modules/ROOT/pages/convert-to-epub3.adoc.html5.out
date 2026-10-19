@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Converting to EPUB3</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Converting to EPUB3</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>The Asciidoctor EPUB3 gem (asciidoctor-epub3) is bundled inside the AsciidoctorJ EPUB3 jar (asciidoctorj-epub3).
+To use it, simply add the asciidoctorj-epub3 jar to your dependencies.
+The version of the AsciidoctorJ EPUB3 jar aligns with the version of the Asciidoctor EPUB3 gem.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s how you can add the AsciidoctorJ EPUB3 jar to your Maven dependencies:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.asciidoctor&lt;/groupId&gt;
+    &lt;artifactId&gt;asciidoctorj-epub3&lt;/artifactId&gt;
+    &lt;version&gt;{asciidoctorj-epub3-version}&lt;/version&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+  &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once you&#8217;ve added the AsciidoctorJ EPUB3 jar to your classpath, you can set the <code>backend</code> attribute to <code>epub3</code>.
+The document will be converted to the <a href="http://idpf.org/epub/30" target="_blank" rel="noopener">EPUB3</a> format.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Caution</div>
+</td>
+<td class="content">
+The <em class="app">asciidoctor-epub3</em> gem is alpha.
+While it can be used successfully, there may be bugs and its functionality may change in incompatible ways before the first stable release.
+In other words, by using it, you are also testing it ;)
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s see an example of how to use AsciidoctorJ with the EPUB3 converter.</p>
+</div>
+<div class="listingblock">
+<div class="title">spine.adoc</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">= Book Title
+Author Name
+:imagesdir: images <b class="conum">(1)</b>
+
+include::content-document.adoc[] <b class="conum">(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The EPUB3 converter requires the value of the <code>imagesdir</code> attribute to be <code>images</code>.</p>
+</li>
+<li>
+<p>The EPUB3 converter must be run on a <em>spine</em> document that has at least one include directive (and no other body content) in order to function properly.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="title">content-document.adoc</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">= Content Title
+Author Name
+
+[abstract]
+This is the actual content.
+
+== First Section
+
+And off we go.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And finally we can convert the document to EPUB3 using AsciidoctorJ.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>asciidoctor.convertFile(new File("spine.adoc"),
+                Options.builder().safe(SafeMode.SAFE).backend("epub3").build()); // <b class="conum">(1)</b> <b class="conum">(2)</b>
+
+assertThat(new File("target/test-classes/index.epub").exists(), is(true));</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Currently, the EPUB3 converter must be run in <code>SAFE</code> or <code>UNSAFE</code> mode due to a bug</p>
+</li>
+<li>
+<p><code>epub3</code> is the name of the backend that must be set to convert to EPUB3.</p>
+</li>
+</ol>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

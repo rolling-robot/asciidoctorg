@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Process AsciiDoc Using the CLI</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Process AsciiDoc Using the CLI</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>When the Asciidoctor gem is installed successfully, the Asciidoctor command line interface (CLI) named <code>asciidoctor</code> will be available on your PATH.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_version_and_runtime">Version and runtime</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To confirm that the CLI is available, execute the following command in your terminal application:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor --version</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternately, you can shorten the <code>--version</code> CLI option flag to <code>-v</code>:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -v</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If this command completes successfully, information about Asciidoctor and the runtime environment will be printed to the standard output of your terminal:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Asciidoctor {release-version} [https://asciidoctor.org]
+Runtime Environment ({ruby-description}) (lc:UTF-8 fs:UTF-8 in:UTF-8 ex:UTF-8)</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The runtime environment information varies based on the version of Ruby you&#8217;re using and the encoding settings of your operating system.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_convert_an_asciidoc_file">Convert an AsciiDoc file</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To invoke Asciidoctor from the CLI and convert an <code>.adoc</code> file, execute:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor &lt;asciidoc-file&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will use the built-in defaults for options and create a new file in the same directory as the input file, with the same base name, but with the <code>.html</code> extension.</p>
+</div>
+<div class="paragraph">
+<p>The Asciidoctor CLI accepts numerous options that control the behavior of the processor, from setting additional attributes (<code>-a</code>) to where the output file is written (<code>-o</code>).
+Most options have both a longhand (e.g., <code>--out-file</code>) and shorthand form (e.g., <code>-o</code>).
+The shorthand form is used throughout this documentation.
+Once you&#8217;re familiar with the options, the shorthand form is preferred and most common since it requires a lot less typing.</p>
+</div>
+<div class="paragraph">
+<p><a href="man1/asciidoctor.html#options">CLI Options</a> describes the available options and parameters for the Asciidoctor CLI.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_help_topics">Help topics</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The <code>--help</code> option provides self-describing documentation for the <code>asciidoctor</code> command, grouped by topic.
+If you don&#8217;t specify a topic, the <code>--help</code> option prints the usage statement for the <code>asciidoctor</code> command:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor --help</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternately, you can shorten the <code>--help</code> CLI option flag to <code>-h</code>:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -h</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can generate the full documentation (i.e., man page) for the <code>asciidoctor</code> command by passing the <code>manpage</code> topic to the <code>--help</code> option.
+You can pipe that output to the <code>man</code> pager to view it:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor --help manpage | man -l -</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also find the man page for the <code>asciidoctor</code> command rendered as HTML in this documentation, which you can view in a browser instead.
+See <a href="man1/asciidoctor.html">asciidoctor(1)</a>.</p>
+</div>
+<div class="paragraph">
+<p>You can print an AsciiDoc syntax crib sheet by passing the <code>syntax</code> topic to the <code>--help</code> option.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor --help syntax</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The crib sheet itself is composed in AsciiDoc.
+You can convert it to HTML by piping the output back into the <code>asciidoctor</code> command.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor --help syntax | asciidoctor -o syntax.html -</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Navigate to the <em class="path">syntax.html</em> file in your browser to see what the examples in the crib sheet look like when converted to HTML.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

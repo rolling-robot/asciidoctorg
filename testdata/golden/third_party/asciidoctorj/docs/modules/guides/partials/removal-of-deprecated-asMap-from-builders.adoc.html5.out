@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Removal of asMap from OptionsBuilder and AttributesBuilder</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_removal_of_asmap_from_optionsbuilder_and_attributesbuilder">Removal of <code>asMap</code> from OptionsBuilder and AttributesBuilder</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In v2.5.x it is possible to obtain the backing <code>Map&lt;String,Object&gt;</code> for both options and attributes.</p>
+</div>
+<div class="listingblock">
+<div class="title">Obtaining backing Map for OptionsBuilder</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, Object&gt; optionsMap = Options.builder()
+    .backend("html5")
+    .mkDirs(true)
+    .safe(SafeMode.UNSAFE)
+    .asMap();</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Obtaining backing Map for AttributesBuilder</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, Object&gt; attributesMap = Attributes.builder()
+    .icons("font")
+    .sectionNumbers(true)
+    .asMap();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To remove feature duplication and avoid confusion between values in the actual <code>org.asciidoctor.Attributes</code> and <code>org.asciidoctor.Options</code> and their respective builders, <code>asMap</code> it&#8217;s no longer available in both builders.</p>
+</div>
+<div class="paragraph">
+<p>To obtain the backing up, use the <code>map()</code> method from the actual <code>org.asciidoctor.Attributes</code> and <code>org.asciidoctor.Options</code> instances.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+<code>Options::map()</code> and <code>Attributes::map()</code> are marked as deprecated and subject to change at some point, but are still maintained and safe to use in v3.0.x.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">Obtaining backing Map for Options</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Options options = Options.builder()
+    .backend("html5")
+    .mkDirs(true)
+    .safe(SafeMode.UNSAFE)
+    .build();
+Map&lt;String, Object&gt; optionsMap = options.map();</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Obtaining backing Map for Attributes</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Attributes attributes = Attributes.builder()
+    .icons("font")
+    .sectionNumbers(true)
+    .build();
+Map&lt;String, Object&gt; attributesMap = attributes.map();</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

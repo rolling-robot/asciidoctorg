@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Custom Converter</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Custom Converter</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Asciidoctor supports custom converters.
+If you want to produce an output format that&#8217;s not supported by a built-in converter or any of the available converters in the ecosystem, you can create and use your own converter.
+You may also decide to create a custom converter to customize the output of a supported output format or to take an entirely different approach.
+A custom converter gives you that ability, offering a more formal alternative to <a href="templates.html">converter templates</a>.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+In addition to Asciidoctor&#8217;s {url-org}/asciidoctor/tree/main/lib/asciidoctor/converter[built-in converters], there are numerous custom converters you can use as a reference, including {url-org}/asciidoctor-epub3[Asciidoctor EPUB3], {url-org}/asciidoctor-pdf[Asciidoctor PDF], {url-org}/asciidoctor-reveal.js[Asciidoctor reveal.js], {url-org}/asciidoctor-fb2[Asciidoctor FB2], and {url-org}/asciidoctor-docbook45[Asciidoctor DocBook 4.5].
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>On this page, you&#8217;ll learn how to create a custom converter in Ruby, register it, then make use of it.
+After a brief overview, we&#8217;ll begin by extending and replacing a registered converter.
+Then we&#8217;ll move on to making a new converter from scratch.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_overview">Overview</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The converter in Asciidoctor is a specialized extension point.
+Even Asciidoctor&#8217;s built-in converters use this facility.
+That means, in addition to being able to introduce a new converter, you can replace any of the existing ones.
+Since Asciidoctor is written in the Ruby programming language, you write custom converters in Ruby as well.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+You can also write a converter in Java using AsciidoctorJ or in JavaScript using Asciidoctor.js.
+The advantage of writing the converter in Ruby is that you can use the same code regardless of which Asciidoctor runtime you choose.
+That&#8217;s the best strategy if you plan to share the converter with the community.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When creating a custom converter, you can either write one from scratch or you can extend a built-in converter.
+You can then register that converter with a <a href="available.html">known backend</a> to replace the previously registered converter, or you can register it with a new backend to create a new output target.
+If you don&#8217;t want to register the converter with a backend, you can pass the converter class or instance to the API using the <code>:converter</code> option.</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Producing non-SGML output formats</div>
+<div class="paragraph">
+<p>An important point to keep in mind is that converters (and, in general, AsciiDoc processors like Asciidoctor) are biased towards creating SGML output (e.g., XML and HTML).
+This means that when producing other output formats, you&#8217;ll need to decode XML character references and employ techniques that preserve the expected behavior of the processor.
+One such technique is to use temporary XML tags around boundaries of inline elements such as formatted text so the processor can still recognize those boundaries when performing inline substitutions.
+The <a href="https://github.com/asciidoctor/asciidoctor/blob/HEAD/lib/asciidoctor/converter/manpage.rb">built-in man page converter</a> provides a good example of these techniques.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Unless a converter instance is passed to the processor, the converter is instantiated each time an AsciiDoc document is processed.
+A converter in Asciidoctor is not designed to be reused from one conversion to the next and is therefore stateless.</p>
+</div>
+<div class="paragraph">
+<p>Implementing a custom converter consists of the following steps:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Write a Ruby class that includes the {url-api-gems}/asciidoctor/{release-version}/Asciidoctor/Converter[<code>Asciidoctor::Converter</code>] module or extends a class that does.</p>
+</li>
+<li>
+<p>Implement a callback method to convert the nodes (i.e., block or inline elements) in the parsed document to the target output format.</p>
+</li>
+<li>
+<p>Optionally register the converter with one or more backend names.</p>
+</li>
+<li>
+<p>Require (i.e., load) the Ruby file containing the converter class.</p>
+</li>
+<li>
+<p>Activate the converter by setting the backend on the document if the converter is registered with a backend, otherwise passing the converter class or instance to the API using the <code>:converter</code> option</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>To get our feet wet, let&#8217;s start by extending and replacing a registered converter.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_extend_and_replace_a_registered_converter">Extend and replace a registered converter</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The best way to get started developing converters is to extend a registered converter and play around with changing its behavior.</p>
+</div>
+<div class="paragraph">
+<p>To create a custom converter, you define a Ruby class in a Ruby source file that you pass to Asciidoctor when you run it.
+To get started, create a file named <em class="path">my-html5-converter.rb</em> and open it.
+The Ruby code in this file will run in the context of Asciidoctor, so you don&#8217;t need to add a require statement to use the Ruby APIs from Asciidoctor.</p>
+</div>
+<div class="paragraph">
+<p>To extend a registered converter, you first need to get a reference to it.
+That&#8217;s the purpose of the {url-api-gems}/asciidoctor/{release-version}/Asciidoctor/Converter/Factory#for-instance_method[<code>Asciidoctor::Converter.for</code>] method.
+This method will resolve the class of the converter that&#8217;s currently registered for a backend.
+If we&#8217;re looking for the converter for the <code>html5</code> backend (i.e., the HTML 5 converter), we pass in the string <code>html5</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">Asciidoctor::Converter.for 'html5'
+# =&gt; Asciidoctor::Converter::Html5Converter</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Next, we want to extend this class.
+To extend a class in Ruby, you declare the class, then use the <code>&lt;</code> operator to indicate the class from which to extend.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">class MyHtml5Converter &lt; (Asciidoctor::Converter.for 'html5')
+end</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Congratulations!
+You&#8217;ve created your first custom converter.
+But wait, it&#8217;s not yet registered, which means it isn&#8217;t going to be used.
+Let&#8217;s fix that.</p>
+</div>
+<div class="paragraph">
+<p>To register the converter class, you need to declare the backend you want it to be mapped to.
+In order to customize the HTML that Asciidoctor produces, you declare the backend as <code>html5</code> using the <code>register_for</code> method.
+In doing so, this registers the custom converter over the built-in converter, effectively replacing it.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">class MyHtml5Converter &lt; (Asciidoctor::Converter.for 'html5')
+  register_for 'html5'
+end</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Although we haven&#8217;t changed any of the behavior, this converter can be used&#8230;&#8203;almost.
+The final step is to tell Asciidoctor to load this file when it starts.
+You can do that by passing the file&#8217;s path to the <code>-r</code> CLI option as follows.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -r ./my-html5-converter.rb doc.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When Asciidoctor starts, it will tell Ruby to evaluate the Ruby source file.
+When it does, Ruby will define the <code>MyHtml5Converter</code> class.
+While defining the class, it will call the <code>register_for</code> method, which will register the class with the <code>html5</code> backend (replacing the built-in converter).
+This means Asciidoctor is now using your custom converter.</p>
+</div>
+<div class="paragraph">
+<p>Now that you&#8217;ve configured Asciidoctor to use your custom converter, it&#8217;s time to get it to do something different.
+Let&#8217;s say that you want to simplify the HTML that the built-in converter produces for a paragraph down to a single <code>&lt;p&gt;</code> element.
+A custom converter is exactly the tool you need to accomplish this goal.</p>
+</div>
+<div class="paragraph">
+<p>In this case, we&#8217;ll be overriding the <code>convert_paragraph</code> method.
+When extending a built-in converter (or any converter that extends {url-api-gems}/asciidoctor/{release-version}/Asciidoctor/Converter/Base[<code>Asciidoctor::Converter::Base</code>]), the name of the convert method for a node (i.e., block or inline element) in the parsed document model is the context of the node (e.g., <code>paragraph</code>) prefixed with <code>convert_</code>.
+That&#8217;s how we arrive at the method name <code>convert_paragraph</code> for a paragraph.
+You can find a list of all such methods in <a href="contexts-ref.html">contexts-ref.html</a>.</p>
+</div>
+<div class="paragraph">
+<p>The converter method accepts the node as the first parameter.
+For blocks, the node is an instance of {url-api-gems}/asciidoctor/{release-version}/Asciidoctor/Block[<code>Asciidoctor::Block</code>].</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s add the <code>convert_paragraph</code> method to our custom converter to provide a custom implementation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">class MyHtml5Converter &lt; (Asciidoctor::Converter.for 'html5')
+  register_for 'html5'
+
+  def convert_paragraph node
+    logger.warn 'Converting a paragraph...' <b class="conum">(1)</b>
+    super
+  end
+end</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The base converter automatically includes the Logging module, which gives your converter access to Asciidoctor&#8217;s logger.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>So far, all we&#8217;ve done is print an intent to convert a paragraph, then delegate back to the super method (i.e., the original implementation).
+If you run Asciidoctor as before:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -r ./my-html5-converter.rb doc.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>you should now see the following message in your terminal window:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>asciidoctor: WARNING: Converting a paragraph...</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Showing how to delegate to the super method is important as it demonstrates that you can still use the built-in logic in certain cases (or even decorate the HTML it produces).
+But let&#8217;s replace it with our own logic instead.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">class MyHtml5Converter &lt; (Asciidoctor::Converter.for 'html5')
+  register_for 'html5'
+
+  def convert_paragraph node
+    %(&lt;p&gt;#{node.content}&lt;/p&gt;)
+  end
+end</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you run Asciidoctor as before, you should now see that paragraphs are converted to a simple <code>&lt;p&gt;</code> element.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;p&gt;Content of paragraph.&lt;/p&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>But we&#8217;re missing some things, such as the ID, the role, and the title.
+Let&#8217;s fill in those gaps.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">class MyHtml5Converter &lt; (Asciidoctor::Converter.for 'html5')
+  register_for 'html5'
+
+  def convert_paragraph node
+    attributes = []
+    attributes &lt;&lt; %( id="#{node.id}") if node.id
+    attributes &lt;&lt; %( class="#{node.role}") if node.role
+    title = node.title? ? %(&lt;span class="title"&gt;#{node.title}&lt;/span&gt; ) : ''
+    %(&lt;p#{attributes.join}&gt;#{title}#{node.content}&lt;/p&gt;)
+  end
+end</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Assuming the paragraph has an ID, role, and title, here&#8217;s the output this converter will produce:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;p id="intro" class="summary"&gt;&lt;span class="title"&gt;What is a wolpertinger?&lt;/span&gt; A wolpertinger is a ravenous beast.&lt;/p&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You&#8217;ve not only created your first custom converter, but you&#8217;re well on your way to customizing the HTML that Asciidoctor produces to suit your own needs!</p>
+</div>
+<div class="paragraph">
+<p>Now that you&#8217;ve successfully extended and replaced a registered converter, let&#8217;s look at how to create a converter from scratch.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_create_and_register_a_new_converter">Create and register a new converter</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Instead of modifying the behavior of a built-in converter, you can create a converter from scratch for a new or existing backend.
+Let&#8217;s create a new converter that&#8217;s mapped to to the <code>dita</code> backend that converts (some) AsciiDoc to DITA.</p>
+</div>
+<div class="paragraph">
+<p>You&#8217;ll begin by creating a Ruby source file, this time naming it <em class="path">dita-converter.rb</em>.
+We&#8217;ll start by mixing in the {url-api-gems}/asciidoctor/{release-version}/Asciidoctor/Converter[<code>Asciidoctor::Converter</code>] module, which turns the class into a converter class.
+(You&#8217;ll quickly learn that this is a tedious approach and that extending the base converter is an easier route.)</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">class DitaConverter
+  include Asciidoctor::Converter
+  register_for 'dita'
+end</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default, a converter will assume it produces a file with the <code>.html</code> extension.
+Since we intend to create a DITA file, we&#8217;ll need to call the <code>outfilesuffix</code> in the constructor to change the suffix to <code>.dita</code>.
+Let&#8217;s apply that update.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">class DitaConverter
+  include Asciidoctor::Converter
+  register_for 'dita'
+
+  def initialize *args
+    super
+    outfilesuffix '.dita'
+  end
+end</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Before continuing, we need to back up and talk about how nodes are converted by a converter.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_conversion_is_carried_out">How conversion is carried out</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When conversion begins, Asciidoctor passes the document node to a method named <code>convert</code>.
+That method is expected to start and carry out the conversion process.
+Thus, it&#8217;s the converter than controls the traversal of the document tree, not the processor.</p>
+</div>
+<div class="paragraph">
+<p>One approach is to use a gigantic switch statement for each convertible context and handle all the conversion logic directly inside the <code>convert</code> method.
+However, that approach quickly becomes unwieldy.</p>
+</div>
+<div class="paragraph">
+<p>A more typical approach is to iterate over a node&#8217;s children and pass each child to a method prefixed with the <code>convert_</code> that matches that node&#8217;s context as a string (e.g., <code>convert_section</code>).
+The convert method joins the return values from these calls using newlines and returns the result, which becomes the result of the conversion process.
+This happens to be the implementation that the {url-api-gems}/asciidoctor/{release-version}/Asciidoctor/Converter/Base[<code>Asciidoctor::Converter::Base</code>] class provides.</p>
+</div>
+<div class="paragraph">
+<p>When then happens in each of these named convert methods?
+Are they expected to iterate over the children too and call the appropriately named convert method?
+They certainly could, but there&#8217;s a simpler approach.</p>
+</div>
+<div class="paragraph">
+<p>The <code>content</code> method on a block automatically visits each child node in document order, passes the child to the <code>convert</code> method to be converted (thus calling the converter again), and returns the results joined using newlines.
+For blocks that only have inlines as children, this method also effectively invokes the convert method for all inline nodes (even though inlines are technically substituted in place rather than being arranged in a tree).</p>
+</div>
+<div class="paragraph">
+<p>Thus, when converting a block element, the converter should invoke the <code>content</code> method on the node (e.g., <code>node.content</code>).
+This method call is what continues the document traversal from that node and returns the converted result from its subtree.
+If you don&#8217;t call this method&#8212;&#8203;and don&#8217;t otherwise handle the children&#8212;&#8203;the child nodes will be skipped.</p>
+</div>
+<div class="paragraph">
+<p>There are two exceptions to when the <code>content</code> method can be used in this way, lists and tables.
+Lists and tables do not provide a (functioning) <code>content</code> method.
+That&#8217;s because the children of lists and tables aren&#8217;t true blocks, but rather complex structures.
+Therefore, the converter must handle its own traversal of the direct children of these blocks.
+Refer to the built-in converters to learn how to handle them.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_convert_to_dita">Convert to DITA</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>With what we&#8217;ve learned, let&#8217;s continue with our AsciiDoc to DITA converter.
+Here&#8217;s the AsciiDoc sample we&#8217;re aiming to convert.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">= Document Title
+
+== Section Title
+
+This is the *main* content.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now let&#8217;s implement the required <code>convert</code> method using the switch statement approach mentioned earlier.
+Once this method is implemented, the converter can start receiving the nodes to convert.
+We&#8217;ll only process the main structural nodes to start, then pass through the raw output for the remaining nodes (to finish later on).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">class DitaConverter
+  include Asciidoctor::Converter
+  register_for 'dita'
+
+  def initialize *args
+    super
+    outfilesuffix '.dita'
+  end
+
+  def convert node, transform = node.node_name, opts = nil <b class="conum">(1)</b>
+    case transform <b class="conum">(2)</b>
+    when 'document'
+      &lt;&lt;~EOS.chomp
+      &lt;!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd"&gt;
+      &lt;topic&gt;
+      &lt;title&gt;#{node.doctitle}&lt;/title&gt;
+      &lt;body&gt;
+      #{node.content} <b class="conum">(3)</b>
+      &lt;/body&gt;
+      &lt;/topic&gt;
+      EOS
+    when 'section'
+      &lt;&lt;~EOS.chomp
+      &lt;section id="#{node.id}"&gt;
+      &lt;title&gt;#{node.title}&lt;/title&gt;
+      #{node.content} <b class="conum">(3)</b>
+      &lt;/section&gt;
+      EOS
+    when 'paragraph'
+      %(&lt;p&gt;#{node.content}&lt;/p&gt;)
+    else
+      (transform.start_with? 'inline_') ? node.text : node.content
+    end
+  end
+end</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The <code>node_name</code> method returns the node&#8217;s context as a string.</p>
+</li>
+<li>
+<p>The <code>transform</code> parameter is only set in special cases, such as for an embedded document.</p>
+</li>
+<li>
+<p>Calling <code>node.content</code> on a block continues the traversal of the document structure from that node.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>As you can see, having to write a switch statement to handle each type of node is more clumsy than the discrete methods we were writing when extending a built-in converter.
+As discussed earlier, we can use method dispatching instead.
+Here&#8217;s how that looks:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">class DitaConverter
+  include Asciidoctor::Converter
+  register_for 'dita'
+
+  def initialize *args
+    super
+    outfilesuffix '.dita'
+  end
+
+  def convert node, transform = node.node_name, opts = nil
+    opts ? (send 'convert_' + transform, node, opts) : (send 'convert_' + transform, node)
+  end
+
+  def convert_document node
+    &lt;&lt;~EOS.chomp
+    &lt;!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd"&gt;
+    &lt;topic&gt;
+    &lt;title&gt;#{node.doctitle}&lt;/title&gt;
+    &lt;body&gt;
+    #{node.content}
+    &lt;/body&gt;
+    &lt;/topic&gt;
+    EOS
+  end
+
+  # ...
+end</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>But hold on.
+The dispatching in the <code>convert</code> method is precisely the functionality {url-api-gems}/asciidoctor/{release-version}/Asciidoctor/Converter/Base[<code>Asciidoctor::Converter::Base</code>] provides when used as the converter&#8217;s base class.
+Furthermore, any time it encounters a node without a corresponding convert method, it will log a warning.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s change the definition of our converter to extend this base class.
+The main difference is that now we just have to implement a convert method for each <a href="contexts-ref.html">convertible context</a>, prefixed with <code>convert_</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">dita-converter.rb</div>
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">Unresolved directive in custom.adoc - include::example$dita-converter.rb[]</code></pre>
+</div>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Caution</div>
+</td>
+<td class="content">
+This converter is only provided for illustrative purposes and must be further developed to be fully functional.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You can now use this converter to convert the sample AsciiDoc document to DITA.
+To do so, pass the converter to the <code>-r</code> CLI option and set the backend to <code>dita</code> using the <code>b</code> CLI option.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -r ./dita-converter.rb -b dita doc.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example of the output you will get, which is automatically written to the <em class="path">doc.dita</em> file.</p>
+</div>
+<div class="listingblock">
+<div class="title">doc.dita</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;!DOCTYPE topic PUBLIC "-//OASIS//DTD DITA Topic//EN" "topic.dtd"&gt;
+&lt;topic&gt;
+&lt;title&gt;Document Title&lt;/title&gt;
+&lt;body&gt;
+&lt;section id="_section_title"&gt;
+&lt;title&gt;Section Title&lt;/title&gt;
+&lt;p&gt;This is the &lt;b&gt;main&lt;/b&gt; content.&lt;/p&gt;
+&lt;/section&gt;
+&lt;/body&gt;
+&lt;/topic&gt;</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+If the value of the <code>:to_file</code> option passed to Asciidoctor&#8217;s convert API responds to the <code>write</code> method (e.g., an IO object), Asciidoctor will ensure the output has a trailing newline character.
+Otherwise, it&#8217;s up to the converter to decide whether to append a trailing newline character to the output.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>If you don&#8217;t register the converter with a backend, you can pass the converter class (or instance) using the <code>:converter</code> option of the <a href="api:index.html">Asciidoctor API</a>, as shown in the following code snippet:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'asciidoctor'
+require_relative 'dita-converter.rb'
+
+Asciidoctor.convert_file 'doc.adoc', safe: :safe, backend: 'dita', converter: DitaConverter</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To write a fully-functional converter, you&#8217;ll need to provide a convert method for all convertible contexts (or provide a fallback for contexts the converter does not handle).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_convert_to_text_only">Convert to text only</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You may want to extract the text from an AsciiDoc document without including any of the markup.
+Since there&#8217;s no single definition of what "plain text" is, this is a perfect opportunity to use a custom converter.</p>
+</div>
+<div class="paragraph">
+<p>Since the focus of converting to text is merely to extract the content, we can utilize a lot of shared logic.
+Therefore, we&#8217;ll only mix in <code>Asciidoctor::Converter</code> rather than extending <code>Asciidoctor::Converter::Base</code>.
+All blocks will simply delegate to their <code>content</code> method (except for lists and tables) and inlines to their <code>text</code> method.</p>
+</div>
+<div class="paragraph">
+<p>Define a converter named <code>TextConverter</code> in the file <em class="path">text-converter.rb</em>, register it for the <code>text</code> backend, and implemtned the <code>convert</code> method as shown here:</p>
+</div>
+<div class="listingblock">
+<div class="title">text-converter.rb</div>
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">Unresolved directive in custom.adoc - include::example$text-converter.rb[]</code></pre>
+</div>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Caution</div>
+</td>
+<td class="content">
+This converter is only provided for illustrative purposes and must be further developed to be fully functional.
+While some attempt is made to eliminate superfluous newlines, the logic isn&#8217;t perfect.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You can now use this converter to convert the sample AsciiDoc document to text.
+To do so, pass the converter to the <code>-r</code> CLI option and set the backend to <code>text</code> using the <code>b</code> CLI option.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -r ./text-converter.rb -b text doc.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example of the output you will get, which is automatically written to the <em class="path">doc.txt</em> file.</p>
+</div>
+<div class="listingblock">
+<div class="title">doc.txt</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">Document Title
+
+Section Title
+
+This is the main content.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you need to retain some text notations, you can add them back while the document is converted, where necessary.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?asciidoc-toc maxdepth="3"?>
+<?asciidoc-numbered maxdepth="3"?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0" xml:lang="en">
+<info>
+<title>Attributes, Conditionals and Counters</title>
+<date>2021-04-05</date>
+<authorgroup>
+<author>
+<personname>
+<firstname>Jane</firstname>
+<surname>Doe</surname>
+</personname>
+<email>jane@example.org</email>
+</author>
+<author>
+<personname>
+<firstname>John</firstname>
+<surname>Roe</surname>
+</personname>
+</author>
+</authorgroup>
+<revhistory>
+<revision>
+<revnumber>2.3</revnumber>
+<date>2021-04-05</date>
+<authorinitials>JD</authorinitials>
+<revremark>Second revision</revremark>
+</revision>
+</revhistory>
+<keywordset>
+<keyword>asciidoc</keyword>
+<keyword>attributes</keyword>
+</keywordset>
+<abstract>
+<simpara>Widget 4.2 is documented at <link xl:href="https://example.org/widget">the home page</link>.
+Author: Jane Doe (<link xl:href="mailto:jane@example.org">jane@example.org</link>), initials JD.
+Second author: John Roe. Revision 2.3 on 2021-04-05: Second revision.</simpara>
+</abstract>
+</info>
+<section xml:id="sec-attribute-references">
+<title>Attribute References</title>
+<simpara>The product is Widget. Undefined: {undefined-attr}. Escaped: {product}.</simpara>
+<simpara>Redefined product: Gadget.</simpara>
+<simpara>Unset product: {product}.</simpara>
+<simpara> Dynamic attribute is value.
+1 2 3&#8201;&#8212;&#8201;current 3.
+a b  c.</simpara>
+<simpara>Character replacements: &#160;&#8203;&<>&#43;&#166;|^~{apostrophe}\`::;;C&#43;&#43;&#43;&#43;.</simpara>
+<simpara>Attribute with formatting: <link xl:href="https://example.org/widget"><emphasis role="strong">bold link</emphasis></link>.</simpara>
+</section>
+<section xml:id="sec-conditionals">
+<title>Conditionals</title>
+<simpara>Feature X is enabled.</simpara>
+<simpara>Feature Y is not enabled.</simpara>
+<simpara>Either X or Y is set.</simpara>
+<simpara>Version is greater than four.</simpara>
+<simpara>Empty attributes are still defined.</simpara>
+<section xml:id="sec-nested-level">
+<title>Nested Level</title>
+<simpara>Section numbering is now off for subsequent sections.</simpara>
+<section xml:id="sec-deep-level">
+<title>Deep Level</title>
+<simpara>Deep content.</simpara>
+<bridgehead xml:id="sec-discrete-heading" renderas="sect3">Discrete Heading</bridgehead>
+<simpara>Text after discrete heading.</simpara>
+</section>
+</section>
+</section>
+<section xml:id="sec-passthroughs-and-subs">
+<title>Passthroughs and Subs</title>
+<screen>Listing with attributes: 4.2</screen>
+<screen><b>Not escaped</b></screen>
+<simpara><u>raw</u> and <u><emphasis role="strong">quoted</emphasis></u> and <i>triple</i> and {product-version} and <literal>{literal}</literal>.</simpara>
+<p class="raw">Raw passthrough paragraph</p>
+<div class="raw-block">raw block</div>
+</section>
+</article>

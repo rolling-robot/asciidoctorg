@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Untitled</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Built-in <code>DirectoryWalker</code> implementations</caption>
+<colgroup>
+<col width="33.3333%">
+<col width="16.6666%">
+<col width="50.0001%">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Class</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>AsciiDocDirectoryWalker</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Concrete class</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Locates all files of given folder and all its subfolders. Ignores files starting with underscore (_).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>GlobDirectoryWalker</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Concrete class</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Locates all files of given folder following a glob expression.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

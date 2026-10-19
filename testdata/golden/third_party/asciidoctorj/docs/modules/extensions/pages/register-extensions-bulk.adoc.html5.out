@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Bulk Extension Registration (Extension Groups)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Bulk Extension Registration (<em>Extension Groups</em>)</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>As an alternative method to register extensions in bulk or groups.
+Using the <code>ExtensionGroup</code> API it is possible to define a set of extension grouped under a name to be registered later.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">final String groupName = "my-extensions";
+ExtensionGroup extensionGroup = asciidoctor.createGroup(groupName)
+        .blockMacro(GistBlockMacroProcessor.class)
+        .includeProcessor(LsIncludeProcessor.class)
+        .postprocessor(ByePostprocessor.class);       // <b class="conum">(1)</b>
+
+    ...
+
+extensionGroup.register();                            // <b class="conum">(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Multiple extensions can be added together using the fluent API.</p>
+</li>
+<li>
+<p>Complete registration, otherwise extensions won&#8217;t be enabled.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>If you don&#8217;t need or want to set a specific name, you can just use <code>asciidoctor.createGroup()</code>, and a randomly generated name will be assigned automatically.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Calling <code>createGroup(String) + register()</code> more than once will override any pre-existing group with the same name.
+Effectively REMOVING (and disabling) the previously set extensions.</p>
+</div>
+<div class="paragraph">
+<p>This does not apply to <code>createGroup()</code>, different calls will create different extension groups with random names.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

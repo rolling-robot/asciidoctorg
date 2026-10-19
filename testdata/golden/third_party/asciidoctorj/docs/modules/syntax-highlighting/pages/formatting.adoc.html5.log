@@ -1,0 +1,4 @@
+ERROR: formatting.adoc: line 23: include file not found: {repo}/third_party/asciidoctorj/docs/modules/syntax-highlighting/pages/example$org/asciidoctor/integrationguide/syntaxhighlighter/HighlightJsWithLanguageHighlighter.java
+WARN: formatting.adoc: line 25: no callout found for <1>
+WARN: formatting.adoc: line 27: no callout found for <2>
+WARN: formatting.adoc: line 29: no callout found for <3>

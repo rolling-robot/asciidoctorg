@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Running AsciidoctorJ with Spring Boot</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Running AsciidoctorJ with Spring Boot</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Due to Spring Boot&#8217;s packaging system, Asciidoctorj won&#8217;t work out of the box from a single JAR application.
+Luckily Spring Boot plugins for Gradle and Maven provide options to fix it.</p>
+</div>
+<div class="paragraph">
+<p>Below you can find the required configurations to apply to Maven and Gradle.
+But read about <a href="https://docs.spring.io/spring-boot//how-to/build.html#howto.build.extract-specific-libraries-when-an-executable-jar-runs">extracting libraries during runtime</a> for the details.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_gradle_configuration">Gradle configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You just need to add the following configuration to your Gradle build.
+This will include not only AsciidoctorJ but others that also require unpacking like <a href="https://github.com/asciidoctor/asciidoctorj-pdf">asciidoctor-pdf</a> or <a href="https://github.com/asciidoctor/asciidoctorj-diagram">asciidoctorj-diagram</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">bootJar {
+	requiresUnpack '**/asciidoctorj-*.jar'
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_maven_configuration">Maven configuration</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Similarly, for the Maven plugin add the following configuration to your POM.
+However, unlike in Gradle, wildcards are not allowed and dependencies need to be described one by one.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+Run <code>mvn dependency:tree</code> to find all required dependencies, including transitive ones.
+See this <a href="https://github.com/asciidoctor/asciidoctorj/issues/1286#issuecomment-2394769356">example</a> for a full configuration.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-maven-plugin&lt;/artifactId&gt;
+    &lt;configuration&gt;
+        &lt;requiresUnpack&gt;
+            &lt;dependency&gt;
+                &lt;groupId&gt;org.asciidoctor&lt;/groupId&gt;
+                &lt;artifactId&gt;asciidoctorj&lt;/artifactId&gt;
+            &lt;/dependency&gt;
+        &lt;/requiresUnpack&gt;
+    &lt;/configuration&gt;
+&lt;/plugin&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

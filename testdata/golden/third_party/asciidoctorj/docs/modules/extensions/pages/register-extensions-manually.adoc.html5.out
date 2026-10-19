@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Manually Registering Extensions with javaExtensionRegistry</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Manually Registering Extensions with javaExtensionRegistry</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>Extensions can be registered individually accessing the default extension registry directly from the Asciidoctor instance.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Asciidoctor asciidoctor = Asciidoctor.Factory.create();
+
+asciidoctor.javaExtensionRegistry()
+         .treeprocessor(Tre.class);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>There is a method in the API for each extension point.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">asciidoctor.javaExtensionRegistry()
+        .blockMacro(GistBlockMacroProcessor.class);
+
+asciidoctor.javaExtensionRegistry()
+        .inlineMacro(IssueInlineMacroProcessor.class);
+
+asciidoctor.javaExtensionRegistry()
+        .block(YellBlockProcessor.class);
+
+asciidoctor.javaExtensionRegistry()
+        .includeProcessor(LsIncludeProcessor.class);
+
+asciidoctor.javaExtensionRegistry()
+        .preprocessor(CommentPreprocessor.class);
+
+asciidoctor.javaExtensionRegistry()
+        .postprocessor(CopyrightFooterPostprocessor.class);
+
+asciidoctor.javaExtensionRegistry()
+        .treeprocessor(TerminalCommandTreeprocessor.class);
+
+extensionRegistry
+        .docinfoProcessor(RobotsDocinfoProcessor.class);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Each method is overloaded to accept:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">A Class</dt>
+<dd>
+<p>As seen in the examples, in this case AsciidoctorJ will take care of the complete lifecycle (initialization, etc.) of the extension.</p>
+</dd>
+<dt class="hdlist1">An instance</dt>
+<dd>
+<p>This is useful when the extension requires pre-initialization or has a complex creation.
+For example, the extension instance could be managed in a Spring context making use of injected components.</p>
+</dd>
+<dt class="hdlist1">A full canonical class name</dt>
+<dd>
+<p>This allows to pass the extension as a <code>String</code> type.
+This can be used when the extension class is not known at compile time.</p>
+</dd>
+<dt class="hdlist1">String name macro name</dt>
+<dd>
+<p>Optional and only for <code>blockMacro</code>, <code>inlineMacro</code> and <code>block</code>.
+Allows defining the name of the macro if it&#8217;s not set in the extension class.</p>
+</dd>
+</dl>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

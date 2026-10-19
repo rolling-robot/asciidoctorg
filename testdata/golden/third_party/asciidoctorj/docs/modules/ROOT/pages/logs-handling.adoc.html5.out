@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Logs Handling API</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Logs Handling API</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+This API is inspired by Java Logging API (JUL).
+If you are familiar with <code>java.util.logging.*</code> you will see familiar analogies with some of its components.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>AsciidoctorJ (v1.5.7+) offers the possibility to capture messages generated during document rendering.
+While the API described here explains how to forward these messages to any receiver, AsciidoctorJ already logs all messages to the java.util.logging Logger with the name <code>asciidoctor</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The default log level of java.util.logging is INFO.
+That means you might see messages for provisional messages about possible invalid xrefs which could be valid xrefs that Asciidoctor just can&#8217;t resolve.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>The behavior of the java.util.logging logger can be configured with a properties file.
+For other ways to configure this behavior please check the documentation of <a href="https://docs.oracle.com/en/java/javase/11/docs/api/java.logging/java/util/logging/LogManager.html">java.util.logging.LogManager</a>.
+To restrict the logger to only log messages with severity WARNING or higher create this file:</p>
+</div>
+<div class="listingblock">
+<div class="title">logging.properties</div>
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">handlers = java.util.logging.ConsoleHandler
+.level = WARNING
+java.util.logging.ConsoleHandler.formatter = java.util.logging.SimpleFormatter
+java.util.logging.SimpleFormatter.format = %3$</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To use this configuration when running asciidoctorj via the CLI pass the location of the file like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre># JAVA_OPTS="-Djava.util.logging.config.file=$PWD/logging.properties" asciidoctorj document.adoc</pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_logs_handling_api">Logs Handling API</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The easiest way to capture messages is registering a <code>LogHandler</code> through the <code>Asciidoctor</code> instance.</p>
+</div>
+<div class="listingblock">
+<div class="title">Registering a LogHandler</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Asciidoctor asciidoctor = Asciidoctor.Factory.create();
+
+asciidoctor.registerLogHandler(new LogHandler() { // <b class="conum">(1)</b>
+    @Override
+    public void log(LogRecord logRecord) {
+        System.out.println(logRecord.getMessage());
+    }
+});</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Use <code>registerLogHandler</code> to register one or more handlers.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The <code>log</code> method in the <code>org.asciidoctor.log.LogHandler</code> interface provides a <code>org.asciidoctor.log.LogRecord</code> that exposes the following information:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Severity severity
+</td>
+<td class="hdlist2">
+<p>Severity level of the current record.
+A log record always has one of the 6 severity levels:</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>DEBUG</p>
+</li>
+<li>
+<p>INFO</p>
+</li>
+<li>
+<p>WARN</p>
+</li>
+<li>
+<p>ERROR</p>
+</li>
+<li>
+<p>FATAL</p>
+</li>
+<li>
+<p>UNKNOWN</p>
+</li>
+</ol>
+</div>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Cursor cursor
+</td>
+<td class="hdlist2">
+<p>Information about the location of the event, contains:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>LineNumber: relative to the file where the message occurred.</p>
+</li>
+<li>
+<p>Path: source file simple name, or <code>&lt;stdin&gt;</code> value when converting from a String.</p>
+</li>
+<li>
+<p>Dir: absolute path to the source file parent directory, or the execution path when converting from a String.</p>
+</li>
+<li>
+<p>File: absolute path to the source file, or <code>null</code> when converting from a String.<br>
+These will point to the correct source file, even when this is included from another.</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+String message
+</td>
+<td class="hdlist2">
+<p>Descriptive message about the event.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+String sourceFileName
+</td>
+<td class="hdlist2">
+<p>Contains the value <code>&lt;script&gt;</code>.<br>
+For the source filename see <code>Cursor</code> above.</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+String sourceMethodName
+</td>
+<td class="hdlist2">
+<p>The Asciidoctor Ruby engine method used to convert the file; <code>convertFile</code> or <code>convert</code> whether you are converting a File or a String.</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_logs_handling_spi">Logs Handling SPI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Similarly to AsciidoctorJ extensions, the Log Handling API provides an alternate method to register Handlers without accessing <code>Asciidoctor</code> instance.</p>
+</div>
+<div class="paragraph">
+<p>Start creating a normal LogHandler implementation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package my.asciidoctor.log.MemoryLogHandler;
+
+import java.util.ArrayList;
+import java.util.List;
+import org.asciidoctor.log.LogHandler;
+import org.asciidoctor.log.LogRecord;
+
+/**
+ * Stores LogRecords in memory for later analysis.
+ */
+public class MemoryLogHandler implements LogHandler {
+
+  private List&lt;LogRecord&gt; logRecords = new ArrayList&lt;&gt;();
+
+  @Override
+  public void log(LogRecord logRecord) {
+    logRecords.add(record);
+  }
+
+  public List&lt;LogRecord&gt; getLogRecords() {
+    return logRecords;
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Next, create a file called <code>org.asciidoctor.log.LogHandler</code> inside <code>META-INF/services</code> with the implementation’s full qualified name.</p>
+</div>
+<div class="literalblock">
+<div class="title">META-INF/services/org.asciidoctor.log.LogHandler</div>
+<div class="content">
+<pre>my.asciidoctor.log.MemoryLogHandler</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And that’s all.
+Now when a .jar file containing the previous structure is dropped inside classpath of AsciidoctorJ, the handler will be registered automatically.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

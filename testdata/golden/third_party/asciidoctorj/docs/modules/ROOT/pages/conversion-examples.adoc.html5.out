@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Examples</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Examples</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Here you will find simple but complete examples of how to convert documents using the different configuration options available.
+The examples cover the main scenarios, but you can mix and match usage of instances, builders and maps freely to suite your needs.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_setting_attributes_and_options_as_instances">Setting attributes and options as instances</h2>
+<div class="sectionbody">
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+This is the supported method for its ease of use and type validation.
+Other way found below have been deprecated since v2.4.4 and may not be available in future releases.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Asciidoctor asciidoctor = Asciidoctor.Factory.create(); // <b class="conum">(1)</b>
+
+Attributes attributes = Attributes.builder()
+                          .backend("docbook")
+                          .icons("font")
+                          .build(); // <b class="conum">(2)</b>
+
+Options options = Options.builder()
+                    .inPlace(true)
+                    .attributes(attributes)
+                    .build(); // <b class="conum">(3)</b>
+
+String outfile = asciidoctor.convertFile(new File("sample.adoc"), options); // <b class="conum">(4)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Create <code>Asciidoctor</code> instance.</p>
+</li>
+<li>
+<p>Defines the attributes as an <code>Attributes</code> class.</p>
+</li>
+<li>
+<p>Defines the options as an <code>Options</code> class.</p>
+</li>
+<li>
+<p>Converts the document passing previously created <code>Options</code> instance.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+The <code>icons</code> attribute requires a <code>String</code> to set the value used to "draw" icons.
+At this time, you can use two constants <code>org.asciidoctor.Attributes.IMAGE_ICONS</code> for using the same approach as AsciiDoc, that is using <code>img</code> tags, or <code>org.asciidoctor.Attributes.FONT_ICONS</code> for using icons from {url-font-awesome}[Font Awesome^].
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_setting_attributes_and_options_as_map_collections">Setting attributes and options as Map collections</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Asciidoctor asciidoctor = Asciidoctor.Factory.create(); // <b class="conum">(1)</b>
+
+Map&lt;String, Object&gt; attributes = Attributes.builder()
+                                   .backend("docbook")
+                                   .icons("font")
+                                   .asMap();  // <b class="conum">(2)</b>
+
+Map&lt;String, Object&gt; options = Options.builder()
+                                .inPlace(true)
+                                .attributes(attributes) // <b class="conum">(3)</b>
+                                .asMap(); // <b class="conum">(4)</b>
+
+String outfile = asciidoctor.convertFile(new File("sample.adoc"), options); // <b class="conum">(5)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Create <code>Asciidoctor</code> instance.</p>
+</li>
+<li>
+<p>Defines attributes using builder fluent API and retrieves them as <code>Map</code>.</p>
+</li>
+<li>
+<p>Registers the attributes map as <code>attributes</code>.</p>
+</li>
+<li>
+<p>Converts options to <code>java.util.Map</code> instance.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_setting_attributes_and_options_as_builders">Setting attributes and options as builders</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Asciidoctor asciidoctor = Asciidoctor.Factory.create(); // <b class="conum">(1)</b>
+
+AttributesBuilder attributes = Attributes.builder()
+                                 .backend("docbook")
+                                 .icons("font"); // <b class="conum">(2)</b>
+
+OptionsBuilder options = Options.builder()
+                           .inPlace(true)
+                           .attributes(attributes); // <b class="conum">(3)</b>
+
+String outfile = asciidoctor.convertFile(new File("sample.adoc"), options); // <b class="conum">(4)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Create <code>Asciidoctor</code> instance.</p>
+</li>
+<li>
+<p>Defines the attributes as an <code>AttributesBuilder</code> by not using <code>build()</code>, <code>get()</code> or `asMap().</p>
+</li>
+<li>
+<p>Defines the options as an <code>OptionsBuilder</code> by not using <code>build()</code>, <code>get()</code> or `asMap().</p>
+</li>
+<li>
+<p>Converts the document passing <code>OptionsBuilder</code> instance.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

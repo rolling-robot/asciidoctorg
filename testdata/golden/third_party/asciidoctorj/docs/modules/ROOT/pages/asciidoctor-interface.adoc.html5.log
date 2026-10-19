@@ -1,0 +1,4 @@
+ERROR: asciidoctor-interface.adoc: line 35: include file not found: {repo}/third_party/asciidoctorj/docs/modules/ROOT/pages/example$org/asciidoctor/integrationguide/AsciidoctorInterface.java
+ERROR: asciidoctor-interface.adoc: line 45: include file not found: {repo}/third_party/asciidoctorj/docs/modules/ROOT/pages/example$org/asciidoctor/integrationguide/AsciidoctorInterface.java
+ERROR: asciidoctor-interface.adoc: line 54: include file not found: {repo}/third_party/asciidoctorj/docs/modules/ROOT/pages/example$org/asciidoctor/integrationguide/AsciidoctorInterface.java
+ERROR: asciidoctor-interface.adoc: line 156: include file not found: {repo}/third_party/asciidoctorj/docs/modules/ROOT/pages/partial$directory-walkers.adoc

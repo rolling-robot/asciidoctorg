@@ -1,0 +1,5 @@
+ERROR: postprocessor.adoc: line 18: include file not found: {repo}/third_party/asciidoctorj/docs/modules/extensions/pages/example$org/asciidoctor/integrationguide/extension/CopyrightFooterPostprocessor.java
+WARN: postprocessor.adoc: line 20: no callout found for <1>
+WARN: postprocessor.adoc: line 21: no callout found for <2>
+WARN: postprocessor.adoc: line 23: no callout found for <3>
+WARN: postprocessor.adoc: line 26: no callout found for <4>

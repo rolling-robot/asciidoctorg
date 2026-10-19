@@ -1,0 +1,15 @@
+ERROR: block-processor.adoc: line 14: include file not found: {repo}/third_party/asciidoctorj/docs/modules/extensions/pages/example$yell-block.adoc
+ERROR: block-processor.adoc: line 20: include file not found: {repo}/third_party/asciidoctorj/docs/modules/extensions/pages/example$yell-block-result.txt
+ERROR: block-processor.adoc: line 28: include file not found: {repo}/third_party/asciidoctorj/docs/modules/extensions/pages/example$org/asciidoctor/integrationguide/extension/YellBlockProcessor.java
+WARN: block-processor.adoc: line 30: no callout found for <1>
+WARN: block-processor.adoc: line 31: no callout found for <2>
+WARN: block-processor.adoc: line 34: no callout found for <3>
+WARN: block-processor.adoc: line 37: no callout found for <4>
+WARN: block-processor.adoc: line 38: no callout found for <5>
+ERROR: block-processor.adoc: line 52: include file not found: {repo}/third_party/asciidoctorj/docs/modules/extensions/pages/example$yell-block-attributes.adoc
+ERROR: block-processor.adoc: line 60: include file not found: {repo}/third_party/asciidoctorj/docs/modules/extensions/pages/example$org/asciidoctor/integrationguide/extension/YellBlockProcessorWithAttributes.java
+WARN: block-processor.adoc: line 62: no callout found for <1>
+ERROR: block-processor.adoc: line 73: include file not found: {repo}/third_party/asciidoctorj/docs/modules/extensions/pages/example$yell-block-positional.adoc
+ERROR: block-processor.adoc: line 81: include file not found: {repo}/third_party/asciidoctorj/docs/modules/extensions/pages/example$org/asciidoctor/integrationguide/extension/YellBlockProcessorWithPositionalAttributes.java
+WARN: block-processor.adoc: line 83: no callout found for <1>
+WARN: block-processor.adoc: line 85: no callout found for <2>

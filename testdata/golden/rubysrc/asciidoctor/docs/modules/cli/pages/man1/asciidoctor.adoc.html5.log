@@ -1,0 +1,1 @@
+ERROR: asciidoctor.adoc: line 2: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/cli/pages/man1/partial$man-asciidoctor.adoc

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<meta name="author" content="Andrew Stanton">
+<title>eve(1)</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="manpage">
+<div id="header">
+<h1>eve(1) Manual Page</h1>
+<h2 id="_name">Name</h2>
+<div class="sectionbody">
+<p>eve - analyzes an image to determine if it's a picture of a life form</p>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_synopsis">Synopsis</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>eve</strong> [<em>OPTION</em>]&#8230;&#8203; <em>FILE</em>&#8230;&#8203;</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_options">Options</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><strong>-o, --out-file</strong>=<em>OUT_FILE</em></dt>
+<dd>
+<p>Write result to file <em>OUT_FILE</em>.</p>
+</dd>
+<dt class="hdlist1"><strong>-c, --capture</strong></dt>
+<dd>
+<p>Capture specimen if it&#8217;s a picture of a life form.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exit_status">Exit status</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><strong>0</strong></dt>
+<dd>
+<p>Success.
+Image is a picture of a life form.</p>
+</dd>
+<dt class="hdlist1"><strong>1</strong></dt>
+<dd>
+<p>Failure.
+Image is not a picture of a life form.</p>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_resources">Resources</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><strong>Project web site:</strong> <a href="https://eve.example.org" class="bare">https://eve.example.org</a></p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_copying">Copying</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Copyright &#169; 2008 Andrew Stanton.<br>
+Free use of this software is granted under the terms of the MIT License.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Version 1.0.0<br>
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

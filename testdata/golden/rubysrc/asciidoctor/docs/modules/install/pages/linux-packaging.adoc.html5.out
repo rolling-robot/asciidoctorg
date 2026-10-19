@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Install Using Linux Packaging</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Install Using Linux Packaging</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>The benefit of using your operating system&#8217;s package manager to install the gem is that it handles installing Ruby and the RubyGems library if those packages are not already installed on your machine.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_package_versions">Package versions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The version of Asciidoctor installed by the package manager may not match the latest release of Asciidoctor.
+Consult the package repository for your distribution to find out which version is packaged per distribution release.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://pkgs.alpinelinux.org/packages?name=asciidoctor" target="_blank" rel="noopener">Alpine Linux (asciidoctor)</a></p>
+</li>
+<li>
+<p><a href="https://www.archlinux.org/packages/?name=asciidoctor" target="_blank" rel="noopener">Arch Linux (asciidoctor)</a></p>
+</li>
+<li>
+<p><a href="https://packages.debian.org/sid/asciidoctor" target="_blank" rel="noopener">Debian (asciidoctor)</a></p>
+</li>
+<li>
+<p><a href="https://packages.fedoraproject.org/pkgs/rubygem-asciidoctor/rubygem-asciidoctor/" target="_blank" rel="noopener">Fedora (asciidoctor)</a></p>
+</li>
+<li>
+<p><a href="https://software.opensuse.org/package/rubygem-asciidoctor" target="_blank" rel="noopener">openSUSE (rubygem-asciidoctor)</a></p>
+</li>
+<li>
+<p><a href="https://packages.ubuntu.com/search?keywords=asciidoctor" target="_blank" rel="noopener">Ubuntu (asciidoctor)</a></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>If you want to use a version of Asciidoctor that is newer than what is available via your package manager, see <a href="ruby-packaging.html">ruby-packaging.html</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_apt">APT</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>On Debian and Debian-based distributions such as Ubuntu, use APT to install Asciidoctor.
+To install the package, open a terminal and type:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo apt-get install -y asciidoctor</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Unresolved directive in linux-packaging.adoc - include::partial$success.adoc[]</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_dnf">DNF</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>On RPM-based Linux distributions, such as Fedora, CentOS, and RHEL, use the DNF package manager to install Asciidoctor.
+To install the package, open a terminal and type:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo dnf install -y asciidoctor</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Unresolved directive in linux-packaging.adoc - include::partial$success.adoc[]</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="apk">apk (Alpine Linux)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To install the gem on Alpine Linux, open a terminal and type:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo apk add asciidoctor</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Unresolved directive in linux-packaging.adoc - include::partial$success.adoc[]</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="pacman">pacman (Arch Linux)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To install the gem on Arch Linux-based distributions, open a terminal and type:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo pacman -S asciidoctor</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Unresolved directive in linux-packaging.adoc - include::partial$success.adoc[]</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="upgrade">Upgrade on Linux</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Some Linux distributions may not have the latest stable version of Asciidoctor packaged immediately after a release of a new gem.
+If you need to upgrade to the latest version immediately, use <a href="ruby-packaging.html">gem install</a> instead of the package manager.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+Your Linux system may be configured to automatically update packages, in which case the latest Asciidoctor package will be installed as soon as it becomes available.
+No further action is required by you.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="upgrade-apt">APT</h3>
+<div class="paragraph">
+<p>On Debian and Debian-based distributions, update the Asciidoctor package using:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo apt-get upgrade -y asciidoctor</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="upgrade-dnf">DNF</h3>
+<div class="paragraph">
+<p>On Fedora and other RPM-based distributions, you can update the package using:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo dnf update -y asciidoctor</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="upgrade-apk">apk (Alpine Linux)</h3>
+<div class="paragraph">
+<p>On Alpine Linux, update the Asciidoctor package using:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo apk add -u asciidoctor</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="uninstall">Uninstall on Linux</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To uninstall (i.e., remove) Asciidoctor using Linux packaging, you request your package manager to remove the Asciidoctor package.
+The package manager will take care of removing all the necessary application files.</p>
+</div>
+<div class="sect2">
+<h3 id="uninstall-apt">APT</h3>
+<div class="paragraph">
+<p>On Debian and Debian-based distributions, uninstall the Asciidoctor package using:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo apt-get remove -y asciidoctor</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="uninstall-dnf">DNF</h3>
+<div class="paragraph">
+<p>On Fedora and other RPM-based distributions, you can uninstall the package using:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo dnf remove -y asciidoctor</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="uninstall-apk">apk (Alpine Linux)</h3>
+<div class="paragraph">
+<p>On Alpine Linux, uninstall the Asciidoctor package using:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo apk del asciidoctor</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

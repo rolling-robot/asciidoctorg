@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Convertible Contexts</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Convertible Contexts</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>When Asciidoctor converts a document, it delegates to the converter to convert each node (block or inline element) in the document as it visits each node in document order (though it&#8217;s the <code>#content</code> method on a block that continues the traversal of its child nodes).
+Asciidoctor then combines the result of all those calls to produce the output document.</p>
+</div>
+<div class="paragraph">
+<p>To convert a node, Asciidoctor calls the <code>convert</code> method on the converter and passes in the node.
+In some cases, it also passes in an extra transform value (e.g., <code>embedded</code>) to differentiate between different uses cases for a node of the same context.
+When Asciidoctor is using a converter that extends <code>Asciidoctor::Converter::Base</code>, the converter will delegate the call to a method whose name starts with <code>convert_</code> and is followed by the context of the node (e.g., <code>convert_paragraph</code>).</p>
+</div>
+<div class="paragraph">
+<p>The following table lists the contexts for all the built-in nodes that Asciidoctor converts, along when the name of the method the base converter will look for.
+Extensions can introduce additional contexts.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. The built-in contexts of nodes that are converted by the converter</caption>
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Context</th>
+<th class="tableblock halign-left valign-top">Convert method on base converter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:admonition</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_admonition</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:audio</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_audio</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:colist</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_colist</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:dlist</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_dlist</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:document</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_document</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:embedded</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_embedded</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:example</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_example</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:floating_title</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_floating_title</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:image</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_image</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:inline_anchor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_inline_anchor</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:inline_break</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_inline_break</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:inline_button</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_inline_button</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:inline_callout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_inline_callout</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:inline_footnote</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_inline_footnote</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:inline_image</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_inline_image</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:inline_indexterm</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_inline_indexterm</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:inline_kbd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_inline_kbd</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:inline_menu</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_inline_menu</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:inline_quoted</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_inline_quoted</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:listing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_listing</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:literal</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_literal</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:olist</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_olist</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:open</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_open</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:outline</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_outline</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:page_break</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_page_break</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:paragraph</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_paragraph</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:preamble</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_preamble</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:quote</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_quote</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:section</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_section</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:sidebar</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_sidebar</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:stem</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_stem</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:table</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_table</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:thematic_break</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_thematic_break</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:toc</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_toc</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:ulist</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_ulist</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:verse</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_verse</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">:video</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">convert_video</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+The converter is not called to handle nodes with the <code>:list_item</code> or <code>:table_cell</code> contexts.
+Instead, it&#8217;s up to the converter to access these nodes from the parent node and convert them directly.
+The reason for this is because list items and table cells are not true blocks, they have a compound structure, and information or markup from the parent is often required in order to convert them properly.
+Refer to the built-in converters to learn how to handle them.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>When a method to convert a block is called, the inline markup has not yet been parsed.
+That parsing and subsequent conversion happens when the <code>#content</code> method is called on the node.
+This is also what triggers the processor to visit the child nodes of that block.</p>
+</div>
+<div class="paragraph">
+<p>Some methods for converting blocks have to handle the specialized behavior as indicated by the style.
+For example, the <code>convert_listing</code> method also handles source blocks (listing blocks with the source style).
+And <code>convert_dlist</code> handles qanda lists (dlist blocks with the qanda style).</p>
+</div>
+<div class="paragraph">
+<p><code>:embedded</code> is not a true context, but rather a transform of the <code>:document</code> context.
+It&#8217;s convert method is called instead of the one for <code>:document</code> when the document is loaded in embedded mode (i.e., the <code>:standalone</code> option on the processor is <code>false</code>).</p>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

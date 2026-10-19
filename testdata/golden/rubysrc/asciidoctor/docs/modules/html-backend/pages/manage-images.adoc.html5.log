@@ -1,0 +1,2 @@
+ERROR: manage-images.adoc: line 13: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/html-backend/pages/example$my-document.adoc
+ERROR: manage-images.adoc: line 16: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/html-backend/pages/example$my-document.adoc

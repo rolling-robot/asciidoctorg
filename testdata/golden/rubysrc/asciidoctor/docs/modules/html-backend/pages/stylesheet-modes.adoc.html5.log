@@ -1,0 +1,4 @@
+ERROR: stylesheet-modes.adoc: line 42: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/html-backend/pages/example$my-document.adoc
+ERROR: stylesheet-modes.adoc: line 44: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/html-backend/pages/example$my-document.adoc
+ERROR: stylesheet-modes.adoc: line 110: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/html-backend/pages/example$my-document.adoc
+ERROR: stylesheet-modes.adoc: line 113: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/html-backend/pages/example$my-document.adoc

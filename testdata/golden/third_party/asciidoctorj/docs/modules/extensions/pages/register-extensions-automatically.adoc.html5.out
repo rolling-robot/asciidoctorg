@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Automatically Loading Extensions</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Automatically Loading Extensions</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>In previous examples, the extensions were registered manually.
+However, AsciidoctorJ provides another way to register extensions.
+If any implementation of the SPI interface is present on the classpath, it will be executed.</p>
+</div>
+<div class="paragraph">
+<p>To create an autoloadable extension you should do the next steps:</p>
+</div>
+<div class="paragraph">
+<p>Create a class that implements <code>org.asciidoctor.jruby.extension.spi.ExtensionRegistry</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">org.asciidoctor.extension.integratorguide.TerminalCommandExtension.java</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in register-extensions-automatically.adoc - include::example$org/asciidoctor/integrationguide/extension/TerminalCommandExtension.java[tags=include-extension-registry]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>To autoload extensions you need to implement <code>ExtensionRegistry</code>.</p>
+</li>
+<li>
+<p>AsciidoctorJ will automatically run the <code>register</code> method. The method is responsible for registering all extensions.</p>
+</li>
+<li>
+<p>All required Java extensions are registered.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Next, you need to create a file called <code>org.asciidoctor.jruby.extension.spi.ExtensionRegistry</code> inside <code>META-INF/services</code> with the implementation&#8217;s full qualified name.</p>
+</div>
+<div class="listingblock">
+<div class="title">META-INF/services/org.asciidoctor.jruby.extension.spi.ExtensionRegistry</div>
+<div class="content">
+<pre class="highlight"><code>Unresolved directive in register-extensions-automatically.adoc - include::example$extensionregistry/META-INF/services/org.asciidoctor.jruby.extension.spi.ExtensionRegistry[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And that&#8217;s all.
+Now when a <code>.jar</code> file containing the previous structure is dropped into the classpath of AsciidoctorJ, the <code>register</code> method will be executed automatically and the extensions will be registered.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>If you have installed AsciidoctorJ as recommended, the asciidoctorj command will be on the path, and you can use:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>asciidoctorj -cp=lib/myextension.jar test.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you have downloaded the distribution jars only, use a command like:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>java -cp lib/jruby-complete-{jruby-version}.jar;lib/asciidoctor-api-{artifact-version}.jar;lib/asciidoctor-core-{artifact-version}.jar;lib/jcommander-{jcommander-version}.jar;lib/myextension.jar org.asciidoctor.cli.jruby.AsciidoctorInvoker test.adoc</pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<meta name="author" content="Alex Soto, Dan Allen, Robert Panzer">
+<title>AsciidoctorJ: Java bindings for Asciidoctor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>AsciidoctorJ: Java bindings for Asciidoctor</h1>
+<div class="details">
+<span id="author" class="author">Alex Soto</span><br>
+<span id="email" class="email"><a href="https://github.com/lordofthejars">@lordofthejars</a></span><br>
+<span id="author2" class="author">Dan Allen</span><br>
+<span id="email2" class="email"><a href="https://github.com/mojavelinux">@mojavelinux</a></span><br>
+<span id="author3" class="author">Robert Panzer</span><br>
+<span id="email3" class="email"><a href="https://github.com/robertpanzer">@robertpanzer</a></span><br>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://github.com/asciidoctor/asciidoctorj">AsciidoctorJ</a> is the official library for running <a href="https://asciidoctor.org/docs/what-is-asciidoctor">Asciidoctor</a> on the JVM.
+Using AsciidoctorJ, you can convert AsciiDoc content or analyze the structure of a parsed AsciiDoc document from Java and other JVM languages.</p>
+</div>
+<div class="paragraph">
+<p>You can find the documentation for integrating Asciidoctor in your JVM based language of choice at the <a href="https://docs.asciidoctor.org/asciidoctorj/latest/">Asciidoctor Docs site</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_distribution">Distribution</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>AsciidoctorJ is published to Maven Central.
+The artifact information can be found in the tables below.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Artifact information for AsciidoctorJ in Maven Central</caption>
+<colgroup>
+<col width="20%">
+<col width="20%">
+<col width="20%">
+<col width="40%">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Group Id</th>
+<th class="tableblock halign-left valign-top">Artifact Id</th>
+<th class="tableblock halign-center valign-top">Version</th>
+<th class="tableblock halign-left valign-top">Download</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.asciidoctor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.asciidoctor%22%20AND%20a%3A%22asciidoctorj%22%20AND%20v%3A%222.5.7%22">asciidoctorj</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://search.maven.org/#artifactdetails%7Corg.asciidoctor%7Casciidoctorj%7C2.5.7%7Cjar">2.5.7</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://search.maven.org/remotecontent?filepath=org/asciidoctor/asciidoctorj/2.5.7/asciidoctorj-2.5.7.pom">pom</a> <a href="http://search.maven.org/remotecontent?filepath=org/asciidoctor/asciidoctorj/2.5.7/asciidoctorj-2.5.7.jar">jar</a> <a href="http://search.maven.org/remotecontent?filepath=org/asciidoctor/asciidoctorj/2.5.7/asciidoctorj-2.5.7-javadoc.jar">javadoc (jar)</a> <a href="http://search.maven.org/remotecontent?filepath=org/asciidoctor/asciidoctorj/2.5.7/asciidoctorj-2.5.7-sources.jar">sources (jar)</a> distribution (<a href="http://search.maven.org/remotecontent?filepath=org/asciidoctor/asciidoctorj/2.5.7/asciidoctorj-2.5.7-bin.zip">zip</a> <a href="http://search.maven.org/remotecontent?filepath=org/asciidoctor/asciidoctorj/2.5.7/asciidoctorj-2.5.7-bin.tar">tar</a>)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.asciidoctor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.asciidoctor%22%20AND%20a%3A%22asciidoctorj-api%22%20AND%20v%3A%222.5.7%22">asciidoctorj-api</a></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="http://search.maven.org/#artifactdetails%7Corg.asciidoctor%7Casciidoctorj-api%7C2.5.7%7Cjar">2.5.7</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="http://search.maven.org/remotecontent?filepath=org/asciidoctor/asciidoctorj-api/2.5.7/asciidoctorj-api-2.5.7.pom">pom</a> <a href="http://search.maven.org/remotecontent?filepath=org/asciidoctor/asciidoctorj-api/2.5.7/asciidoctorj-api-2.5.7.jar">jar</a> <a href="http://search.maven.org/remotecontent?filepath=org/asciidoctor/asciidoctorj-api/2.5.7/asciidoctorj-api-2.5.7-javadoc.jar">javadoc (jar)</a> <a href="http://search.maven.org/remotecontent?filepath=org/asciidoctor/asciidoctorj-api/2.5.7/asciidoctorj-api-2.5.7-sources.jar">sources (jar)</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.asciidoctor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">asciidoctorj-epub3</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1.5.1</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">org.asciidoctor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">asciidoctorj-pdf</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">1.6.2</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-caution" title="Caution"></i>
+</td>
+<td class="content">
+The artifactId changed to <code>asciidoctorj</code> starting in 1.5.0.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_quick_win_using_the_command_line_interface">Quick win: using the command line interface</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you download from a distribution link above (zip or tar), you can get started straight away from the command line.</p>
+</div>
+<div class="paragraph">
+<p>First, expand the downloaded file. That puts everything in directory <code>asciidoctorj-2.5.7</code>.
+Within that directory are <code>bin</code> and <code>lib</code> directories.  <code>bin</code> contains the executables&#8201;&#8212;&#8201;<code>asciidoctorj</code> for
+Linux and macOS, and <code>asciidoctorj.bat</code> for Windows.  <code>lib</code> contains the supporting libraries.</p>
+</div>
+<div class="paragraph">
+<p>Verify the application runs by specifying the appropriate executable with no parameters;
+it should display the various run options available (i.e., help).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Linux: asciidoctorj-2.5.7/bin/asciidoctorj
+Windows: asciidoctorj-2.5.7\bin\asciidoctorj.bat</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Next, say you want to convert an ASCIIDOC (.adoc) file&#8201;&#8212;&#8201;such as this README&#8201;&#8212;&#8201;to a pdf.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Linux: asciidoctorj-2.5.7/bin/asciidoctorj -b pdf README.adoc
+Windows: asciidoctorj-2.5.7\bin\asciidoctorj.bat -b pdf README.adoc</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Boom! That should convert the README to a PDF named README.pdf.
+To create a PDF with a different name&#8201;&#8212;&#8201;say, READTHIS.pdf&#8201;&#8212;&#8201;just add the -o switch:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Linux: asciidoctorj-2.5.7/bin/asciidoctorj -b pdf -o READTHIS.pdf README.adoc
+Windows: asciidoctorj-2.5.7\bin\asciidoctorj.bat -b pdf -o READTHIS.pdf README.adoc</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The rest of the document addresses the asciidoctorj API, for doing more complex conversions
+from within a JVM-based application.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_installation">Installation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To start using AsciidoctorJ, you need to add the required dependency to the dependency management system of your choice, Maven, Gradle or Apache Ivy.
+If you don&#8217;t use a Dependency Management system please check the dependency graph and add all jars in it to your classpath.</p>
+</div>
+<div class="listingblock">
+<div class="title">Declaring the dependency in a Maven build file (i.e., pom.xml)</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.asciidoctor&lt;/groupId&gt;
+    &lt;artifactId&gt;asciidoctorj&lt;/artifactId&gt;
+    &lt;version&gt;2.5.7&lt;/version&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Declaring the dependency in a Gradle build file (e.g., build.gradle)</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">dependencies {
+  compile 'org.asciidoctor:asciidoctorj:2.5.7'
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Declaring the dependency in an SBT build file (e.g., build.sbt)</div>
+<div class="content">
+<pre class="highlight"><code class="language-scala" data-lang="scala">libraryDependencies += "org.asciidoctor" % "asciidoctorj" % "2.5.7" <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Specifying the version of AsciidoctorJ implicitly selects the version of Asciidoctor</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">Declaring the dependency in a Leiningen build file (e.g., project.clj)</div>
+<div class="content">
+<pre class="highlight"><code class="language-clojure" data-lang="clojure">:dependencies [[org.asciidoctor/asciidoctorj "2.5.7"]]</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>In addition to using AsciidoctorJ directly, you can invoke it as part of your build using the Maven or Gradle plugin.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://asciidoctor.org/docs/install-and-use-asciidoctor-maven-plugin">How to Install and Use the Asciidoctor Maven Plugin</a></p>
+</li>
+<li>
+<p><a href="https://asciidoctor.org/docs/install-and-use-asciidoctor-gradle-plugin">How to Install and Use the Asciidoctor Gradle Plugin</a></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The versions of Asciidoctor and AsciidoctorJ no longer align since version 1.6.0 of AsciidoctorJ.
+Please check the corresponding release notes to find out which version of Asciidoctor is packaged if you are embedding the library.
+If you use the distribution you can call <code>asciidoctorj --version</code> to get the version of Asciidoctor that is embedded in AsciidoctorJ.
+</td>
+</tr>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_windows_installation">Windows Installation</h3>
+<div class="paragraph">
+<p>A <a href="https://chocolatey.org">Chocolatey</a> package is available which installs the
+asciidoctorj-2.5.7-bin.zip Maven artifact along with a
+binary shim in %ChocolateyInstall%\bin which lets you run AsciidoctorJ
+from the command line.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">C:\&gt; choco install asciidoctorj
+C:\&gt; where asciidoctorj
+C:\ProgramData\chocolatey\bin\asciidoctorj.exe
+C:\&gt; asciidoctorj -b pdf README.adoc</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_using_a_pre_release_version">Using a pre-release version</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Pre-release versions of <code>AsciidoctorJ</code> are published to oss.sonatype.org.
+The exact location of the repository will be announced.
+Final releases are released to both Maven Central.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s how to use a pre-release version in Maven:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">    &lt;repositories&gt;
+        &lt;repository&gt;
+            &lt;id&gt;staging&lt;/id&gt;
+            &lt;url&gt;https://oss.sonatype.org/content/repositories/orgasciidoctor-1234&lt;/url&gt; <i class="conum" data-value="1"></i><b>(1)</b>
+            &lt;releases&gt;
+                &lt;enabled&gt;true&lt;/enabled&gt;
+            &lt;/releases&gt;
+        &lt;/repository&gt;
+    &lt;/repositories&gt;</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The exact URL differs for every build</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_using_a_snapshot_version">Using a snapshot version</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Snapshot versions will be published to <a href="https://oss.jfrog.org" class="bare">https://oss.jfrog.org</a>.
+To use a snapshot version of the the AsciidoctorJ library add this repository to your project:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;repositories&gt;
+    &lt;repository&gt;
+        &lt;id&gt;snapshots&lt;/id&gt;
+        &lt;snapshots&gt;
+            &lt;enabled&gt;true&lt;/enabled&gt;
+        &lt;/snapshots&gt;
+        &lt;releases&gt;
+            &lt;enabled&gt;false&lt;/enabled&gt;
+        &lt;/releases&gt;
+        &lt;url&gt;https://oss.sonatype.org/content/repositories/snapshots/&lt;/url&gt;
+    &lt;/repository&gt;
+&lt;/repositories&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you build your project using <a href="https://gradle.org">Gradle</a> add the repository like this to your build:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">repositories {
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_development">Development</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>AsciidoctorJ is built using <a href="https://gradle.org">Gradle</a>.
+The project is structured as a multi-module build.</p>
+</div>
+<div class="sect2">
+<h3 id="_project_layout">Project layout</h3>
+<div class="paragraph">
+<p>The root folder is the root project and there are several subproject folders, each prefixed with <em>asciidoctorj-</em>.
+Each subproject produces a primary artifact (e.g., jar or zip) and its supporting artifacts (e.g., javadoc, sources, etc).</p>
+</div>
+<div class="paragraph">
+<p>The subprojects are as follows:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">asciidoctorj-api</dt>
+<dd>
+<p>The common API for AsciidoctorJ.
+Other implementations for different platforms than JRuby may reuse and implement this API.
+Produces the asciidoctorj-api.jar</p>
+</dd>
+<dt class="hdlist1">asciidoctorj</dt>
+<dd>
+<p>The main Java bindings for the Asciidoctor RubyGem (asciidoctor) running on JRuby.
+Also bundles optional RubyGems needed at runtime, such as coderay, tilt, haml and slim.
+Produces the asciidoctorj jar.</p>
+</dd>
+<dt class="hdlist1">asciidoctorj-cli</dt>
+<dd>
+<p><code>asciidoctorj</code> command Java components.
+Produces the asciidoctorj-cli.</p>
+</dd>
+<dt class="hdlist1">asciidoctorj-distribution</dt>
+<dd>
+<p>Produces the distribution zip that provides the standalone <code>asciidoctorj</code> command including Java components,
+launch scripts and required libraries.</p>
+</dd>
+<dt class="hdlist1">asciidoctorj-arquillian-extension</dt>
+<dd>
+<p>Bundles an Arquillian extension that allows to inject an Asciidoctor instance or other instances commonly used by Asciidoctor tests into a test case.</p>
+</dd>
+<dt class="hdlist1">asciidoctorj-test-support</dt>
+<dd>
+<p>Contains some common test classes that are used by multiple other subprojects and the Arquillian extension.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>The Gradle build is partitioned into the following files:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>build.gradle
+gradle.properties
+settings.gradle
+gradle/
+  wrapper/
+    ...
+  eclipse.gradle
+  providedConfiguration.gradle
+  publish.gradle
+  sign.gradle
+asciidoctorj-arquillian-extension/
+  build.gradle
+asciidoctorj-api/
+  build.gradle
+asciidoctorj-cli/
+  build.gradle
+asciidoctorj-core/
+  build.gradle
+asciidoctorj-distribution/
+  build.gradle
+asciidoctorj-test-support/
+  build.gradle</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_build_the_project">Build the project</h3>
+<div class="paragraph">
+<p>You invoke Gradle on this project using the <code>gradlew</code> command (i.e., the Gradle Wrapper).</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+We strongly recommend that you use Gradle via the <a href="https://www.timroes.de/2013/09/12/speed-up-gradle">Gradle daemon</a>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To clone the project, compile the source and build the artifacts (i.e., jars) locally, run:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ git clone https://github.com/asciidoctor/asciidoctorj
+  cd asciidoctorj
+  ./gradlew assemble</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can find the built artifacts in the <em class="path">asciidoctorj-*/build/libs</em> folders.</p>
+</div>
+<div class="paragraph">
+<p>To execute tests when running the build, use:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ ./gradlew build</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To only execute the tests, run:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ ./gradlew check</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also run tests for a single module:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ cd asciidoctorj-core
+  ../gradlew check</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To run a single test in the asciidoctorj-core subproject, use:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ ../gradlew -Dsingle.test=NameOfTestClass test</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To create the distribution, run:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ ./gradlew distZip</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can find the distribution in the <em class="path">asciidoctorj-distribution/build/distributions</em> folder.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_develop_in_an_ide">Develop in an IDE</h3>
+<div class="sect3">
+<h4 id="_intellij_idea">IntelliJ IDEA</h4>
+<div class="paragraph">
+<p>To import the project into IntelliJ IDEA 14, simply import the project using the import wizard.
+For more information, see the <a href="https://www.jetbrains.com/idea/help/gradle.html">Gradle page</a> in the IntelliJ IDEA Web Help.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_eclipse">Eclipse</h4>
+<div class="paragraph">
+<p>To open the project in Eclipse, first generate the Eclipse project files:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ cd asciidoctorj-core
+  ./gradlew eclipse</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, import the project into Eclipse using <span class="menuseq"><b class="menu">File</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Import</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">General</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Existing Project into Workspace</b></span>.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_continuous_integration">Continuous integration</h3>
+<div class="paragraph">
+<p>Continuous integration for the AsciidoctorJ project is performed by GitHub Actions.
+You can find recent build results, including the build status of pull requests, on the <a href="https://github.com/asciidoctor/asciidoctorj/actions">asciidoctor/asciidoctorj</a> page.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_release_and_publish_the_artifacts">Release and publish the artifacts</h3>
+<div class="paragraph">
+<p>To build and publish a release the following properties have to be set, for example in the file ~/.gradle/gradle.properties:</p>
+</div>
+<div class="listingblock">
+<div class="title">~/.gradle/gradle.properties</div>
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">signing.keyId=...              <i class="conum" data-value="1"></i><b>(1)</b>
+signing.password=...
+signing.secretKeyRingFile=/home/YOUR_USERNAME/.gnupg/secring.gpg
+
+sdkman_consumer_key=...        <i class="conum" data-value="2"></i><b>(2)</b>
+sdkman_consumer_token=...
+
+sonatypeUsername=...           <i class="conum" data-value="3"></i><b>(3)</b>
+sonatypePassword=...</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Settings for signing the artifacts</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Credentials for publishing a new release to sdkman</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Credentials for publishing artifacts to oss.sonatype.org</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The following steps are necessary to build a new release:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Update the version in gradle.properties to a release version, i.e. from <code>2.4.4-SNAPSHOT</code> to <code>2.4.4</code>.</p>
+</li>
+<li>
+<p>Build the release with</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java"># ./gradlew clean build</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>After testing publish all artifacts to a local repository under <code>build/repos</code> with</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java"># ./gradlew publishAllPublicationsToLocalRepository -i</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>When everything is fine publish the artifacts to a staging repository on <a href="https://oss.sonatype.org" class="bare">https://oss.sonatype.org</a> and close the repository:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java"># ./gradlew publishAllPublicationsToSonatypeRepository -i
+# ./gradlew closeRepository -i</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Visit <a href="https://oss.sonatype.org/#stagingRepositories" class="bare">https://oss.sonatype.org/#stagingRepositories</a> and check the staging repository.
+The artifacts are not published yet.
+The repository URL shown there can be used for testing this version before publishing to Maven central.</p>
+</li>
+<li>
+<p>When everything is fine publish the artifacts in the staging repository by clicking the "Release" button.
+Alternatively you can release it with</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java"># ./gradlew releaseRepository</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Publish the new version to sdkman with</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java"># ./gradlew asciidoctorj-distribution:sdkMajorRelease</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Commit everything and assign a tag:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java"># git commit -m "Release v2.x.y"
+# git tag v2.x.y</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Upgrade the version to the next version by changing the version property in gradle.properties to <code>version=2.x.y+1-SNAPSHOT</code> and commit:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">git commit -m "Prepare next release"</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_resources">Resources</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The source code for AsciidoctorJ, including the latest developments and issues, can be found in the project&#8217;s <a href="https://github.com/asciidoctor/asciidoctorj">repository</a> on GitHub.
+If you identify an issue while using AsciidoctorJ, please don&#8217;t hesitate to <a href="https://github.com/asciidoctor/asciidoctorj/issues">file a bug report</a>.
+Also, don&#8217;t forget to join the <a href="https://asciidoctor.zulipchat.com/">Asciidoctor Zulip community</a>, where you can ask questions and leave comments.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

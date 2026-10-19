@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Extensions</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Extensions</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Extensions are central to the success of AsciiDoc because they open up the language to new use cases.
+Asciidoctor provides an {url-api-gems}/asciidoctor/{release-version}/Asciidoctor/Extensions[extension API^] that offers a superset of extension points.
+As a result, extensions in Asciidoctor are easy to write, powerful, and simple to distribute.</p>
+</div>
+<div class="paragraph">
+<p>Asciidoctor also allows extensions to be written using the full power of a programming language (whether it be Ruby, Java, Groovy or JavaScript).
+You don&#8217;t have to shave yaks to get the functionality you want, and you can distribute the extension using de facto standard packaging mechanisms like gems or JARs.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_available_extension_points">Available extension points</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Asciidoctor provides the following extension points:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Preprocessor</dt>
+<dd>
+<p>Processes the raw source lines before they are passed to the parser.
+See <a href="preprocessor.html">preprocessor.html</a>.</p>
+</dd>
+<dt class="hdlist1">Tree processor</dt>
+<dd>
+<p>Processes the <span class="class">Asciidoctor::Document</span> (AST) once parsing is complete.
+See <a href="tree-processor.html">tree-processor.html</a>.</p>
+</dd>
+<dt class="hdlist1">Postprocessor</dt>
+<dd>
+<p>Processes the output after the document has been converted, but before it&#8217;s written to disk.
+See <a href="postprocessor.html">postprocessor.html</a>.</p>
+</dd>
+<dt class="hdlist1">Docinfo Processor</dt>
+<dd>
+<p>Adds additional content to the header or footer regions of the generated document.
+See <a href="docinfo-processor.html">docinfo-processor.html</a>.</p>
+</dd>
+<dt class="hdlist1">Block processor</dt>
+<dd>
+<p>Processes a block of content marked with a custom block style (e.g., <code>[custom]</code>).
+See <a href="block-processor.html">block-processor.html</a> and <a href="compound-block-processor.html">compound-block-processor.html</a>.</p>
+</dd>
+<dt class="hdlist1">Block macro processor</dt>
+<dd>
+<p>Registers a custom block macro and processes it (e.g., <code>gist::12345[]</code>).
+See <a href="block-macro-processor.html">block-macro-processor.html</a>.</p>
+</dd>
+<dt class="hdlist1">Inline macro processor</dt>
+<dd>
+<p>Registers a custom inline macro and processes it (e.g., <code>btn:[Save]</code>).
+See <a href="inline-macro-processor.html">inline-macro-processor.html</a>.</p>
+</dd>
+<dt class="hdlist1">Include processor</dt>
+<dd>
+<p>Processes the <code>include::&lt;filename&gt;[]</code> directive.
+See <a href="include-processor.html">include-processor.html</a>.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>There are additional extension examples in the <a href="https://github.com/asciidoctor/asciidoctor-extensions-lab" target="_blank" rel="noopener">Asciidoctor extensions lab</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Manage Images</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Manage Images</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Images are not embedded in the HTML output by default.
+If you have image references in your document, you&#8217;ll have to save the image files in the same directory as your converted document.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_embed_images_with_the_data_uri_attribute">Embed images with the data-uri attribute</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As an alternative, you can embed the images directly into the document by setting the <code>data-uri</code> document attribute.</p>
+</div>
+<div class="listingblock">
+<div class="title">data-uri attribute set in document header</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">Unresolved directive in manage-images.adoc - include::example$my-document.adoc[tag=title]
+:imagesdir: my-images
+:data-uri:
+Unresolved directive in manage-images.adoc - include::example$my-document.adoc[tags=body;image]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also set <code>data-uri</code> using the API or CLI (shown here):</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -a data-uri my-document.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When you view the HTML file in your browser, you should see the image displayed in the page.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="my-document-with-data-uri.png" alt="my document with data uri">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_allow_uri_read_attribute">allow-uri-read attribute</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If the target of one or more images in the document is a URI, you must also set the <code>allow-uri-read</code> attribute securely and run Asciidoctor in <code>SECURE</code> mode or less.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -a data-uri -a allow-uri-read my-document.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The same is true when converting the document to PDF using Asciidoctor PDF, regardless of whether the <code>data-uri</code> attribute is set since this behavior is implicit.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>STEM Processing</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>STEM Processing</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>AsciiDoc defines syntax elements for adding <a href="asciidoc:stem:stem.html">science, technology, engineering, and math (STEM) expressions</a> to an AsciiDoc document.
+Much like AsciiDoc itself, this STEM notation allows the graphical notation that scientists, mathematicians, and engineers use to describe equations, formulas, etc. be expressed in a plain text format.
+It&#8217;s up to the converter to interpret and transform the source of these expressions into a displayable format.
+That&#8217;s where STEM processing comes in.</p>
+</div>
+<div class="paragraph">
+<p>On this page, we look at how STEM expressions are handled when converting AsciiDoc and survey the integrations Asciidoctor offers to process them for various output formats.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_it_works">How it works</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When a converter comes across a STEM node in an AsciiDoc document, it passes the source of the expression to a STEM processing library, such as MathJax.
+That library either displays the rendered expression itself (e.g., MathJax), turns it into an image the converter can link to or embed in the output file (e.g., Asciidoctor Mathematical), or translates it into another format that something further down the pipeline can process (e.g., AsciiMath).</p>
+</div>
+<div class="paragraph">
+<p>The STEM integrations are activated when the <a href="asciidoc:stem:stem.html">stem document attribute</a> is set on the document and, if required, the relevant library is installed.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_stem_integrations">STEM integrations</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all fit-content">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Library Name</th>
+<th class="tableblock halign-left valign-top">Supported Versions</th>
+<th class="tableblock halign-left valign-top">Backends</th>
+<th class="tableblock halign-left valign-top">Loaded By</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">MathJax</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2.7.9</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">html</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">client</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Asciidoctor Mathematical</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0.3.5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">any</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">processor</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">AsciiMath (Ruby)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1.0.x or 2.0.x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">docbook</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">processor</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>You can explore these integrations in depth on the <a href="mathjax.html">mathjax.html</a>, <a href="mathematical.html">mathematical.html</a>, and <a href="asciimath-gem.html">asciimath-gem.html</a> pages.</p>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re planning to convert to DocBook to leverage the DocBook toolchain, be sure to consider <a href="docbook.html">docbook.html</a> when deciding which STEM notation to use in your AsciiDoc document.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Untitled</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<div class="paragraph">
+<p>The safe modes in order from most insecure to most secure are:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>UNSAFE</code></dt>
+<dd>
+<p>A safe mode level that disables any security features enforced by Asciidoctor.</p>
+<div class="paragraph">
+<p><strong>This is the default safe mode for the CLI.</strong></p>
+</div>
+</dd>
+<dt class="hdlist1"><code>SAFE</code></dt>
+<dd>
+<p>This safe mode level prevents access to files which reside outside of the parent directory of the source file.
+It disables all macros, except the include directive.
+The paths to include files must be within the parent directory.
+It allows assets to be embedded in the document.</p>
+</dd>
+<dt class="hdlist1"><code>SERVER</code></dt>
+<dd>
+<p>A safe mode level that disallows the document from setting attributes that would affect the rendering of the document.
+This level trims the attribute <code>docfile</code> to its relative path and prevents the document from:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>setting source-highlighter, doctype, docinfo and backend</p>
+</li>
+<li>
+<p>seeing docdir</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>It allows icons and linkcss.</p>
+</div>
+</div>
+</div>
+</dd>
+<dt class="hdlist1"><code>SECURE</code></dt>
+<dd>
+<p>A safe mode level that disallows the document from attempting to read files from the file system and including their contents into the document.
+Additionally, it:</p>
+<div class="openblock">
+<div class="content">
+<div class="ulist">
+<ul>
+<li>
+<p>disables icons</p>
+</li>
+<li>
+<p>disables the <code>include</code> directive</p>
+</li>
+<li>
+<p>data can not be retrieved from URIs</p>
+</li>
+<li>
+<p>prevents access to stylesheets and JavaScript files</p>
+</li>
+<li>
+<p>sets the backend to <code>html5</code></p>
+</li>
+<li>
+<p>disables <code>docinfo</code> files</p>
+</li>
+<li>
+<p>disables <code>data-uri</code></p>
+</li>
+<li>
+<p>disables <code>docdir</code> and <code>docfile</code></p>
+</li>
+<li>
+<p>disables source highlighting</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Asciidoctor extensions may still embed content into the document depending on whether they honor the safe mode setting.</p>
+</div>
+<div class="paragraph">
+<p><strong>This is the default safe mode for the API.</strong></p>
+</div>
+</div>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

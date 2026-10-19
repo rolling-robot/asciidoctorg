@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Logging</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Logging</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>Extensions are also able to log messages that are handled in the same way as messages logged by Asciidoctor itself as explained in <a href="ROOT:logs-handling.html">ROOT:logs-handling.html</a>.</p>
+</div>
+<div class="paragraph">
+<p>Logging messages via this API allows build tools like the Asciidoctor Maven plugin to capture them and for example <a href="maven-tools:plugin:goals/process-asciidoc.html#configuration-logHandler">fail the build</a> in case an error or warning is logged.
+Therefore it might be preferable to use this instead of directly logging messages via slf4j or other APIs.</p>
+</div>
+<div class="paragraph">
+<p>Every extension inherits the method <code>Processor.log()</code> that allows it to log messages.
+The following example shows a Block Macro Processor that logs a message containing the target of the macro:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in logging.adoc - include::example$org/asciidoctor/integrationguide/extension/LoggingBlockMacroProcessor.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The method <code>log(LogRecord)</code> is inherited from the Processor class hierarchy.</p>
+</li>
+<li>
+<p>You can access the source location of the parent node to put the message in relation to the source document.
+Note that the source location will be null unless you enable the <a href="ROOT:asciidoctor-api-options.html#sourcemap">sourcemap</a> option</p>
+</li>
+</ol>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

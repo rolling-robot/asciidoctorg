@@ -1,0 +1,2 @@
+ERROR: ast-introduction.adoc: line 11: include file not found: {repo}/third_party/asciidoctorj/docs/modules/extensions/pages/example$ast-demo.adoc
+ERROR: ast-introduction.adoc: line 19: include file not found: {repo}/third_party/asciidoctorj/docs/modules/extensions/pages/example$ast-demo-result.txt

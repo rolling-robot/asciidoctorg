@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Embed a CodeRay or Pygments Stylesheet</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Embed a CodeRay or Pygments Stylesheet</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Asciidoctor can embed the stylesheet for the CodeRay or Pygments syntax highlighters.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_requirements">Requirements</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>First, make sure the appropriate library is installed on your system.
+See <a href="syntax-highlighting:rouge.html">syntax-highlighting:rouge.html</a>, <a href="syntax-highlighting:coderay.html">syntax-highlighting:coderay.html</a>, or <a href="syntax-highlighting:pygments.html">syntax-highlighting:pygments.html</a> for installation instructions.
+Next, set the <a href="asciidoc:verbatim:source-highlighter.html">source-highlighter attribute</a> and assign it the value that corresponds to the library you installed.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="coderay">CodeRay</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If the <code>source-highlighter</code> attribute is <code>coderay</code> and the <code>coderay-css</code> attribute is <code>class</code>, the CodeRay stylesheet is:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>embedded</em> by default</p>
+</li>
+<li>
+<p><em>copied</em> to the file <em class="path">asciidoctor-coderay.css</em> inside the <code>stylesdir</code> folder within the output directory if <code>linkcss</code> is set</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="pygments">Pygments</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If the <code>source-highlighter</code> attribute is <code>pygments</code> and the <code>pygments-css</code> attribute is <code>class</code>, the Pygments stylesheet is:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><em>embedded</em> by default</p>
+</li>
+<li>
+<p><em>copied</em> to the file <em class="path">asciidoctor-pygments.css</em> inside the <code>stylesdir</code> folder within the output directory if <code>linkcss</code> is set</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

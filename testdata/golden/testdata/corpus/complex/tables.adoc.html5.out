@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Tables</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Tables</h1>
+</div>
+<div id="content">
+<table id="table-1" class="tableblock frame-ends grid-rows stripes-even" width="80%">
+<caption class="title">Table 1. Basic table</caption>
+<colgroup>
+<col width="14.2857%">
+<col width="28.5714%">
+<col width="42.8571%">
+<col width="14.2858%">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-center valign-top">Centered</th>
+<th class="tableblock halign-right valign-top">Code</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Alpha</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>list in cell</p>
+</li>
+<li>
+<p>another</p>
+</li>
+</ul>
+</div></div></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">middle</p></td>
+<td class="tableblock halign-right valign-top"><p class="tableblock"><code>x = 1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" colspan="2"><p class="tableblock">Spanning two columns</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>centered</p>
+</div></div></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">y</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" rowspan="2"><p class="tableblock">Row span</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>a</p>
+</div></div></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">b</p></td>
+<td class="tableblock halign-right valign-top"><p class="tableblock"><code>c</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">d</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>e</p>
+</div></div></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">f</p></td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Footer 1</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Footer 2</p>
+</div></div></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">Footer 3</p></td>
+<td class="tableblock halign-right valign-top"><p class="tableblock"><code>Footer 4</code></p></td>
+</tr>
+</tfoot>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col width="16.6666%">
+<col width="16.6666%">
+<col width="16.6666%">
+<col width="16.6666%">
+<col width="16.6666%">
+<col width="16.667%">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>emphasis</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>strong</strong></p></td>
+<td class="tableblock halign-left valign-top"><div class="literal"><pre>literal  text</pre></div></td>
+<th class="tableblock halign-left valign-top"><p class="tableblock">header</p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock">default</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">verse
+text</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all fit-content stretch">
+<colgroup>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">left</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">center</p></td>
+<td class="tableblock halign-right valign-top"><p class="tableblock">right</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">repeated</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">repeated</p></td>
+<td class="tableblock halign-right valign-top"><p class="tableblock">repeated</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col width="33.3333%">
+<col width="33.3333%">
+<col width="33.3334%">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Artist</th>
+<th class="tableblock halign-left valign-top">Track</th>
+<th class="tableblock halign-left valign-top">Genre</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Baauer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Harlem Shake</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hip Hop</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Comma, Inc</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Song</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Rock</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">b</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">c</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">d</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">x</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">y</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">custom</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">separator</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Nested table</caption>
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nested a</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nested b</p></td>
+</tr>
+</tbody>
+</table></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">outer</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">H1</th>
+<th class="tableblock halign-left valign-top">H2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">r1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">r2</p></td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">F1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">F2</p></td>
+</tr>
+</tfoot>
+</table>
+<table class="tableblock frame-none grid-none stretch">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no grid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">no frame</p></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">b</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

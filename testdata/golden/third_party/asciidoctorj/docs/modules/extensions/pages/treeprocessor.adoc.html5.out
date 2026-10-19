@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Treeprocessor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body id="treeprocessor" class="article">
+<div id="header">
+<h1>Treeprocessor</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>A Treeprocessor gets the whole AST and may do whatever it likes with the document tree.
+Examples for Treeprocessors could insert blocks, add roles to nodes with a certain content, etc.</p>
+</div>
+<div class="paragraph">
+<p>Treeprocessors are called by Asciidoctor at the end of the loading process after Preprocessors, BlockProcessors, MacroProcessors and IncludeProcessors but before Postprocessors that are called after the conversion process.</p>
+</div>
+<div class="paragraph">
+<p>Our example Treeprocessor will recognize paragraphs that contain terminal scripts like below, make listing blocks from them and add the role <code>terminal</code>.
+The custom role will allows us to customize the style.</p>
+</div>
+<div class="literalblock">
+<div class="title">Example AsciiDoc document containing a terminal script</div>
+<div class="content">
+<pre>Unresolved directive in treeprocessor.adoc - include::example$treeprocessorcontent.adoc[]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As the first line of the second block starts with a <code>$</code> sign the whole block should become a listing block.
+The result when rendering this document with our Treeprocessor should be the same as if the document looked like this:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>Unresolved directive in treeprocessor.adoc - include::example$treeprocessorresult.adoc[]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that a BlockProcessor would not work for this task, as a BlockProcessor requires a block name for which it is called.
+However, in this case the only way to identify this type of blocks is the beginning of the first line.</p>
+</div>
+<div class="paragraph">
+<p>The Treeprocessor could look like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">A Treeprocessor that processes terminal scripts.</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in treeprocessor.adoc - include::example$org/asciidoctor/integrationguide/extension/TerminalCommandTreeprocessor.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Every Treeprocessor must extend <code>org.asciidoctor.extension.Treeprocessor</code> and implement the method <code>process(Document)</code>.</p>
+</li>
+<li>
+<p>The implementation basically iterates over the tree and invokes <code>processBlock()</code> for every node.</p>
+</li>
+<li>
+<p>The method <code>processBlock()</code> checks for every node if it is a paragraph that has a first line beginning with a <code>$</code>.
+If it encounters such a block it replaces it with the block created in the method <code>convertToTerminalListing()</code>.
+Otherwise it descends into the AST searching for these blocks.</p>
+</li>
+<li>
+<p>When creating the new block we reuse the parent of the original block.
+The context of the new block has to be <code>listing</code> to get a source block.
+The content can be simply taken from the original block.
+We add the option 'subs' with the value ':specialcharacters' so that special characters are substituted, i.e. <code>&gt;</code> and <code>&lt;</code> will be replaced with <code>&amp;gt;</code> and <code>&amp;lt;</code> respectively.</p>
+</li>
+<li>
+<p>Finally, we add the role of the node to <code>terminal</code>, which will result in the div containing the listing having the class <code>terminal</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

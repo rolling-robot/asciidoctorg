@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<meta name="author" content="Foo Bar">
+<title>Test document</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Test document</h1>
+<div class="details">
+<span id="author" class="author">Foo Bar</span><br>
+<span id="email" class="email"><a href="mailto:foo@bar.com">foo@bar.com</a></span><br>
+</div>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This document demonstrates the AST of an Asciidoctor document</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_the_first_section">The first section</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A section has some nice paragraphs and maybe lists:</p>
+</div>
+<div class="sect2">
+<h3 id="_a_subsection">A subsection</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>One</p>
+</li>
+<li>
+<p>Two</p>
+</li>
+<li>
+<p>Three</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Or even tables</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Value</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>and sources as well</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">puts 'Hello, World!'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

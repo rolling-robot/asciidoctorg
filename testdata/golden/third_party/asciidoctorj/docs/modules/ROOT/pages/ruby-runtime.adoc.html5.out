@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Ruby Runtime</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Ruby Runtime</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>Asciidoctor itself is implemented in Ruby and AsciidoctorJ is a wrapper that encapsulates Asciidoctor in a JRuby runtime.
+Even though AsciidoctorJ tries to hide as much as possible there are some points that you have to know and consider when using AsciidoctorJ.</p>
+</div>
+<div class="paragraph">
+<p>Every Asciidoctor instance uses and initializes its own Ruby runtime.
+As booting a Ruby runtime takes a considerable amount of time it is wise to either use a single instance or pool multiple instances in case your program wants to render multiple documents instead of creating one Asciidoctor instance per conversion.
+Asciidoctor itself is thread-safe, so from this point of view there is no issue in starting only one instance.</p>
+</div>
+<div class="paragraph">
+<p>The JRuby runtime can be configured in numerous ways to change the behavior as well as the performance.
+As the performance requirements vary between a program that only render a single document and quit and server application that run for a long time you should consider modifying these options for your own use case.
+AsciidoctorJ itself does not make any configurations so that you can modify like you think.
+A full overview of the options is available at <a href="https://github.com/jruby/jruby/wiki/ConfiguringJRuby" class="bare">https://github.com/jruby/jruby/wiki/ConfiguringJRuby</a>.</p>
+</div>
+<div class="paragraph">
+<p>To change the configuration of the JRuby instance you have to set the corresponding options as system properties before creating the Asciidoctor instance.</p>
+</div>
+<div class="paragraph">
+<p>So to create an Asciidoctor instance for single use that does not try to JIT compile the Ruby code the option <code>compile.mode</code> should be set to <code>OFF</code>.
+That means that you have to set the system property <code>jruby.compile.mode</code> to <code>OFF</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Create an Asciidoctor instance for single use</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">System.setProperty("jruby.compile.mode", "OFF");
+Asciidoctor asciidoctor = Asciidoctor.Factory.create();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The default for this value is <code>JIT</code> which is already a reasonable value for multiple uses of the Asciidoctor instance.</p>
+</div>
+<div class="paragraph">
+<p>In case you want to have direct access to the Ruby runtime instance that is used by a certain Asciidoctor instance you can use the class <code>JRubyRuntimeContext</code> to obtain the <code>org.jruby.Ruby</code> instance:</p>
+</div>
+<div class="listingblock">
+<div class="title">Obtaining the Ruby instance associated with an Asciidoctor instance</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Asciidoctor asciidoctor = Asciidoctor.Factory.create();
+Ruby ruby = JRubyRuntimeContext.get(asciidoctor);</code></pre>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

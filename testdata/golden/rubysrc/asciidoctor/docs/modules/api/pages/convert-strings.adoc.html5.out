@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Load and Convert Strings Using the API</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Load and Convert Strings Using the API</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This page explains how to load and convert AsciiDoc strings using the API.
+A string is the bare AsciiDoc content (often the contents of a file).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_load_an_asciidoc_string">Load an AsciiDoc string</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To parse an AsciiDoc string into a document object model, use:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">doc = Asciidoctor.load '*This* is Asciidoctor.'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also read AsciiDoc from a file and pass it to the <code>load</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">asciidoc = File.read 'document.adoc', mode: 'r:utf-8'
+doc = Asciidoctor.load asciidoc, safe: :safe</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Once you have loaded the document, you can convert it by calling the convert method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">doc.convert</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>However, if you&#8217;re only interested in converting the AsciiDoc source when using the API, then it&#8217;s better to use a convert entrypoint.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_convert_an_asciidoc_string">Convert an AsciiDoc string</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To convert the AsciiDoc string directly to HTML, use:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">puts Asciidoctor.convert '*This* is Asciidoctor.'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s the output you will see:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;div class="paragraph"&gt;
+&lt;p&gt;&lt;strong&gt;This&lt;/strong&gt; is Asciidoctor.&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also read AsciiDoc from a file and pass it to the <code>convert</code> method:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">asciidoc = File.read 'document.adoc', mode: 'r:utf-8'
+html = Asciidoctor.convert asciidoc, safe: :safe</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When converting a string, Asciidoctor <em>does not</em> output a standalone document by default.
+Instead, it generates embedded output.
+Let&#8217;s learn why that is and how to control it.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_embedded_output">Embedded output</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When you pass an AsciiDoc string to <code>Asciidoctor.convert</code> to convert it to a backend format, such as HTML, the <code>:standalone</code> option is <code>false</code> by default.
+That means this method only returns the converted content.
+This content does not include the frame around that content (i.e., the header and footer) that&#8217;s included in a standalone document.
+In other words, it makes an <em>embedded</em> document.
+This default was chosen to make Asciidoctor consistent with other lightweight markup processors like Markdown.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s what&#8217;s included in an embedded document:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The document title if the <code>showtitle</code> attribute is set</p>
+</li>
+<li>
+<p>The table of contents if the <code>toc</code> attribute is set and the value is not <code>preamble</code></p>
+</li>
+<li>
+<p>The converted document body</p>
+</li>
+<li>
+<p>The footnotes unless the <code>nofootnotes</code> attribute is set</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The author and revision information is never shown in an embedded document.
+If you need to display that information, you can use attribute references such as <code>{author}</code> and <code>{revnumber}</code>.</p>
+</div>
+<div class="paragraph">
+<p>The embedded document is intended to be included in a template, such as one provided by a static site generator.
+That template is responsible for providing the styles and library integrations needed for the content to render properly.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_standalone_output">Standalone output</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can still generate a standalone document when converting a string.
+To convert from an AsciiDoc string to a standalone output document, you need to explicitly set the <code>:standalone</code> option to <code>true</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">puts Asciidoctor.convert '*This* is Asciidoctor.', standalone: true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now you&#8217;ll get a complete HTML file.
+The standalone output provides the framing around the content, which includes the styling and all the library integrations the content needs to properly render (e.g., the default stylesheet, MathJax, etc.).
+If you don&#8217;t set the <code>:standalone</code> option to <code>true</code>, you only get the embedded document (i.e., body content).</p>
+</div>
+<div class="paragraph">
+<p>When the input or output is a file, the <code>:standalone</code> option is enabled by default.
+Thus, to instruct Asciidoctor to write standalone HTML to a file from an AsciiDoc string, the <code>:to_file</code> option is mandatory.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">Asciidoctor.convert '*This* is Asciidoctor.', to_file: 'out.html'</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+When converting standalone output to a file, additional files may be written.
+For example, if the <code>linkcss</code> and <code>copycss</code> attributes are both set, the processor will write the default stylesheet to a file as well.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>If you want to generate embedded output when starting with a file, set the <code>:standalone</code> option to <code>false</code>.
+However, most of the time you&#8217;ll want to generate a standalone document when converting a file (which is why it&#8217;s default).</p>
+</div>
+<div class="paragraph">
+<p>When converting a string, the TOC is only included by default when using the <code>:standalone</code> option as shown above (whether it&#8217;s enabled implicitly or explicitly).
+However, you can force it to be included without the header and footer by setting the <code>toc</code> attribute with a value of <code>macro</code> and using the <code>toc::[]</code> macro in the string itself.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_convert_inline_markup_only">Convert inline markup only</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you only want the inline markup to be returned, set the <code>:doctype</code> option to <code>'inline'</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">puts Asciidoctor.convert '*This* is Asciidoctor.', doctype: 'inline'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this mode, Asciidoctor will only process the first block (e.g., paragraph) in the document and ignore the rest.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_convert_to_docbook">Convert to DocBook</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can produce DocBook 5.0 by setting the <code>:backend</code> option to <code>'docbook'</code>.
+Since embedded DocBook isn&#8217;t that useful, we also enable the standalone document (i.e., header and footer) by setting the <code>:standalone</code> option to <code>true</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">puts Asciidoctor.convert '*This* is Asciidoctor.', standalone: true, backend: 'docbook'</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

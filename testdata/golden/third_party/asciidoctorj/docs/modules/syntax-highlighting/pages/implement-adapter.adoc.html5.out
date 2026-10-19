@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Implement a Syntax Highlighter Adapter</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body id="syntax-highlighter-adapter" class="article">
+<div id="header">
+<h1>Implement a Syntax Highlighter Adapter</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>A syntax highlighter must implement the interface <code>org.asciidoctor.syntaxhighlighter.SyntaxHighlighterAdapter</code>.
+This has to be registered at the Asciidoctor instance, so that it can be used by using the corresponding value for the attribute <code>:source-highlighter</code>.</p>
+</div>
+<div class="paragraph">
+<p>A <code>SyntaxHighlighterAdapter</code> must implement methods to add stylesheets and scripts to the resulting HTML document.
+This is considered as a core functionality that every syntax highlighter requires.</p>
+</div>
+<div class="paragraph">
+<p>The following example shows a very simplistic syntax highlighter that uses {url-highlightjs}[highlight.js]:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in implement-adapter.adoc - include::example$org/asciidoctor/integrationguide/syntaxhighlighter/HighlightJsHighlighter.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Every syntax highlighter must implement the interface <code>org.asciidoctor.syntaxhighlighter.SyntaxHighlighterAdapter</code>.</p>
+</li>
+<li>
+<p>The method <code>hasDocInfo</code> indicates that this highlighter only wants to add DocInfo to the footer of the document.</p>
+</li>
+<li>
+<p>The method <code>getDocInfo</code> is only called to return the DocInfo for the footer of the document.
+It returns references to the required css and js sources and starts highlight.js.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s say we want to convert this document:</p>
+</div>
+<div class="listingblock">
+<div class="title">sources.adoc</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">Unresolved directive in implement-adapter.adoc - include::example$sources.adoc[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now this document can be converted using our highlighter after registering it with Asciidoctor:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in implement-adapter.adoc - include::example$org/asciidoctor/integrationguide/syntaxhighlighter/HighlightJsHighlighterTest.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Register the adapter class using a well defined name.</p>
+</li>
+<li>
+<p>Docinfo is only written if the document is converted with the option <code>:header_footer</code>.</p>
+</li>
+<li>
+<p>The well defined name that was used to register the syntax highlighter must be used in the attribute <code>:source-highlighter</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

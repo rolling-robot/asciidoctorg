@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Compound Block Processor Example</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Compound Block Processor Example</h1>
+</div>
+<div id="content">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Purpose</dt>
+<dd>
+<p>Register a custom block named <code>collapsible</code> that transforms a listing block into a compound block composed of the following:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>an example block with the collapsible option enabled</p>
+</li>
+<li>
+<p>the original listing block</p>
+</li>
+<li>
+<p>the listing block is promoted to a source block if a language is specified using the second positional attribute.</p>
+</li>
+</ul>
+</div>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="title">sample-with-collapsible-block.adoc</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">.Show JSON
+[collapsible,json]
+----
+{
+   "foo": "bar"
+}
+----</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">collapsible-block.rb</div>
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">class CollapsibleBlock &lt; Asciidoctor::Extensions::BlockProcessor
+  enable_dsl
+  on_context :listing
+  positional_attributes 'language'
+
+  def process parent, reader, attrs
+    lang = attrs.delete 'language'
+    attrs['title'] ||= 'Show Listing'
+    example = create_example_block parent, [], attrs, content_model: :compound
+    example.set_option 'collapsible'
+    listing = create_listing_block example, reader.readlines, nil
+    if lang
+      listing.style = 'source'
+      listing.set_attr 'language', lang
+      listing.commit_subs
+    end
+    example &lt;&lt; listing
+    example
+  end
+end
+
+Asciidoctor::Extensions.register do
+  block CollapsibleBlock, :collapsible
+end</code></pre>
+</div>
+</div>
+<div class="literalblock">
+<div class="title">Usage</div>
+<div class="content">
+<pre>$ asciidoctor -r ./collapsible-block.rb sample-with-collapsible-block.adoc</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+This extension mimics the builtin <code>collapsible</code> option on the example block, but consolidates it to a single block.
+The purpose of this extension is to show how to assemble a compound block in an extension.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

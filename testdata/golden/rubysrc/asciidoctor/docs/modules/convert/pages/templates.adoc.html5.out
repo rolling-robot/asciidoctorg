@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Converter Templates</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Converter Templates</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>All output produced by Asciidoctor is customizable.
+One way to customize the output is to use a <a href="custom.html">custom converter</a>.
+Converter templates offer a simpler way.</p>
+</div>
+<div class="paragraph">
+<p>The built-in converters, and others that have the <code>supports_templates</code> trait enabled, allow you to replace the convert handler for any convertible context with a template.
+The goal of this mechanism is to make it easier to customize the output of a converter (e.g., HTML) without having to develop, register, and use a custom converter.
+In other words, you can customize the output of a converter à la carte without having to write code (aside from what&#8217;s in the template).</p>
+</div>
+<div class="paragraph">
+<p>This page explains how the converter template mechanism works in Asciidoctor and how you can make use of it to customize the output of a converter that supports it.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_is_a_template">What is a template?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A template is a type of source file that&#8217;s focused on producing output.
+When we use the term <em class="term">template</em> in this context, we&#8217;re specifically referring to the source file for a Ruby template engine.</p>
+</div>
+<div class="paragraph">
+<p>You can think of template as source code in which the output text forms the primary structure and the programming logic is weaved in between.
+If you come from a programming background, it&#8217;s as though the program logic and strings are flipped.</p>
+</div>
+<div class="paragraph">
+<p>When you write a template, you begin with static text.
+Then you intersperse logic around regions of that text.
+This logic allows you to either conditionally select text or repeat it based on information provided by a backing data model.
+The syntax of that interspersed logic is the template language.</p>
+</div>
+<div class="paragraph">
+<p>The most common template engine in Ruby is ERB because it&#8217;s built into the language.
+Here&#8217;s an example of an ERB template that outputs a paragraph element using the content provided by the backing data model:</p>
+</div>
+<div class="listingblock">
+<div class="title">paragraph.html.erb</div>
+<div class="content">
+<pre class="highlight"><code class="language-erb" data-lang="erb">&lt;p&gt;&lt;%= content %&gt;&lt;/p&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Some template languages, such as Slim and Haml, are more structured.
+Here&#8217;s the previous example written in Slim:</p>
+</div>
+<div class="listingblock">
+<div class="title">paragraph.html.slim</div>
+<div class="content">
+<pre class="highlight"><code class="language-slim" data-lang="slim">p =content</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and in Haml:</p>
+</div>
+<div class="listingblock">
+<div class="title">paragraph.html.haml</div>
+<div class="content">
+<pre class="highlight"><code class="language-haml" data-lang="haml">%p =content</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice there are no angled brackets in these templates.
+That&#8217;s because Slim and Haml assume that the start of each statement is the name of an XML element (Haml requires a leading <code>%</code>).
+The equals sign tells Slim and Haml to evaluate the Ruby expression that follows and insert the result into the output.
+In this case, the template is reading the variable <code>content</code>, technically a property of the backing data model.
+Slim and Haml use indentation to infer nesting in the HTML structure (much like in YAML).</p>
+</div>
+<div class="paragraph">
+<p>At runtime, the template engine transforms the template into runnable code and invokes it.
+We refer to this operation as invoking the template.
+Effectively, this operation invokes the logic and expands variable references in the template to produce the resolved output.</p>
+</div>
+<div class="paragraph">
+<p>Now that you&#8217;re familiar with the basic concept of a template, let&#8217;s look at how templates are used in Asciidoctor.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_templates_in_asciidoctor">Templates in Asciidoctor</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Templates are used in Asciidoctor to customize the output generated by a converter (as long as the converter has the <code>supports_templates</code> trait enabled).
+We refer to these as converter templates.
+Converter templates work in conjunction with the converter over which they are applied.</p>
+</div>
+<div class="paragraph">
+<p>You can reuse the same set of templates you develop for Asciidoctor with AsciidoctorJ, making the templates portable between the two runtimes.
+Asciidoctor.js provides its own <a href="asciidoctor.js:extend:converter/template-converter.html">template converter</a>, which means you have to develop a different set of templates if you&#8217;re using Asciidoctor.js.</p>
+</div>
+<div class="paragraph">
+<p>There are three keys points to understand about using converter templates in Asciidoctor:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>How Asciidoctor selects the template engine to use.</p>
+</li>
+<li>
+<p>What backing data model Asciidoctor passes to the template.</p>
+</li>
+<li>
+<p>The available template names.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s study templates through the lens of Asciidoctor, then explore common APIs, helpers, and debugging.</p>
+</div>
+<div class="sect2">
+<h3 id="_template_engine_selection">Template engine selection</h3>
+<div class="paragraph">
+<p>Asciidoctor uses <a href="https://github.com/rtomayko/tilt" target="_blank" rel="noopener">Tilt</a> to load and invoke templates.
+Tilt is a generic interface to multiple Ruby template engines and is provided by the required <strong>tilt</strong> gem.</p>
+</div>
+<div class="paragraph">
+<p>You can compose templates in any template language that&#8217;s supported by Tilt.
+If you use a template engine that requires additional libraries (i.e., gems), you must install them first.
+For example, to use templates written in Haml, you must install the <strong>haml</strong> gem.</p>
+</div>
+<div class="paragraph">
+<p>Tilt examines the file extension of the template, matches it to a registered and available template engine, and passes the template to the engine to be invoked.
+If the file extension is not recognized, or the template engine is not installed, this process will fail.</p>
+</div>
+<div class="paragraph">
+<p>A template has a double file extension (e.g., <code>.html.haml</code>).
+The outer file extension is the file extension of the template.
+In other words, it identifies the template language.
+The inner file extension is the file extension of the output file.
+In other words, it identifies the output format.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s assume you have a template named <em class="path">paragraph.html.haml</em>.
+The <em>.haml</em> file extension tells Tilt to delegate to Haml.
+The remaining part of the filename (e.g., <em class="path">paragraph.html</em>) would be used as the output file.
+However, in Asciidoctor, the result of the template isn&#8217;t output to a file.
+Instead, it is combined with the rest of the output of the converter.
+But the file extension should still match the file extension of the output file that Asciidoctor produces.</p>
+</div>
+<div class="paragraph">
+<p>You can find a list of template engines that Tilt supports, along with any required libraries, in the <a href="https://github.com/rtomayko/tilt#readme" target="_blank" rel="noopener">Tilt README</a>.
+The most popular template engines for this purpose are <a href="https://slim-template.github.io" target="_blank" rel="noopener">Slim</a>, Haml, and ERB.
+We strongly recommend using Slim.
+ERB is also a solid choice since it&#8217;s built into the Ruby language and thus doesn&#8217;t have any dependencies.
+You&#8217;re encouraged to read the documentation for the template engine of your choice to understand how to use that particular template language.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_available_template_names">Available template names</h3>
+<div class="paragraph">
+<p>When we talk about the name of a template, we&#8217;re talking about the basename of the template minus the double file extension.
+For example, the name of the template <em class="path">paragraph.html.slim</em> is <em>paragraph</em>.
+This name is significant because it maps 1-to-1 with the <a href="contexts-ref.html">convertible contexts</a> in Asciidoctor (excluding the leading colon).
+The convertible contexts are roughly the nodes in the parsed AsciiDoc document.</p>
+</div>
+<div class="paragraph">
+<p>If the name of a template matches the name of a convertible context, Asciidoctor will use that template to produce the output for any node with that context when the convert method is called on that node.
+You can create a template for as many or as few contexts as you like.
+If Asciidoctor is unable to locate a template for a convertible context, it will fall back to using the handler provided by the converter.
+By using templates, you can customize some or all of the output produced by a converter.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Recall that templates can only be used if supported by the converter.
+All built-in converters in Asciidoctor support the use of templates to customize the converter.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The outer template is either named document or embedded, depending on whether or not the document is being converted in standalone mode.
+Asciidoctor doesn&#8217;t walk the document tree itself and invoke the corresponding templates.
+Rather, it&#8217;s up to the template to trigger the other templates by invoking the <code>content</code> method on block nodes.
+So, if you replace the document or embedded template, and don&#8217;t invoke the <code>content</code> method, that explains why no other templates get called.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s look at the backend data model to understand the logic that can be used in a template.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_backing_data_model">Backing data model</h3>
+<div class="paragraph">
+<p>The backing data model for a template in Asciidoctor is always the node being converted (specifically an {url-api-gems}/asciidoctor/{release-version}/Asciidoctor/AbstractNode[<code>AbstractNode</code>]).
+(A node in the Asciidoctor document model is similar to an XML DOM node).
+For example, when writing a template for a paragraph, the backing data model is an instance of {url-api-gems}/asciidoctor/{release-version}/Asciidoctor/Block[<code>Block</code>] with the context <code>:paragraph</code>.</p>
+</div>
+<div class="paragraph">
+<p>You can access the node itself using the <code>self</code> keyword.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-slim" data-lang="slim">- puts self</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In a Slim template, a line that starts with <code>-</code> executes a Ruby statement.
+An expression that starts with <code>=</code> (either at the start of the line or following a tag name) invokes a method and inserts the return value into the template.</p>
+</div>
+<div class="paragraph">
+<p>Within the template, you can access all the instance variables and methods of the node using the name of that member, just as you would inside a method call (e.g., <code>@id</code> or <code>title</code>).
+(You can think of the template as a method call on the node object).
+When referencing an accessor method, the name of the member is synonymous with a template variable.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Caution</div>
+</td>
+<td class="content">
+Accessing instance variables of the node from the template (e.g., <code>@id</code>) is generally discouraged as it tightly couples your template to the internal model.
+It&#8217;s better to stick with using public accessors and methods.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>To access the converted content of the node, you use the template variable <code>content</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-slim" data-lang="slim">p =content</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The syntax <code>=content</code> invokes the <code>content</code> accessor method on the node and inserts the result into the template.</p>
+</div>
+<div class="paragraph">
+<p>You can access the document for all nodes from the template using the <code>document</code> property.
+The document is most commonly used for looking up document attributes, as shown here:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-slim" data-lang="slim">p lang=(document.attr 'lang') =content</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also use the document object to lookup other nodes in the document using <code>Document#find_by</code>.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s look at a complete example of a paragraph template that mimics the output of the built-in HTML converter.</p>
+</div>
+<div class="listingblock">
+<div class="title">paragraph.html.slim</div>
+<div class="content">
+<pre class="highlight"><code class="language-slim" data-lang="slim">div id=id class=['paragraph', role]
+  - if title?
+    .title =title
+  p =content</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Assuming id is "hello", title is "Hello, World!", role is nil, and content is "Your first template!", this template will produce the following HTML:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;div id="hello" class="paragraph"&gt;
+  &lt;div class="title"&gt;Hello, World!&lt;/div&gt;
+  &lt;p&gt;Your first template!&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This template uses the <code>id</code>, <code>role</code>, <code>title</code>, and <code>content</code> properties, as well as the <code>title?</code> method.
+You may notice that Slim infers some logic for you.
+If the role is not set, it will drop that entry from the array, join the remaining entries on a space, and output the class attribute.
+If the <code>id</code> property were nil instead of "hello", the template will not output the id attribute.</p>
+</div>
+<div class="paragraph">
+<p>To help you understand what properties and methods are available on a node, you can print them using the following expression:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-slim" data-lang="slim">- pp (public_methods - Object.instance_methods).reject {|it| it.end_with? '=' }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>All properties are reported as methods, which is why this statement uses <code>public_methods</code>.</p>
+</div>
+<div class="paragraph">
+<p>You can inspect all the attributes available on the current node and current document as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-slim" data-lang="slim">- pp attributes
+- pp document.attributes</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To discover more about these properties and methods, and what they return, refer to the {url-api-gems}/asciidoctor/{release-version}/Asciidoctor/AbstractNode[API docs].
+Also refer to <a href="#_debugging">Debugging</a> to learn more about how to inspect the backing data model.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_common_apis">Common APIs</h3>
+<div class="paragraph">
+<p>Each node shares a common set of properties, such as id, role, attributes, context, its parent node, and the document node.
+Block and inline nodes have additional properties that are specific to their purpose.
+For example, a block node has a <code>content</code> property to access its converted content, a list node has an <code>items</code> property to access the list items, and an inline node has a <code>text</code> property to access the converted text.</p>
+</div>
+<div class="paragraph">
+<p>Each template has access to any API in the document model that is accessible from the node being converted.
+The following table provides a list of the APIs you&#8217;ll likely use most often.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col width="25%">
+<col width="50%">
+<col width="25%">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Example (Slim)</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">document</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>- if document.attr 'icons', 'font'</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A reference to the current document (and all of its nodes).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">content</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>=content</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Converts the children of this block node (if any) and returns the result.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">items</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>- items.each do |item|</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provides access to the items in a list node.
+Note that the list template must process its own items.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>=text</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns the converted text of this inline node.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">target</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>=target</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns the converted target of this inline node, if applicable (e.g., anchor, image).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">id</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>div id=id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The id assigned to the block or nil if no id is assigned.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">role</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>div class=role</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A convenience method that returns the role attribute for the block, or nil if the block does not have a role.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">role?</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>if role? 'lead'</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A convenience method to check whether the block has the role attribute.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attr</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>div class=(attr 'toc-class', 'toc')</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Retrieves the value of the specified attribute on the element, using the name as a key.
+If the name is written as a symbol, it will be automatically converted to a string before lookup.
+The second argument is a fallback value if the attribute is not set.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">attr?</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>- if attr? 'icons'</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Checks whether the specified attribute exists on the element, using the name as the key.
+If the name is written as a symbol, it will be automatically converted to a string before lookup.
+If the second argument is provided (a match), it additionally checks whether the attribute value matches the specified value.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">style</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>- if style == 'source'</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Retrieves the style (qualifier) for a block node.
+If the block does not have a style, nil is returned.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">title</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>=title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Retrieves the title of the block with normal substitutions (escape XML, render links, etc) applied.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">title?</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>- if title?</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Checks whether a title has been assigned to this block.
+This method does not have side effects (e.g., checks for existence only, does not apply substitutions)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">captioned_title</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>=captioned_title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Retrieves the title of the block with caption and normal substitutions (escape XML, render links, etc) applied.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">option?</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>video autoplay=(option? 'autoplay')</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A convenience method to check whether the specified option attribute (e.g., autoplay-option) is present.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>- if type == :xref</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Returns the node variant for inline nodes that have variants (e.g., anchor, quoted, etc).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">image_uri</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>img src=(image_uri attr 'target')</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Converts the path into an image URI (reference or embedded data) to be used in an HTML img element.
+Applies security restrictions, cleans path and can embed image data if :data-uri: attribute is enabled on document.
+Always use this method when dealing with image references.
+Relative image paths are resolved relative to document directory unless overridden using :imagesdir:</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">icon_uri</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>img src=(icon_uri attr 'target')</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Same as image_uri except it specifically works with icons.
+By default, it will look in the subdirectory images/icons, unless overridden using :iconsdir:</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">media_uri</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>audio src=(media_uri attr 'target')</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Similar to image_uri, except it does not support embedding the data into the document.
+Intended for video and audio paths.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">normalize_web_path</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>link href=(normalize_web_path attr 'stylesheet')</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Joins the path to the relative_root and normalizes parent and self references. Access to parent directories may be restricted based on safe mode setting.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_helpers">Helpers</h3>
+<div class="paragraph">
+<p>As previously stated, the backing data model for a template primarily consists of the properties and methods of the node being converted.
+Helpers provided by the template engine are also available as top-level functions in the template.
+Refer to the documentation for the template engine for details.</p>
+</div>
+<div class="paragraph">
+<p>If you find yourself putting a lot of logic in the template, you may want to extract that logic into custom helper functions.
+When using Haml or Slim, you can define these helper functions in the file <em class="path">helper.rb</em> located in the same folder as the templates.
+These helper functions can simplify reoccurring elements that appear across multiple templates.</p>
+</div>
+<div class="paragraph">
+<p>The helper file must define the Ruby module <code>Haml::Helpers</code> or <code>Slim::Helpers</code>, depending on which template engine your templates target.
+Every method defined in that module becomes a top-level function in the template.
+The method is effectively mixed into the node, so the <code>self</code> reference in the function is the node itself.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+Helpers provided by the template engine are also available as top-level functions.
+For example, Haml provides the <code>html_tag</code> helper for creating an HTML element dynamically.
+Refer to the documentation for the template engine for details.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s assume that we&#8217;re creating a template for sections, and we want to output the section title with the section number, but only if automatic section numbering is enabled.
+We can create a helper function for this purpose:</p>
+</div>
+<div class="listingblock">
+<div class="title">helpers.rb</div>
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">module Slim::Helpers
+  def section_title
+    if caption
+      captioned_title
+    elsif numbered &amp;&amp; level &lt;= (document.attr :sectnumlevels, 3).to_i
+      if level &lt; 2 &amp;&amp; document.doctype == 'book'
+        case sectname
+        when 'chapter'
+          %(#{(signifier = document.attr 'chapter-signifier') ? signifier.to_s + ' ' : ''}#{sectnum} #{title})
+        when 'part'
+          %(#{(signifier = document.attr 'part-signifier') ? signifier.to_s + ' ' : ''}#{sectnum nil, ':'} #{title})
+        else
+          %(#{sectnum} #{title})
+        end
+      else
+        %(#{sectnum} #{title})
+      end
+    else
+      title
+    end
+  end
+end</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can now use this helper in your section template as follows:</p>
+</div>
+<div class="listingblock">
+<div class="title">section.html.slim</div>
+<div class="content">
+<pre class="highlight"><code class="language-slim" data-lang="slim">*{ tag: %(h#{level + 1}) } =section_title <b class="conum">(1)</b>
+=content <b class="conum">(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>We&#8217;re leveraging a special syntax in Slim to create the HTML heading element dynamically.</p>
+</li>
+<li>
+<p>It&#8217;s necessary to invoke the <code>content</code> method to convert the child nodes of a node that contains other nodes.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>If you prefer your helpers to be pure functions, you can pass in the node as the first argument and only use that reference to access properties of the backing data model.</p>
+</div>
+<div class="listingblock">
+<div class="title">helpers.rb using pure functions</div>
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">module Slim::Helpers
+  def section_title node = self
+    if node.caption
+      node.captioned_title
+    elsif node.numbered &amp;&amp; node.level &lt;= (node.document.attr :sectnumlevels, 3).to_i
+      ...
+    else
+      node.title
+    end
+  end
+end</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Which style you use to write your helpers is up to you.
+But if you find that you need to reuse a function for different scenarios, you might find the investment in pure functions to be worthwhile.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_debugging">Debugging</h3>
+<div class="paragraph">
+<p>There are two approaches to debug a template by exploring the backing model:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>print messages and return values to STDOUT using <code>puts</code> or <code>pp</code></p>
+</li>
+<li>
+<p>jump into the context of the template using an interactive debugger</p>
+</li>
+</ul>
+</div>
+<div class="sect3">
+<h4 id="_print_debugging_information">Print debugging information</h4>
+<div class="paragraph">
+<p>To print the current node in string form to STDOUT, you can use the following statement in your template:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-slim" data-lang="slim">- puts self</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can print structured information about the current node using <code>pp</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-slim" data-lang="slim">- pp self</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>However, since a node has circular references, that output can be extremely verbose.
+You might find it more useful to print more specific information.</p>
+</div>
+<div class="paragraph">
+<p>You can see what attributes are available on the current node and document using these statements:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-slim" data-lang="slim">- pp attributes
+- pp document.attributes</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can see what properties and methods are available on a node using the following expression:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-slim" data-lang="slim">- pp (public_methods - Object.instance_methods).reject {|it| it.end_with? '=' }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Using print statements, you have to update the template and rerun Asciidoctor each time you want to further your inspection.
+A more efficient approach is to use an interactive debugger.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_use_an_interactive_debugger">Use an interactive debugger</h4>
+<div class="paragraph">
+<p><a href="http://pry.github.io">Pry</a> is a powerful debugger for Ruby that features syntax highlighting, tab-completion, and documentation and source code browsing.
+You can use it to interactively discover the object hierarchy of the backing model available to an Asciidoctor template.</p>
+</div>
+<div class="paragraph">
+<p>To use Pry, you first need to install it, either using <code>gem install</code>:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ gem install pry</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or by adding it to your <em class="path">Gemfile</em> and running <code>bundle install</code>.</p>
+</div>
+<div class="paragraph">
+<p>In order to be dropped into the debugger at a specific point in a template, add the following two lines to the template you want to inspect:</p>
+</div>
+<div class="listingblock">
+<div class="title">paragraph.html.slim</div>
+<div class="content">
+<pre class="highlight"><code class="language-slim" data-lang="slim">- require 'pry'
+- binding.pry</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When you run Asciidoctor, it will pause in the template and give you an interactive console.</p>
+</div>
+<div class="literalblock output">
+<div class="content">
+<pre>From: /path/to/templates/html5/paragraph.html.slim:7 self.__tilt_800:
+
+    1: - require 'pry'
+ =&gt; 2: - binding.pry
+
+[1] pry(#&lt;Asciidoctor::Block&gt;)&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>From there, you can inspect the objects in the backend model.</p>
+</div>
+<div class="literalblock output">
+<div class="content">
+<pre>[1] pry(#&lt;Asciidoctor::Block&gt;)&gt; attributes</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also query Asciidoctor&#8217;s API documentation:</p>
+</div>
+<div class="literalblock output">
+<div class="content">
+<pre>[1] pry(#&lt;Asciidoctor::Block&gt;)&gt; ? find_by</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Type exit to leave the interactive console:</p>
+</div>
+<div class="literalblock output">
+<div class="content">
+<pre>[1] pry(#&lt;Asciidoctor::Block&gt;)&gt; exit</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To learn more about what you can do with Pry, we recommend watching the <a href="http://vimeo.com/26391171" target="_blank" rel="noopener">introductory screencast</a>.
+Refer to the <a href="https://github.com/pry/pry/wiki" target="_blank" rel="noopener">Pry wiki</a> for details about how to use it.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_to_use_templates">How to use templates</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Now that you know what templates are and how to make them, let&#8217;s look at how to use them in Asciidoctor.</p>
+</div>
+<div class="sect2">
+<h3 id="_organize_your_templates">Organize your templates</h3>
+<div class="paragraph">
+<p>You should group templates for a specific backend together in a single folder.
+In that folder, each template file should be named using the pattern <code>&lt;context&gt;&lt;output-ext&gt;&lt;template-ext&gt;</code>, where <code>context</code> is the name of a <a href="contexts-ref.html">convertible context</a>, <code>output-ext</code> is the file extension of the output file, and <code>template-ext</code> is the file extension for the template language (e.g., <em class="path">paragraph.html.slim</em>).
+Those are the only requirement you have to follow in order for Asciidoctor to discover and load your templates.</p>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re creating templates for multiple backends, you may decide to further group your templates in folders named after the backend (and perhaps even an additional folder for the template language, not shown here).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>📒 templates <b class="conum">(1)</b>
+  📂 html5 <b class="conum">(2)</b>
+    📄 paragraph.html.slim <b class="conum">(3)</b></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The folder containing the templates for various backends.</p>
+</li>
+<li>
+<p>The folder containing the templates for the html5 backend.</p>
+</li>
+<li>
+<p>The converter template for paragraphs.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re only targeting a single backend, you can simply name the folder <em class="path">templates</em>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>📒 templates
+  📄 paragraph.html.slim</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Recall that the backend is a moniker for the expected output format, and in turn, the converter that produces it.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_install_the_template_engine">Install the template engine</h3>
+<div class="paragraph">
+<p>To use converter templates, you must always install the <strong>tilt</strong> gem.
+If you&#8217;re using a template engine that has one or more required libraries, you must first install those libraries.
+Once the library is installed, Asciidoctor will use Tilt to load it on demand.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+If you write your templates in ERB, no additional libraries are required.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s assume you&#8217;re writing your templates in Slim (which the template engine we most recommend).
+You will need both the <strong>tilt</strong> and <strong>slim</strong> gems installed.</p>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re using Bundler, you install gems first by declaring them in <em class="path">Gemfile</em>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Gemfile</div>
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">gem 'tilt'
+gem 'slim'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, you install the gems using Bundler:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ bundle install</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re not using Bundler, and you have configured Ruby to install gems in your user/home directory, then you can use the <code>gem</code> command instead:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ gem install tilt slim</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Either way, the <strong>tilt</strong> and <strong>slim</strong> gems must be available on the load path when running Asciidoctor in order to use templates written in the Slim template language.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_apply_your_templates">Apply your templates</h3>
+<div class="paragraph">
+<p>Instructing Asciidoctor to apply your templates is the easiest part.
+You only need to tell Asciidoctor where the templates are located and which template engine you&#8217;re using.
+(Technically, you don&#8217;t need to specify the template engine.
+However, by doing so, it makes the scan more efficient and deterministic.)</p>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re using the CLI, you specify the template directory using the <code>-T</code> option (longhand: <code>--template-dir</code>) and the template engine using the <code>-E</code> option (longhand: <code>--template-engine</code>).</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -T /path/to/templates -E slim doc.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When using JRuby, you can refer to a directory on the classpath by prefixing the path with <code>uri:classloader:</code>.
+For example:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -r /path/to/templates.jar -T uri:classloader:/path/to/templates -E slim doc.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re using the API, you specify the template directory (or directories) using the <code>:template_dirs</code> option and the template engine using the <code>:template_engine</code> option.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">Asciidoctor.convert_file 'doc.adoc', safe: :safe,
+  template_dirs: ['/path/to/templates'], template_engine: 'slim'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that we didn&#8217;t specify the segment <em class="path">html5</em> in the path where the templates are located.
+That&#8217;s because Asciidoctor automatically looks for a folder that matches the backend name when scanning for templates (e.g., <em class="path">/path/to/templates/html5</em>).
+However, you can include the segment for the backend in the path if you prefer.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_use_multiple_template_directories">Use multiple template directories</h3>
+<div class="paragraph">
+<p>You can distribute templates for a single backend across multiple directories.
+For example, you may have a set of common templates for all projects (e.g., <em class="path">/path/to/common-templates</em>) and a set of specialized templates that supplement and/or override those templates for a particular project (e.g., <em class="path">/path/to/specialized-templates</em>).</p>
+</div>
+<div class="paragraph">
+<p>To load templates from multiple directories when using the CLI, you can pass each directory to Asciidoctor by specifying the <code>-T</code> option multiple times:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -T /path/to/common-templates -T /path/to/specialized-templates -E slim doc.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When using the API, you add all the template directories to the array value of the <code>:template_dirs</code> option:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">Asciidoctor.convert_file 'doc.adoc', safe: :safe,
+  template_dirs: ['/path/to/common-templates', '/path/to/specialized-templates'], template_engine: 'slim'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In both cases, if the same template is found in more than one location, the template discovered in the directory listed later in the list will be used.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_tutorial_your_first_converter_template">Tutorial: Your first converter template</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section provides a tutorial you can follow to quickly learn how to write and use your first converter template.
+In this tutorial, you&#8217;ll create a converter template to customize the HTML produced by the built-in HTML converter for unordered lists.
+You&#8217;ll compose the template in the Slim template language.
+You&#8217;ll then observe the result of this customization by using the template when converting the AsciiDoc document to HTML with Asciidoctor.</p>
+</div>
+<div class="sect2">
+<h3 id="_add_and_install_required_gems">Add and install required gems</h3>
+<div class="paragraph">
+<p>You first need to install the required libraries (i.e., gems) for the template engine.
+Since you&#8217;ll be using Slim, you need to install the <strong>slim</strong> gem.
+You also need to install the <strong>tilt</strong> gem, which provides Tilt, the generic interface for Ruby template engines that Asciidoctor uses to load and invoke templates.
+Although not required, Asciidoctor will prompt you to also install the <strong>concurrent-ruby</strong> gem to properly implement the template cache.</p>
+</div>
+<div class="paragraph">
+<p>The preferred way of installing a gem is to add it to the <em class="path">Gemfile</em> in your project.</p>
+</div>
+<div class="listingblock">
+<div class="title">Gemfile</div>
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">source 'https://rubygems.org'
+
+gem 'asciidoctor'
+# ...any other gems you are using
+gem 'tilt'
+gem 'slim'
+gem 'concurrent-ruby'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Run Bundler to install the gems into your project.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ bundle install</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re not using Bundler, and you have configured Ruby to install gems in your user/home directory, then you can use the <code>gem</code> command instead:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ gem install tilt slim concurrent-ruby</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now that you&#8217;ve installed Tilt and the Slim template engine, you can get started writing templates.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_templates_folder">Create templates folder</h3>
+<div class="paragraph">
+<p>Next, create a new folder named <em class="path">templates</em> to store your templates.
+We also recommend creating a nested folder named <em class="path">html5</em> to organize the templates by backend.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ mkdir -p templates/html5</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can further organize templates into folders by engine, though that&#8217;s not required.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_compose_a_template">Compose a template</h3>
+<div class="paragraph">
+<p>Let&#8217;s compose the template to customize the HTML for unordered lists.
+Since the context for unordered lists is <code>:ulist</code> (see <a href="contexts-ref.html">contexts-ref.html</a>), you&#8217;ll name the template <em class="path">ulist.html.slim</em>.</p>
+</div>
+<div class="listingblock">
+<div class="title">ulist.html.slim</div>
+<div class="content">
+<pre class="highlight"><code class="language-slim" data-lang="slim">- if title?
+  figure.list.unordered id=id
+    figcaption=title
+    ul class=[style, role]
+      - items.each do |_item|
+        li
+          span.primary=_item.text
+          - if _item.blocks?
+            =_item.content
+- else
+  ul id=id class=[style, role]
+    - items.each do |_item|
+      li
+        span.primary=_item.text
+        - if _item.blocks?
+          =_item.content</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_apply_the_templates">Apply the templates</h3>
+<div class="paragraph">
+<p>The final step is to use the templates when you invoke Asciidoctor.
+Create an AsciiDoc file named <em class="path">doc.adoc</em> that contains an unordered list.</p>
+</div>
+<div class="listingblock">
+<div class="title">doc.adoc</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">* cats
+* dogs
+* birds</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can now instruct Asciidoctor to convert this list using your template by passing the directory containing the templates using the <code>-T</code> option and the name of the template engine using the <code>-E</code> option.
+If you used Bundler to install gems, run Asciidoctor as follows:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ bundle exec asciidoctor -T templates -E slim doc.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Otherwise, you can drop the <code>bundle exec</code> prefix:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -T templates -E slim doc.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now that you&#8217;ve created your first converter template, you&#8217;re well on your way to customizing the HTML that Asciidoctor produces to suit your own needs!</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_a_quick_review">A quick review</h3>
+<div class="paragraph">
+<p>Here&#8217;s a quick review for how to start using templates written in Slim to customize the output of the built-in HTML 5 converter.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Install the <code>tilt</code>, <code>slim</code>, and <code>concurrent-ruby</code> gems using <code>bundle install</code> or <code>gem install</code>.</p>
+</li>
+<li>
+<p>Create a folder named <em class="path">templates/html5</em> to store the templates.</p>
+</li>
+<li>
+<p>Create a template named <em class="path">paragraph.html.slim</em> in that folder.</p>
+</li>
+<li>
+<p>Populate the template with your own template logic.
+Here&#8217;s a simple example:</p>
+<div class="listingblock">
+<div class="title">paragraph.html.slim</div>
+<div class="content">
+<pre class="highlight"><code class="language-slim" data-lang="slim">p id=id role=role =content</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Load the templates using the -T flag from the CLI:</p>
+<div class="literalblock">
+<div class="content">
+<pre>$ bundle exec asciidoctor -T path/to/templates -E slim doc.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -T path/to/templates -E slim doc.adoc</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+When invoking Asciidoctor via the API, you load the templates by passing the path to the <code>:templates</code> option.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>We hope you&#8217;ll agree that using templates makes it easy to customize the output that Asciidoctor produces.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

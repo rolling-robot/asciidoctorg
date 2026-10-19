@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Process AsciiDoc Using the API</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Process AsciiDoc Using the API</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Asciidoctor provides a {url-api-gems}/asciidoctor/{release-version}[Ruby API^] named <code>Asciidoctor</code> for parsing, analyzing, and converting AsciiDoc content.
+This API is intended for use in applications, scripts, integrations with other Ruby software, such as Rails, GitHub, and GitLab, and by other languages, such as Java (via <a href="asciidoctorj::index.html">AsciidoctorJ</a>) and JavaScript (via <a href="asciidoctor.js::index.html">Asciidoctor.js</a>).</p>
+</div>
+<div class="paragraph">
+<p>This page examines the purpose of the API and how it can be used, shows how to get started with it, introduces its primary entry points, and links to where you can find more information to start putting it into practice.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="when-to-use">When to use the API</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If all you need to do is convert an AsciiDoc file to a publishable format such as HTML, then the <a href="cli:index.html"><code>asciidoctor</code></a> CLI should suit your needs.
+Here&#8217;s an example showing how to convert an AsciiDoc document to HTML using the CLI:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -d book -n -a toc=left -a source-highlighter=highlight.js document.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s the same example showing how to convert the document to HTML using the API:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'asciidoctor'
+
+Asciidoctor.convert_file 'document.adoc', doctype: :book, safe: :unsafe,
+  attributes: { 'toc' =&gt; 'left', 'sectnums' =&gt; '', 'source-highlighter' =&gt; 'highlight.js' }</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+When passing attributes using the Hash format, the attribute name <strong>must</strong> be specified as a String, not a Symbol.
+In other words, <code>toc: 'left'</code> is not recognized as an attribute entry (since <code>toc:</code> creates a Symbol key).
+It must be specified as <code>'toc' =&gt; 'left'</code>, as shown in the previous example.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This API call can be abbreviated by declaring the document attributes using shorthand form:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'asciidoctor'
+
+Asciidoctor.convert_file 'document.adoc', doctype: :book, safe: :unsafe,
+  attributes: 'toc=left sectnums source-highlighter=highlight.js'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In contrast to the CLI, the API enables you to break down the processing into smaller steps.
+By doing so, you can capture the result of a single step, analyze the parsed document, interface with the document model in an extension, or just gain more control over the processing in general.</p>
+</div>
+<div class="paragraph">
+<p>When using the API, we talk about two main steps:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">load</dt>
+<dd>
+<p>In this step, the AsciiDoc content is parsed into a document object model.
+This model represents an in-memory hierarchy of the AsciiDoc content as a tree of Ruby objects.
+These objects represent the elements in the AsciiDoc document, down to the block level, along with any metadata, such as document and block attributes.</p>
+</dd>
+<dt class="hdlist1">convert</dt>
+<dd>
+<p>In this step, the previously prepared document object model is converted into the specified output format using a converter.
+In coordination with the converter, the processor passes each node in the document object model to the converter to be converted.
+The result is then combined and either returned or written to a file, depending on the options passed to the API.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>You can use the API to perform these two steps together (like the CLI) using <code>convert</code> and <code>convert_file</code>, or separately using <code>load</code> and <code>load_file</code> followed by calling <code>#convert</code> on the document object.
+The API can load and convert AsciiDoc files (<code>load_file</code> and <code>convert_file</code>) or strings (<code>load</code> and <code>convert</code>).
+The <a href="#entrypoints">API entrypoints</a> section introduces these methods in more detail.</p>
+</div>
+<div class="paragraph">
+<p>The API is the main way to interface with Asciidoctor in an application or integration library.
+By using the API, you avoid having to invoke Asciidoctor using a subprocess.
+You&#8217;ll find that it also gives you a lot more control over the processing than what the CLI affords.
+The API is also a useful tool in scripts, where you may need to dive deeper into the document model beyond where extensions allow you to go.
+It is also instrumental in the development of extensions.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s learn how to get started with the API by requiring the Asciidoctor library.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="require">Start with <code>require</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To get started with the Asciidoctor API, you first need to <a href="install:index.html">install the gem</a>.
+The gem provides both the CLI and the API.
+In fact, the CLI uses the API to handle AsciiDoc conversion.</p>
+</div>
+<div class="paragraph">
+<p>Whereas with the CLI, you interact with Asciidoctor using the <code>asciidoctor</code> command, when using the API, you interact with Asciidoctor using methods on the <code>Asciidoctor</code> module.</p>
+</div>
+<div class="paragraph">
+<p>In order to make the <code>Asciidoctor</code> module available in a Ruby script or application, you must require the <code>asciidoctor</code> gem using Ruby&#8217;s <code>require</code> function:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'asciidoctor'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This one statement makes all of the {url-api-gems}/asciidoctor/{release-version}[public APIs in Asciidoctor^] available to your Ruby code.
+For example, we can check which version of Asciidoctor was required by Ruby using the following statement:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">puts Asciidoctor::VERSION
+# =&gt; {release-version}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the <code>require</code> statement fails, check to make sure that you have the gem installed (and available on the GEM_PATH).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="entrypoints">API entrypoints</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The CLI is primarily intended for converting AsciiDoc.
+While the API can do that as well, it can do so much more.
+Instead of just converting AsciiDoc, the API allows you to load the AsciiDoc into a document model.
+From there, you can either convert the document model to an output format, or you can pause to analyze or modify its structure.</p>
+</div>
+<div class="paragraph">
+<p>There are four main entrypoints in the Asciidoctor API:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>Asciidoctor.load</code></dt>
+<dd>
+<p>parses the AsciiDoc source (down to the block level) into an <code>Asciidoctor::Document</code> object</p>
+</dd>
+<dt class="hdlist1"><code>Asciidoctor.load_file</code></dt>
+<dd>
+<p>parses the contents of the AsciiDoc source file (down to the block level) into an <code>Asciidoctor::Document</code> object</p>
+</dd>
+<dt class="hdlist1"><code>Asciidoctor.convert</code></dt>
+<dd>
+<p>parses and converts the AsciiDoc source to the output format determined by the specified backend</p>
+</dd>
+<dt class="hdlist1"><code>Asciidoctor.convert_file</code></dt>
+<dd>
+<p>parses and converts the contents of the AsciiDoc source file to the output format determined by the specified backend</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re processing a file, you&#8217;d typically use a method that ends with <code>_file</code>.
+Otherwise, you&#8217;d use its complement, which accepts a String, an array of Strings, or an IO object.</p>
+</div>
+<div class="paragraph">
+<p>By default, the output of the convert methods follows the input.
+If you convert a String, the method will output a String.
+If you convert a file, the method will output to a file.
+However, these defaults can be changed using the options (e.g., <code>:to_file</code>).</p>
+</div>
+<div class="paragraph">
+<p>When calling Asciidoctor using the API, you can access <a href="options.html">additional options that control processing</a> which are not available when using the CLI.
+For example, you can pass in extensions, parse only the header, enable the sourcemap, or catalog assets.</p>
+</div>
+<div class="paragraph">
+<p>In addition to the main entrypoints, the API also provides a mechanism to register and develop extensions.
+To learn more about extensions, see <a href="extensions:index.html">extensions:index.html</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_next_steps">Next steps</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="convert-files.html">Load and convert AsciiDoc from a file</a></p>
+</li>
+<li>
+<p><a href="convert-strings.html">Load and convert AsciiDoc from a string</a></p>
+</li>
+<li>
+<p><a href="convert-strings.html#embedded-output">Generating embedded vs standalone output</a></p>
+</li>
+<li>
+<p><a href="convert-strings.html#convert-inline-markup-only">Convert inline markup only</a></p>
+</li>
+<li>
+<p><a href="generate-html-toc.html">Generate an HTML TOC</a></p>
+</li>
+<li>
+<p><a href="load-templates.html">Load custom templates</a></p>
+</li>
+<li>
+<p><a href="extensions:index.html">Create extensions</a></p>
+</li>
+<li>
+<p><a href="options.html">API options</a></p>
+</li>
+<li>
+<p>{url-api-gems}/asciidoctor/{release-version}[Ruby API docs^]</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

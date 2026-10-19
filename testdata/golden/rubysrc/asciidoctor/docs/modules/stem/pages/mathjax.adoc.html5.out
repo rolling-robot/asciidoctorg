@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>MathJax and HTML</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>MathJax and HTML</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://www.mathjax.org" target="_blank" rel="noopener">MathJax</a> is a JavaScript library for displaying interactive LaTeX, AsciiMath, and MathML expressions in the browser.
+The Asciidoctor HTML converter integrates with MathJax to provide STEM processing for <a href="https://docs.mathjax.org/en/latest/input/asciimath.html" target="_blank" rel="noopener">AsciiMath</a> and <a href="https://docs.mathjax.org/en/latest/input/tex/index.html" target="_blank" rel="noopener">TeX and LaTeX</a> notation used in an AsciiDoc document.
+This integration offers simple, out-of-the-box support for STEM content when converting to HTML.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_it_works">How it works</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you convert your document to HTML using the HTML converter, and the <code>stem</code> document attribute is set on your document, the HTML will be configured to automatically load MathJax into the page from a CDN.
+There&#8217;s nothing you have to install.
+Specifically, it loads the MathJax bundle that includes support for both TeX and AsciiMath, as shown here:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-MML-AM_HTMLorMML"&gt;&lt;/script&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After the page loads, MathJax scans for expressions inside special delimiters and transforms them into a displayable format.
+You may notice a brief flash of the expression in source form while this is happening.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example of a STEM expression written in AsciiMath and rendered by MathJax.</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\$e = sum_(n=0)^oo 1 / n!\$
+</div>
+</div>
+<div class="paragraph">
+<p>If you right click on the rendered expression, you&#8217;ll notice its interactive.
+One of the options even allows you to view the original AsciiMath input.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_custom_delimiters">Custom delimiters</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The delimiters that the HTML converter places around the expressions to tell MathJax what to process are not the same as the ones MathJax looks for by default.
+These custom delimiters were chosen to avoid conflicts with other syntax in the AsciiDoc language.</p>
+</div>
+<div class="paragraph">
+<p>The converter configures MathJax to look for the custom delimiters it emits.
+If you look at the HTML source, you&#8217;ll see a text/x-mathjax-config stanza that defines them, as well as some other settings.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_alternatives">Alternatives</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The MathJax integration is currently only designed for HTML output.
+When converting to other backend formats, additional libraries are needed.
+A good alternative is <a href="mathematical.html">mathematical.html</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [["\\(", "\\)"]],
+    displayMath: [["\\[", "\\]"]],
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+  TeX: { equationNumbers: { autoNumber: "none" } }
+})
+MathJax.Hub.Register.StartupHook("AsciiMath Jax Ready", function () {
+  MathJax.InputJax.AsciiMath.postfilterHooks.Add(function (data, node) {
+    if ((node = data.script.parentNode) && (node = node.parentNode) && node.classList.contains("stemblock")) {
+      data.math.root.display = "block"
+    }
+    return data
+  })
+})
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+</body>
+</html>

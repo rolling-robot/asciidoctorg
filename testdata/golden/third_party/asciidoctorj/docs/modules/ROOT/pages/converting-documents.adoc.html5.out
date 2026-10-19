@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Convert Documents</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Convert Documents</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>This section shows you how you can use AsciidoctorJ to render AsciiDoc documents to HTML from within your own code.
+An introductory <a href="#getting-started">Getting started</a> example shows the first steps necessary to convert your documents.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="getting-started">Getting started</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The very first step to integrate AsciidoctorJ is to add the required dependencies to your project.
+Depending on your build system you have to add a dependency on the artifact <code>asciidoctorj</code> with the group id <code>org.asciidoctor</code> to your build file.
+The following snippets show what you have to add in case you use Maven, Gradle, Ivy or SBT.</p>
+</div>
+<div class="listingblock">
+<div class="title">Declaring the dependency in a Maven build file (i.e., pom.xml)</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependencies&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.asciidoctor&lt;/groupId&gt;
+    &lt;artifactId&gt;asciidoctorj&lt;/artifactId&gt;
+    &lt;version&gt;{artifact-version}&lt;/version&gt; &lt;!--<b class="conum">(1)</b>--&gt;
+  &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Declaring the dependency in a Gradle build file (e.g., build.gradle)</div>
+<div class="content">
+<pre class="highlight"><code class="language-groovy" data-lang="groovy">dependencies {
+  compile 'org.asciidoctor:asciidoctorj:{artifact-version}' // <b class="conum">(1)</b>
+}</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Declaring the dependency in an Ivy dependency descriptor (e.g., ivy.xml)</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;dependency org="org.asciidoctor" name="asciidoctorj" rev="{artifact-version}" /&gt; &lt;!--<b class="conum">(1)</b>--&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Declaring the dependency in an SBT build file (e.g., build.sbt)</div>
+<div class="content">
+<pre class="highlight"><code class="language-scala" data-lang="scala">libraryDependencies += "org.asciidoctor" % "asciidoctorj" % "{artifact-version}" // <b class="conum">(1)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Specifying the version of AsciidoctorJ implicitly selects the version of Asciidoctor</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The dependency on AsciidoctorJ will transitively add a dependency on the module <code>jruby-complete</code> with the group id <code>org.jruby</code>.</p>
+</div>
+<div class="paragraph">
+<p>The following Java program shows how to convert an arbitrary AsciiDoc file to an HTML file.
+AsciidoctorJ will already fully embedded in your Java program and it looks like any other Java library, so there is no need to fear Ruby.
+If you execute the following Java program and have an AsciiDoc file <code>document.adoc</code> in your current working directory you should see the rendered result <code>document.html</code> afterwards next to your original document.</p>
+</div>
+<div class="listingblock">
+<div class="title">Converting an AsciiDoc file to an HTML file</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in converting-documents.adoc - include::example$org/asciidoctor/integrationguide/SimpleAsciidoctorRendering.java[]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The static method <code>Asciidoctor.Factory.create()</code> creates a new Asciidoctor instance.
+This is the door to all interactions with Asciidoctor.</p>
+</li>
+<li>
+<p>The method <code>convertFile</code> takes a <code>File</code> and conversion options.
+Depending on the options it will create a new file or return the rendered content.
+In this case a new file is created and the method returns <code>null</code>.</p>
+</li>
+<li>
+<p>The conversion options define via <code>toFile(true)</code> that the result should be written to a new file.
+The option <code>safe</code> imposes security constraints on the rendering process.
+<code>safe(SafeMode.UNSAFE)</code> defines the least restricting constraints and allows for example inserting the beautiful <code>asciidoctor.css</code> stylesheet into the resulting document.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

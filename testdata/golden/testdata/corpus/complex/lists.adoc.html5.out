@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Lists</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Lists</h1>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_unordered">Unordered</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Level one</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Level two</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Level three</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Level four</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Level five</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Back to one</p>
+<div class="paragraph">
+<p>Attached paragraph.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>attached listing</pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Hyphen list</p>
+</li>
+<li>
+<p>second</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="ulist checklist square">
+<ul class="checklist">
+<li>
+<p>Square style</p>
+</li>
+<li>
+<p>&#10003; checked</p>
+</li>
+<li>
+<p>&#10063; unchecked</p>
+</li>
+<li>
+<p>&#10003; checked star</p>
+</li>
+</ul>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><input type="checkbox" data-item-complete="1" checked> interactive checked</p>
+</li>
+<li>
+<p><input type="checkbox" data-item-complete="0"> interactive unchecked</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ordered">Ordered</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>One</p>
+</li>
+<li>
+<p>Two</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Two A</p>
+</li>
+<li>
+<p>Two B</p>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p>Two B i</p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Three</p>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<ol class="arabic" start="4">
+<li>
+<p>Four</p>
+</li>
+<li>
+<p>Five</p>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<ol class="arabic" reversed>
+<li>
+<p>Reversed one</p>
+</li>
+<li>
+<p>Reversed two</p>
+</li>
+</ol>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>alpha a</p>
+</li>
+<li>
+<p>alpha b</p>
+</li>
+</ol>
+</div>
+<div class="olist upperroman">
+<ol class="upperroman" type="I">
+<li>
+<p>roman I</p>
+</li>
+<li>
+<p>roman II</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>explicit one</p>
+</li>
+<li>
+<p>explicit two</p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_description_lists">Description Lists</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">CPU</dt>
+<dd>
+<p>The brain.</p>
+</dd>
+<dt class="hdlist1">RAM</dt>
+<dd>
+<p>Memory.</p>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">SSD</dt>
+<dd>
+<p>Nested storage.</p>
+</dd>
+</dl>
+</div>
+</dd>
+</dl>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Term A
+</td>
+<td class="hdlist2">
+<p>Horizontal definition A</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+Term B
+</td>
+<td class="hdlist2">
+<p>Definition on next line</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="qlist qanda">
+<ol>
+<li>
+<p><em>What is it?</em></p>
+<p>It is a test.</p>
+</li>
+<li>
+<p><em>Why?</em></p>
+<p>Because.</p>
+</li>
+<li>
+<p><em>Term with list</em></p>
+<div class="ulist">
+<ul>
+<li>
+<p>item a</p>
+</li>
+<li>
+<p>item b</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><em>Multiple terms</em></p>
+<p><em>Second term</em></p>
+<p>Shared definition</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_complex_nesting">Complex Nesting</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Step one</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-sh" data-lang="sh">$ make</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Step two</p>
+<div class="ulist">
+<ul>
+<li>
+<p>nested bullet</p>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Attached admonition.
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Step three</p>
+<div class="openblock">
+<div class="content">
+<div class="paragraph">
+<p>Open block in list item.</p>
+</div>
+<div class="paragraph">
+<p>Second paragraph.</p>
+</div>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>item</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>separate list after comment</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

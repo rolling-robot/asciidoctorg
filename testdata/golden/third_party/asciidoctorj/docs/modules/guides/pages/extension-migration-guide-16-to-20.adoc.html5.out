@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Extension Migration: 1.6.x to 2.0.x</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Extension Migration: 1.6.x to 2.0.x</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Between 1.6.x and 2.0.x there are only very few API changes that affect an extension writer.
+This guide will illustrate the changes</p>
+</div>
+<div class="paragraph">
+<p>Unresolved directive in extension-migration-guide-16-to-20.adoc - include::partial$extension-migration-15-to-20-note.adoc[]</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_extension_registry_location_update">Extension registry location update</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You might have implemented the <code>org.asciidoctor.extension.spi.ExtensionRegistry</code> Service Interface to automatically register extensions as explained in the <a href="extensions:register-extensions-automatically.html">extensions:register-extensions-automatically.html</a>.
+To achieve this you might have added these two artifacts:</p>
+</div>
+<div class="paragraph">
+<p>First the implementation:</p>
+</div>
+<div class="listingblock">
+<div class="title">MyExtension.java for AsciidoctorJ 1.5.x or 1.6.x</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package com.example;
+
+import org.asciidoctor.extension.spi.ExtensionRegistry;
+
+public class MyExtension implements ExtensionRegistry {
+  @Override
+  public void register(Asciidoctor asciidoctor) {
+    JavaExtensionRegistry javaExtensionRegistry = asciidoctor.javaExtensionRegistry();
+    javaExtensionRegistry.treeprocessor(MyTreeprocessor.class);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Additionally you have added a file in <code>META-INF/services/</code> that declares your extensions and allows it to be discovered:</p>
+</div>
+<div class="listingblock">
+<div class="title">/META-INF/services/org.asciidoctor.extension.spi.ExtensionRegistry for AsciidoctorJ 1.5.x or 1.6.x</div>
+<div class="content">
+<pre>com.example.MyExtension</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now the interface <code>org.asciidoctor.extension.spi.ExtensionRegistry</code> moved to <code>org.asciidoctor.jruby.extension.spi.ExtensionRegistry</code>.
+That means that you have to update the name of the interface and rename the file in <code>/META-INF/services/</code>.
+In particular the last step is easily overseen as the compiler will not warn you.</p>
+</div>
+<div class="paragraph">
+<p>Therefore the implementation has to look like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">MyExtension.java for AsciidoctorJ 2.0.x</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">package com.example;
+
+import org.asciidoctor.jruby.extension.spi.ExtensionRegistry; // <b class="conum">(1)</b>
+
+public class MyExtension implements ExtensionRegistry {
+  @Override
+  public void register(Asciidoctor asciidoctor) {
+    JavaExtensionRegistry javaExtensionRegistry = asciidoctor.javaExtensionRegistry();
+    javaExtensionRegistry.treeprocessor(MyTreeprocessor.class);
+  }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Import ExtensionRegistry from the new package</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Additionally the file <code>/META-INF/services/org.asciidoctor.extension.spi.ExtensionRegistry</code> has to be renamed to <code>/META-INF/services/org.asciidoctor.jruby.extension.spi.ExtensionRegistry</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">/META-INF/services/org.asciidoctor.jruby.extension.spi.ExtensionRegistry for AsciidoctorJ 2.0.x</div>
+<div class="content">
+<pre>com.example.MyExtension</pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_inlinemacroprocessor_should_return_a_phrasenode_instead_of_a_string">InlineMacroProcessor should return a PhraseNode instead of a String</h3>
+<div class="paragraph">
+<p>A really simple extension <code>yell</code> can be implemented as an <code>InlineMacroProcessor</code>.
+It just writes the target value as an upper-case string.
+For example <code>yell&#58;yes&#91;&#93;</code> is replaced by <code>YES</code> in the generated document.</p>
+</div>
+<div class="listingblock">
+<div class="title">YellMacroProcessor.java for AsciidoctorJ 1.5.x or 1.6.x</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class YellMacroProcessor extends InlineMacroProcessor {
+
+  public YellMacroProcessor(String macroName, Map&lt;String, Object&gt; config) {
+    super(macroName, config);
+  }
+
+  @Override
+  public Object process(ContentNode parent, String target, Map&lt;String, Object&gt; attributes) {
+    return target.toUpperCase();
+  }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The implementation also works with Asciidoctor <code>2.0.x</code> but since version <code>2.0.0.rc.3</code> of Asciidoctor, when a String is returned, following entry is logged:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>INFO: expected substitution value for custom inline macro to be of type Inline; got String: yell&amp;#58;yes&amp;#91;&amp;#93;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The correct implementation with Asciidoctor <code>2.0.x</code> is to return a <code>PhraseNode</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">YellMacroProcessor.java for AsciidoctorJ 2.0.x</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class YellMacroProcessor extends InlineMacroProcessor {
+
+  public YellMacroProcessor(String macroName, Map&lt;String, Object&gt; config) {
+    super(macroName, config);
+  }
+
+  @Override
+  public Object process(ContentNode parent, String target, Map&lt;String, Object&gt; attributes) {
+    return createPhraseNode(parent, "quoted", target.toUpperCase(), attributes, new HashMap&lt;&gt;());
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

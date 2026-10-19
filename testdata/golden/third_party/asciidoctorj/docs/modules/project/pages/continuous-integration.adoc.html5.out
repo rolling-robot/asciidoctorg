@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Continuous Integration</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Continuous Integration</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Continuous integration for the AsciidoctorJ project is performed by GitHub Actions.
+You can find recent build results, including the build status of pull requests, on the <a href="https://github.com/asciidoctor/asciidoctorj/actions">asciidoctor/asciidoctorj</a> page.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_release_and_publish_the_artifacts">Release and publish the artifacts</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To build and publish a release the following properties have to be set, for example in the file ~/.gradle/gradle.properties:</p>
+</div>
+<div class="listingblock">
+<div class="title">~/.gradle/gradle.properties</div>
+<div class="content">
+<pre class="highlight"><code class="language-properties" data-lang="properties">signing.keyId=...              # <b class="conum">(1)</b>
+signing.password=...
+signing.secretKeyRingFile=/home/YOUR_USERNAME/.gnupg/secring.gpg
+
+sdkman_consumer_key=...        # <b class="conum">(2)</b>
+sdkman_consumer_token=...
+
+sonatypeUsername=...           # <b class="conum">(3)</b>
+sonatypePassword=...</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Settings for signing the artifacts</p>
+</li>
+<li>
+<p>Credentials for publishing a new release to sdkman</p>
+</li>
+<li>
+<p>Credentials for publishing artifacts to oss.sonatype.org</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The following steps are necessary to build a new release:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Update the version in gradle.properties to a release version, i.e. from <code>2.4.4-SNAPSHOT</code> to <code>2.4.4</code>.</p>
+</li>
+<li>
+<p>Build the release with</p>
+<div class="listingblock">
+<div class="content">
+<pre># ./gradlew clean build</pre>
+</div>
+</div>
+</li>
+<li>
+<p>After testing publish all artifacts to a local repository under <code>build/repos</code> with</p>
+<div class="listingblock">
+<div class="content">
+<pre># ./gradlew publishAllPublicationsToLocalRepository -i</pre>
+</div>
+</div>
+</li>
+<li>
+<p>When everything is fine publish the artifacts to a staging repository on <a href="https://oss.sonatype.org" class="bare">https://oss.sonatype.org</a> and close the repository:</p>
+<div class="listingblock">
+<div class="content">
+<pre># ./gradlew publishAllPublicationsToSonatypeRepository -i
+# ./gradlew closeRepository -i</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Visit <a href="https://oss.sonatype.org/#stagingRepositories" class="bare">https://oss.sonatype.org/#stagingRepositories</a> and check the staging repository.
+The artifacts are not published yet.
+The repository URL shown there can be used for testing this version before publishing to Maven central.</p>
+</li>
+<li>
+<p>When everything is fine publish the artifacts in the staging repository by clicking the "Release" button.
+Alternatively you can release it with</p>
+<div class="listingblock">
+<div class="content">
+<pre># ./gradlew releaseRepository</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Publish the new version to sdkman with</p>
+<div class="listingblock">
+<div class="content">
+<pre># ./gradlew asciidoctorj-distribution:sdkMajorRelease</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Commit everything and assign a tag:</p>
+<div class="listingblock">
+<div class="content">
+<pre># git commit -m "Release v2.x.y"
+# git tag v2.x.y</pre>
+</div>
+</div>
+</li>
+<li>
+<p>Upgrade the version to the next version by changing the version property in gradle.properties to <code>version=2.x.y+1-SNAPSHOT</code> and commit:</p>
+<div class="listingblock">
+<div class="content">
+<pre>git commit -m "Prepare next release"</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

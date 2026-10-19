@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Removal of deprecated methods in org.asciidoctor.Attributes</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_removal_of_deprecated_methods_in_org_asciidoctor_attributes">Removal of deprecated methods in <code>org.asciidoctor.Attributes</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Several methods in <code>org.asciidoctor.Attributes</code> class that were marked as <code>@Deprecated</code> have been removed.
+This has been done to remove duplicated features and simplify the API interaction.</p>
+</div>
+<div class="sect2">
+<h3 id="_simplification_of_attributes_initialization">Simplification of Attributes initialization</h3>
+<div class="paragraph">
+<p>In v2.5.x the following alternatives to initialize <code>Attributes</code> where possible:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using Java Constructor and setters</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Attributes attributes = new Attributes();
+attributes.setIcons("font");
+attributes.setNoFooter(true);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Using Map constructor</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, Object&gt; attributesMap = new HashMap&lt;&gt;();
+attributesMap.put("toclevels", 2);
+attributesMap.put("icons", "font");
+Attributes attributes = new Attributes(attributesMap);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Using AttributesBuilder.attributes() and get() methods</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Attributes attributes = AttributesBuilder.attributes()
+    .icons("dont")
+    .noFooter(true)
+    .get();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The new API streamlines the process with a more standard builder approach, in which</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Only interaction with <code>org.asciidoctor.Attributes</code> is required.</p>
+</li>
+<li>
+<p>Nested methods offer IDE completion and creation of immutable instances.</p>
+</li>
+<li>
+<p>Improved code readability through indentation.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>From v3.0.x, use the new <code>builder()</code> and <code>build()</code> methods from <code>org.asciidoctor.Attributes</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Using Attributes builder</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Attributes attributes = Attributes.builder()
+    .icons("dont")
+    .noFooter(true)
+    .build();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that <code>Attributes</code> setter methods are still available, that means that <code>Attributes</code> instances can still be modified as in this example.</p>
+</div>
+<div class="listingblock">
+<div class="title">Using setters on an instance</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Attributes attributes = Attributes.builder().build();
+attributes.setIcons("font");
+attributes.setNoFooter(true);</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Free key-value insertion is still possible using:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>AttributesBuilder::attribute(String attributeName)</code></p>
+</li>
+<li>
+<p><code>AttributesBuilder::attribute(String attributeName, Object attributeValue)</code></p>
+</li>
+<li>
+<p><code>Attributes::setAttribute(String attributeName, Object attributeValue)</code></p>
+</li>
+<li>
+<p><code>Attributes::setAttributes(String attributes)</code></p>
+</li>
+<li>
+<p><code>Attributes::setAttributes(String&#8230;&#8203; attributes)</code></p>
+</li>
+<li>
+<p><code>Attributes::setAttributes(Map&lt;String, Object&gt; attributes)</code></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

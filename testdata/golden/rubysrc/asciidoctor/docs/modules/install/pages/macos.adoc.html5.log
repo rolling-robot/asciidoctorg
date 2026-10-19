@@ -1,0 +1,2 @@
+ERROR: macos.adoc: line 21: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/install/pages/partial$success.adoc
+ERROR: macos.adoc: line 46: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/install/pages/partial$success.adoc

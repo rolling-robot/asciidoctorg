@@ -1,0 +1,5 @@
+ERROR: custom.adoc: line 24: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/syntax-highlighting/pages/example$prism-syntax-highlighter.rb
+ERROR: custom.adoc: line 62: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/syntax-highlighting/pages/example$extended-pygments-syntax-highlighter.rb
+ERROR: custom.adoc: line 74: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/syntax-highlighting/pages/example$pygments-syntax-highlighter-with-custom-stylesheet.rb
+ERROR: custom.adoc: line 86: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/syntax-highlighting/pages/example$always-number-lines.rb
+ERROR: custom.adoc: line 99: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/syntax-highlighting/pages/example$autolink-urls-in-comments.rb

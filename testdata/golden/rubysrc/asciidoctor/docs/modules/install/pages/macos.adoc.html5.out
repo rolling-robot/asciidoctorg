@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Install on macOS</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Install on macOS</h1>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_homebrew">Homebrew</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_install">Install</h3>
+<div class="paragraph">
+<p>You can use <a href="https://brew.sh" target="_blank" rel="noopener">Homebrew</a>, the macOS package manager, to install Asciidoctor.
+If you don&#8217;t have Homebrew on your computer, complete the <a href="https://brew.sh" target="_blank" rel="noopener">installation instructions</a> first.</p>
+</div>
+<div class="paragraph">
+<p>Once Homebrew is installed, you&#8217;re ready to install the <code>asciidoctor</code> gem.
+Open a terminal and type:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ brew install asciidoctor</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Homebrew installs the <code>asciidoctor</code> gem into an exclusive prefix that&#8217;s independent of system gems.</p>
+</div>
+<div class="paragraph">
+<p>Unresolved directive in macos.adoc - include::partial$success.adoc[]</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_upgrade">Upgrade</h3>
+<div class="paragraph">
+<p>To upgrade the gem, open a terminal and type:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ brew update
+$ brew upgrade asciidoctor</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_uninstall">Uninstall</h3>
+<div class="paragraph">
+<p>To uninstall the gem, open a terminal and type:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ brew uninstall asciidoctor</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_macports">MacPorts</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can also use <a href="https://www.macports.org" target="_blank" rel="noopener">MacPorts</a>, another package manager for macOS, to install Asciidoctor.
+If you don&#8217;t have MacPorts on your computer, complete the <a href="https://www.macports.org/install.php" target="_blank" rel="noopener">installation instructions</a> first.</p>
+</div>
+<div class="paragraph">
+<p>Once MacPorts is installed, you&#8217;re ready to install the <code>asciidoctor</code> gem via the <a href="https://ports.macports.org/port/asciidoctor/" target="_blank" rel="noopener">Asciidoctor port</a>.
+Open a terminal and type:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo port install asciidoctor</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Unresolved directive in macos.adoc - include::partial$success.adoc[]</p>
+</div>
+<div class="sect2">
+<h3 id="_upgrade_2">Upgrade</h3>
+<div class="paragraph">
+<p>To upgrade the gem, open a terminal and type:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo port selfupdate
+$ sudo port upgrade asciidoctor</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_uninstall_2">Uninstall</h3>
+<div class="paragraph">
+<p>To uninstall the gem, open a terminal and type:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo port uninstall asciidoctor</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

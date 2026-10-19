@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Überschrift</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<div class="paragraph">
+<p>Gregory Romé has written an AsciiDoc plugin for the Redmine project management application.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/foo-users/foo" class="bare">https://github.com/foo-users/foo</a>
+へと <code>vicmd</code> キーマップを足してみている試み、
+アニメーションgifです。</p>
+</div>
+<div class="paragraph">
+<p>tag::romé[]
+Gregory Romé has written an AsciiDoc plugin for the Redmine project management application.
+end::romé[]</p>
+</div>
+<div class="sect1">
+<h2 id="_überschrift">Überschrift</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Codierungen sind verrückt auf älteren Versionen von Ruby</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

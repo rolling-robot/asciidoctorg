@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Removal of deprecated methods in org.asciidoctor.extension package</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_removal_of_deprecated_methods_in_org_asciidoctor_extension_package">Removal of deprecated methods in <code>org.asciidoctor.extension</code> package</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Several methods under <code>org.asciidoctor.extension</code> that were marked as <code>@Deprecated</code> have been removed.
+The new methods align better with Java naming patterns and are easily identifiable.</p>
+</div>
+<div class="listingblock">
+<div class="title">Removed deprecated methods</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">PreprocessorReader::push_include
+Reader::getLineno
+Reader::lines</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Final methods</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">PreprocessorReader::pushInclude
+Reader::getLineNumber
+Reader::getLines</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

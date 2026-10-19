@@ -1,0 +1,1 @@
+ERROR: file-with-missing-include.adoc: line 1: include file not found: {repo}/rubysrc/asciidoctor/test/fixtures/no-such-file.adoc

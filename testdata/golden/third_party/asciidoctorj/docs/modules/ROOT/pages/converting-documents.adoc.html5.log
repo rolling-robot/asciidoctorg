@@ -1,0 +1,4 @@
+ERROR: converting-documents.adoc: line 59: include file not found: {repo}/third_party/asciidoctorj/docs/modules/ROOT/pages/example$org/asciidoctor/integrationguide/SimpleAsciidoctorRendering.java
+WARN: converting-documents.adoc: line 61: no callout found for <1>
+WARN: converting-documents.adoc: line 63: no callout found for <2>
+WARN: converting-documents.adoc: line 66: no callout found for <3>

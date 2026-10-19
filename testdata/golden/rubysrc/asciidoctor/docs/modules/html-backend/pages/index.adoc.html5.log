@@ -1,0 +1,1 @@
+ERROR: index.adoc: line 40: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/html-backend/pages/example$my-document.adoc

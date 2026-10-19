@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Extension Migration: 2.0.x to 3.0.x</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Extension Migration: 2.0.x to 3.0.x</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Between 2.x and 3.0.x there are some changes that may affect existing extensions.
+This guide will illustrate the changes.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_preprocessor_extensions">Preprocessor Extensions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In AsciidoctorJ 1.x and 2.x a Preprocessor could not return anything from its process() method.
+This deviated from the API offered by Asciidoctor itself which allows to replace the original Reader.
+Certain use cases were very hard or even impossible to achieve.</p>
+</div>
+<div class="paragraph">
+<p>Therefore the signature of the method <code>Preprocessor.process()</code> was changed so that it now may return a new Reader.
+This causes all existing Preprocessor implementation to fail compilation.
+The fix for this is very simple: It is sufficient to change the method to return <code>null</code> or the given reader.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s assume that a Preprocessor originally looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class ChangeAttributeValuePreprocessor extends Preprocessor {
+
+	public ChangeAttributeValuePreprocessor(Map&lt;String, Object&gt; config) {
+		super(config);
+	}
+
+	@Override
+	public void process(Document document, PreprocessorReader reader) {
+		document.getAttributes().put("myattribute", "myvalue");
+	}
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To make this Preprocessor compile and run with AsciidoctorJ 3.x it has to be changed like this</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class ChangeAttributeValuePreprocessor extends Preprocessor {
+
+	public ChangeAttributeValuePreprocessor(Map&lt;String, Object&gt; config) {
+		super(config);
+	}
+
+	@Override
+	public Reader process(Document document, PreprocessorReader reader) { // <b class="conum">(1)</b>
+		document.getAttributes().put("myattribute", "myvalue");
+		return reader;                                                    // <b class="conum">(2)</b>
+	}
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Change the method signature to return a <code>Reader</code> instead of <code>void</code>.</p>
+</li>
+<li>
+<p>Directly return the passed Reader.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_inline_macro_extensions">Inline Macro Extensions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The API that inline macro extensions had the return type <code>java.lang.Object</code>, while <code>org.asciidoctor.ast.PhraseNode</code> is actually expected.
+Additionally, the parent node passed to the process method is guaranteed to be a <code>org.asciidoctor.ast.StructuralNode</code>, while the previous API offered the supertype <code>org.asciidoctor.ast.ContentNode</code>.
+This is corrected in AsciidoctorJ 3.x making it clearer for extension implementors what types to expect and what types to return.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s assume that an InlineMacro originally looks like this for AsciidoctorJ 2.x:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class KeyboardInlineMacroProcessor extends InlineMacroProcessor {
+     @Override
+     public Object process(ContentNode parent, String target, Map&lt;String, Object&gt; attributes) {
+         Map&lt;String, Object&gt; attrs = new HashMap&lt;&gt;();
+         attrs.put("keys", Arrays.asList("Ctrl", target));
+         return createPhraseNode(parent, "kbd", (String) null, attrs);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The only change that is necessary is to change the method declaration of the process method:
+Change the return type to <code>org.asciidoctor.ast.PhraseNode</code> and the type of the first parameter to <code>org.asciidoctor.ast.StructuralNode</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">public class KeyboardInlineMacroProcessor extends InlineMacroProcessor {
+     @Override
+     public PhraseNode process(StructuralNode parent, String target, Map&lt;String, Object&gt; attributes) {
+         Map&lt;String, Object&gt; attrs = new HashMap&lt;&gt;();
+         attrs.put("keys", Arrays.asList("Ctrl", target));
+         return createPhraseNode(parent, "kbd", (String) null, attrs);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This change mostly makes it clearer for new extensions what they have to return and what they can expect.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

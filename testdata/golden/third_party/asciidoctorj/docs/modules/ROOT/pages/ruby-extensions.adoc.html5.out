@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Register a Ruby Extension</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Register a Ruby Extension</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>You can even register extensions written in Ruby using AsciidoctorJ.
+To register a <em>Ruby</em> extension you must get a <code>RubyExtensionRegistry</code> class instead of <code>JavaExtensionRegistry</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Register a Ruby extension in Java</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">RubyExtensionRegistry rubyExtensionRegistry = this.asciidoctor.rubyExtensionRegistry(); // <b class="conum">(1)</b>
+rubyExtensionRegistry.loadClass(Class.class.getResourceAsStream("/YellRubyBlock.rb")).block("rubyyell", "YellRubyBlock"); // <b class="conum">(2)</b>
+
+String content = asciidoctor.convertFile(new File(
+                "target/test-classes/sample-with-ruby-yell-block.ad"),
+                Opions.builder().toFile(false).build());</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p><code>rubyExtensionRegistry</code> method is called to get a RubyExtensionRegistry instance.</p>
+</li>
+<li>
+<p>Ruby file containing a class implementing a Block extension is loaded inside the Ruby runtime. Then the block is registered with a name (rubyyell), and we pass the name of the class to be instantiated.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="title">YellBlock.rb</div>
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'asciidoctor'
+require 'asciidoctor/extensions'
+
+class YellRubyBlock &lt; Asciidoctor::Extensions::BlockProcessor
+  option :contexts, [:paragraph]
+  option :content_model, :simple
+
+  def process parent, reader, attributes
+    lines = reader.lines.map {|line| line.upcase.gsub(/\.( |$)/, '!\\1') }
+    Asciidoctor::Block.new parent, :paragraph, :source =&gt; lines, :attributes =&gt; attributes
+  end
+end</code></pre>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

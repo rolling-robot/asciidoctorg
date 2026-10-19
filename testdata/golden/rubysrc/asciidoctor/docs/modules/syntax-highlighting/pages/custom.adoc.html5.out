@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Custom Syntax Highlighter Adapter</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Custom Syntax Highlighter Adapter</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can integrate additional syntax highlighters into Asciidoctor by implementing and registering a syntax highlighter adapter.
+You can either write a new adapter from scratch or you can extend and even replace one of the built-in adapters.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="new">Create a new adapter</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To implement a new adapter, you must create a class that extends the {url-api-gems}/asciidoctor/{release-version}/Asciidoctor/SyntaxHighlighter/Base[Asciidoctor::SyntaxHighlighter::Base] class, register the adapter for a value of the <code>source-highlighter</code> attribute, and implement the required methods.
+Which methods are required depends on whether the adapter is for a client-side (runs in the browser) or build-time (runs when the document is converted) syntax highlighter.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example of how to write and register a syntax highlighter adapter for the Prism.js syntax highlighting library.
+Prism.js is a client-side syntax highlighter, meaning it runs in the browser.
+That means the adapter only has to implement methods that pertain to client-side syntax highlighting, which include <code>format</code>, <code>docinfo?</code>, and <code>docinfo</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Syntax highlighter adapter for Prism.js</div>
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">Unresolved directive in custom.adoc - include::example$prism-syntax-highlighter.rb[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Save this code to a file named <em class="path">prism-syntax-highlighter.rb</em>.
+Then, require this file when invoking Asciidoctor and set <code>source-highlighter=prism</code> to activate it:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -r ./prism-syntax-highlighter -a source-highlighter=prism document.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also define an adapter for a syntax highlighter that runs during conversion.
+We&#8217;ll look at doing that while also extending a built-in adapter.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="extend">Extend an existing adapter</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Instead of creating a new adapter, you can customize a built-in adapter by extending it, overriding its behavior, and optionally replacing it.</p>
+</div>
+<div class="paragraph">
+<p>To extend an adapter, you need to look up a reference to the built-in adapter by name using the {url-api-gems}/asciidoctor/{release-version}/Asciidoctor/SyntaxHighlighter/Factory#for-instance_method[Asciidoctor::SyntaxHighlighter.for] method, create a class that extends it, register the adapter with a unique name (or the same name, if you want to replace it), and override any methods that provide the behavior you want to modify.</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s the basic template for customizing an existing adapter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">class CustomAdapter &lt; (Asciidoctor::SyntaxHighlighter.for 'rouge')
+  register_for 'rouge'
+
+  # override methods go here
+end</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s look at some examples of how to customize a built-in adapter.</p>
+</div>
+<div class="sect2">
+<h3 id="_docinfo">docinfo</h3>
+<div class="paragraph">
+<p>Let&#8217;s override the adapter for Pygments to prevent it from adding a stylesheet to the HTML (presumably because the styles will be provided by a different stylesheet).</p>
+</div>
+<div class="listingblock">
+<div class="title">Extended syntax highlighter adapter for Pygments</div>
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">Unresolved directive in custom.adoc - include::example$extended-pygments-syntax-highlighter.rb[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Save this code to a file named <em class="path">extended-pygments-syntax-highlighter.rb</em>.
+Then, require this file when invoking Asciidoctor, setting <code>source-highlighter=pygments</code> to activate it, as you would normally do:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -r ./extended-pygments-syntax-highlighter.rb -a source-highlighter=pygments document.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If, instead, you wanted to modify the built-in adapter to honor the location of a custom stylesheet specified by the <code>pygments-stylesheet</code> attribute, you can do so by extending the adapter and overriding the <code>docinfo</code> method.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">Unresolved directive in custom.adoc - include::example$pygments-syntax-highlighter-with-custom-stylesheet.rb[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you want to decorate built-in behavior, you can invoke the <code>super</code> method anywhere inside the method to delegate to the behavior provided by the built-in adapter.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_highlight">highlight</h3>
+<div class="paragraph">
+<p>Let&#8217;s say you always want lines to be numbered, regardless of the setting in the document.
+You can do so by overriding the <code>highlight</code> method, setting the <code>:number_lines</code> key on the <code>opts</code> argument, then delegating back to the built-in adapter using <code>super</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">Unresolved directive in custom.adoc - include::example$always-number-lines.rb[]</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_create_formatter_rouge">create_formatter (Rouge)</h3>
+<div class="paragraph">
+<p>When using Rouge as the syntax highlighter, you can customize the formatter by overriding the <code>create_formatter</code> method.
+This allows you to add custom logic for handling certain tokens in the source language.</p>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s assume that you want to look for bare URLs in code comments and translate them into links (i.e., autolinks), just like in AsciiDoc.
+You can do that by weaving extra logic into the formatter that looks for tokens in the <code>Comment</code> category and applies a substitution to the value.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">Unresolved directive in custom.adoc - include::example$autolink-urls-in-comments.rb[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Since the formatter has access to all the tokens in the code identified by the syntax highlighter, this technique opens up a lot of possibilities.
+For example, you could look for the <code>Type</code> token in the <code>Keyword</code> category in Java code and create a link to the API docs.
+The <code>lang</code> argument to the <code>create_formatter</code> method lets you know the source language (e.g., <code>java</code>) to which the tokens belong.</p>
+</div>
+<div class="paragraph">
+<p>To study the logic you may be interesting in overriding, browse the code for the <a href="https://github.com/asciidoctor/asciidoctor/tree/{page-origin-refname}/lib/asciidoctor/syntax_highlighter">built-in syntax highlighter adapters</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Install on Windows</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Install on Windows</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>To install Asciidoctor on Windows, you can use Chocolatey or RubyInstaller.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_chocolatey">Chocolatey</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When you already use <a href="https://chocolatey.org" target="_blank" rel="noopener">Chocolatey</a> on your machine, you can use:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>C:\&gt; choco install ruby</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then follow the <a href="ruby-packaging.html#gem-install">gem installation instructions</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_rubyinstaller">RubyInstaller</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Or you use the <a href="https://rubyinstaller.org/downloads/" target="_blank" rel="noopener">RubyInstaller</a>, download the package for your Windows Version and after the installation, then follow the <a href="ruby-packaging.html#gem-install">gem installation instructions</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

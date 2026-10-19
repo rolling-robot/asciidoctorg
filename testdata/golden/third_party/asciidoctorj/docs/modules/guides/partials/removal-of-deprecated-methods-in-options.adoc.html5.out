@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Removal of deprecated methods in org.asciidoctor.Options</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_removal_of_deprecated_methods_in_org_asciidoctor_options">Removal of deprecated methods in <code>org.asciidoctor.Options</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Several methods in <code>org.asciidoctor.Options</code> class that were marked as <code>@Deprecated</code> have been removed.
+This has been done to remove duplicated features and simplify the API interaction.</p>
+</div>
+<div class="sect2">
+<h3 id="_simplification_of_options_initialization">Simplification of Options initialization</h3>
+<div class="paragraph">
+<p>In v2.5.x the following alternatives to initialize <code>Options</code> where possible:</p>
+</div>
+<div class="listingblock">
+<div class="title">Using Java Constructor and setters</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Options options = new Options();
+options.setBackend("html5");
+options.setSafe(SafeMode.UNSAFE);
+options.setMkDirs(true);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Using Map constructor</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, Object&gt; optionsMap = new HashMap&lt;&gt;();
+optionsMap.put("backend", "html5");
+optionsMap.put("sage", SafeMode.UNSAFE);
+optionsMap.put("mkdirs", true);
+Options options = new Options(optionsMap);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Using OptionsBuilder.options() and get() methods</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Options options = OptionsBuilder.options()
+    .backend("html5")
+    .mkDirs(true)
+    .safe(SafeMode.UNSAFE)
+    .get();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The new API streamlines the process with a more standard builder approach, in which</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Only interaction with <code>org.asciidoctor.Options</code> is required.</p>
+</li>
+<li>
+<p>Nested methods offer IDE completion and creation of immutable instances.</p>
+</li>
+<li>
+<p>Improved code readability through indentation.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>From v3.0.x, use the new <code>builder()</code> and <code>build()</code> methods from <code>org.asciidoctor.Options</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Using Options builder</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Options options = Options.builder()
+    .backend("html5")
+    .mkDirs(true)
+    .safe(SafeMode.UNSAFE)
+    .build();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that <code>Options</code> setter methods are still available, that means that <code>Options</code> instances can still be modified as in this example.</p>
+</div>
+<div class="listingblock">
+<div class="title">Using setters on an instance</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Options options = Options.builder().build();
+options.setBackend("html5");
+options.setSafe(SafeMode.UNSAFE);
+options.setMkDirs(true)</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Free key-value insertion is still possible using:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>OptionsBuilder::option(String option, Object value)</code></p>
+</li>
+<li>
+<p><code>Options::setOption(String option, Object value)</code></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_simplification_of_attributes_injection_in_options">Simplification of Attributes injection in Options</h3>
+<div class="paragraph">
+<p>The previous API offered the following ways to inject attributes to an <code>Options</code> instance.</p>
+</div>
+<div class="listingblock">
+<div class="title">Using Attributes instance setter</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Attributes attributes = new Attributes();
+options.setAttributes(attributes);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Using Map setter</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, Object&gt; attributesMap = new HashMap&lt;&gt;();
+attributesMap.put("toclevels", 2);
+attributesMap.put("icons", "font");
+options.setAttributes(attributesMap);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Also, in v2.5.x it is possible to pass attributes to an <code>OptionsBuilder</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Using OptionsBuilder&#8217;s Attributes instance setter</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Attributes attributes = new Attributes();
+Options options = OptionsBuilder.options()
+    .attributes(attributes)
+    .get();</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Using OptionsBuilder&#8217;s Map setter</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, Object&gt; attributesMap = new HashMap&lt;&gt;();
+attributesMap.put("toclevels", 2);
+attributesMap.put("icons", "font");
+Options options = OptionsBuilder.options()
+    .attributes(attributesMap)
+    .get();</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Using OptionsBuilder&#8217;s AttributesBuilder setter</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">AttributesBuilder attributesBuilder = AttributesBuilder.attributes();
+Options options = OptionsBuilder.options()
+    .attributes(attributesBuilder)
+    .get();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>All these alternatives have been unified in two methods for <code>Options</code> and one for <code>OptionsBuilder</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Using Attributes setter in Options</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Attributes attributes = Attributes.builder()
+    .icons("font")
+    .build();
+
+Options options = Options.builder().build();
+options.setAttributes(attributes);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Using attributes Map setter in Options</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, Object&gt; attributesMap = new HashMap&lt;&gt;();
+attributesMap.put("toclevels", 2);
+attributesMap.put("icons", "font");
+
+Options options = Options.builder().build();
+options.setAttributes(attributesMap);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Using Attributes instance setter in OptionsBuilder</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Attributes attributes = Attributes.builder()
+    .icons("font")
+    .build();
+Options options = Options.builder()
+    .attributes(attributes)
+    .build();</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Free key-value or string insertion is still possible using:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>AttributesBuilder::attribute(String attributeName)</code></p>
+</li>
+<li>
+<p><code>AttributesBuilder::attribute(String attributeName, Object attributeValue)</code></p>
+</li>
+<li>
+<p><code>Attributes::setAttributes(String attributes)</code></p>
+</li>
+<li>
+<p><code>Attributes::setAttributes(String&#8230;&#8203; attributes)</code></p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

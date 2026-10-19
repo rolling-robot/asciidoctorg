@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>The Asciidoctor Interface</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>The Asciidoctor Interface</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>The main entry point for AsciidoctorJ is the <code>Asciidoctor</code> Java interface.
+You obtain an instance from the factory class <code>Asciidoctor.Factory</code> that provides a simple create method.</p>
+</div>
+<div class="paragraph">
+<p>If you need to get an instance of Asciidoctor using a certain gem path the factory <code>org.asciidoctor.jruby.AsciidoctorJRuby.Factory</code> provides multiple create methods to get an instance with a certain gem or load path:</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. Methods to create an Asciidoctor instance</caption>
+<colgroup>
+<col width="33.3333%">
+<col width="66.6667%">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Method Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.asciidoctor.Asciidoctor.Factory<br>
+.create()</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The default create method that is used most often.
+Only use other methods if you want to load extensions that are not on the classpath.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.asciidoctor.jruby.AsciidoctorJRuby.Factory<br>
+.create(String gemPath)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Creates a new Asciidoctor instance and sets the global variable <code>GEM_PATH</code> to the given String.
+The variable <code>GEM_PATH</code> defines where Ruby looks for installed gems.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>org.asciidoctor.jruby.AsciidoctorJRuby.Factory<br>
+.create(List&lt;String&gt; loadPaths)</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Creates a new Asciidoctor instance and set the global variable <code>LOAD_PATH</code> to the given Strings.
+The variable <code>LOAD_PATH</code> defines where Ruby looks for files.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>So most of the time you simply get an Asciidoctor instance like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">Default way to create an Asciidoctor instance</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in asciidoctor-interface.adoc - include::example$org/asciidoctor/integrationguide/AsciidoctorInterface.java[tags=create]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As Asciidoctor instances can be created they can also be explicitly destroyed to free resources used in particular by the Ruby runtime associated with it.
+Therefore the Asciidoctor interface offers the method shutdown.
+After calling this method every other method call on the instance will fail!</p>
+</div>
+<div class="listingblock">
+<div class="title">Destroying an Asciidoctor instance</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in asciidoctor-interface.adoc - include::example$org/asciidoctor/integrationguide/AsciidoctorInterface.java[tags=shutdown]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The Asciidoctor interface also implements the interface <code>java.io.AutoCloseable</code> which also shuts down the Ruby runtime.
+Therefore the previous example is equivalent to this:</p>
+</div>
+<div class="listingblock">
+<div class="title">Automatically destroying an Asciidoctor instance</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in asciidoctor-interface.adoc - include::example$org/asciidoctor/integrationguide/AsciidoctorInterface.java[tags=autoclose]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To convert AsciiDoc documents the Asciidoctor interface provides four methods:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>convert</code></p>
+</li>
+<li>
+<p><code>convertFile</code></p>
+</li>
+<li>
+<p><code>convertFiles</code></p>
+</li>
+<li>
+<p><code>convertDirectory</code></p>
+</li>
+</ul>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+Prior to Asciidoctor 1.5.0, the term <code>render</code> was used in these method names instead of <code>convert</code> (i.e., <code>render</code>, <code>renderFile</code>, <code>renderFiles</code> and <code>renderDirectory</code>).
+AsciidoctorJ continues to support the old method names for backwards compatibility.
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. Convert methods on the <code>Asciidoctor</code> interface</caption>
+<colgroup>
+<col width="25%">
+<col width="25%">
+<col width="50%">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Method Name</th>
+<th class="tableblock halign-left valign-top">Return Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>convert</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Parses AsciiDoc content read from a string or stream and converts it to the format specified by the <code>backend</code> option.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>convertFile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Parses AsciiDoc content read from a file and converts it to the format specified by the <code>backend</code> option.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>convertFiles</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Parses a collection of AsciiDoc files and converts them to the format specified by the <code>backend</code> option.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>convertDirectory</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String[]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Parses all AsciiDoc files found in the specified directory (using the provided strategy) and converts them to the format specified by the <code>backend</code> option.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Here&#8217;s an example of using AsciidoctorJ to convert an AsciiDoc string.</p>
+</div>
+<div class="listingblock">
+<div class="title">Converting an AsciiDoc string</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Options emptyOptions = Options.builder().build();
+String html = asciidoctor.convert(
+    "Writing AsciiDoc is _easy_!",
+    emptyOptions);
+System.out.println(html);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>convertFile</code> method will convert the contents of an AsciiDoc file.</p>
+</div>
+<div class="listingblock">
+<div class="title">Converting an AsciiDoc file</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">String html = asciidoctor.convertFile(
+    new File("sample.adoc"),
+    Options.builder().build());
+System.out.println(html);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>convertFiles</code> method will convert a collection of AsciiDoc files:</p>
+</div>
+<div class="listingblock">
+<div class="title">Converting a collection of AsciiDoc files</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">String[] result = asciidoctor.convertFiles(
+    Arrays.asList(new File("sample.adoc")),
+    Options.builder().build());
+
+for (String html : result) {
+    System.out.println(html);
+}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The <code>convertFile</code> or <code>convertFiles</code> methods will only return a converted <code>String</code> object or array if you disable writing to a file, which is enabled by default.
+To disable writing to a file, create a new <code>Options</code> object, disable the option to create a new file with <code>option.setToFile(false)</code>, and then pass the object as a parameter to <code>convertFile</code> or <code>convertFiles</code>.
+To learn more check <a href="asciidoctor-api-options.html">asciidoctor-api-options.html</a> for a description of available customizations.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+When converting directly to files, the <code>convertFiles</code> method will return a String Array (i.e., <code>String[]</code>) with the names of all the converted documents.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Another method provided by the <code>Asciidoctor</code> interface is <code>convertDirectory</code>.
+This method converts all of the files with AsciiDoc extensions (<code>.adoc</code> <em>(preferred)</em>, <code>.ad</code>, <code>.asciidoc</code>, <code>.asc</code>) that are present within a specified folder and following given strategy.
+If the converted content is not written into files, <code>convertDirectory</code> will return an array listing all the documents converted.</p>
+</div>
+<div class="listingblock">
+<div class="title">Converting all AsciiDoc files in a directory</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Options emptyOptions = Options.builder().build();
+String[] result = asciidoctor.convertDirectory(
+    new AsciiDocDirectoryWalker("src/asciidoc"),
+    emptyOptions);
+
+for (String html : result) {
+    System.out.println(html);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In conjunction with <code>convertDirectory</code> the <code>DirectoryWalker</code> interface.
+This provides a strategy for locating files to process that can be passed as the first parameter of the <code>convertDirectory</code> method.</p>
+</div>
+<div class="paragraph">
+<p>Currently, <code>Asciidoctor</code> provides two built-in implementations of the <code>DirectoryWalker</code> interface:</p>
+</div>
+<div class="paragraph">
+<p>Unresolved directive in asciidoctor-interface.adoc - include::partial$directory-walkers.adoc[]</p>
+</div>
+<div class="paragraph">
+<p>To learn more, see <a href="locating-files.html">locating-files.html</a>.</p>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

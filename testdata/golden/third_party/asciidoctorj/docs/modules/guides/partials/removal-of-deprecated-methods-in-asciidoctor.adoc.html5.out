@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Removal of deprecated methods in org.asciidoctor.Asciidoctor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_removal_of_deprecated_methods_in_org_asciidoctor_asciidoctor">Removal of deprecated methods in <code>org.asciidoctor.Asciidoctor</code></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Several methods in <code>org.asciidoctor.Asciidoctor</code> that were marked as <code>@Deprecated</code> have been removed.</p>
+</div>
+<div class="sect2">
+<h3 id="_removal_of_methods_using_mapstringobject_as_options_input">Removal of methods using <code>Map&lt;String,Object&gt;</code> as options input</h3>
+<div class="paragraph">
+<p>To streamline the API, only methods using <code>Options</code> instances have been left in the <code>org.asciidoctor.Asciidoctor</code>.
+That means that the following methods are no longer available.</p>
+</div>
+<div class="listingblock">
+<div class="title">Removed convert methods</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">String convert(String content, Map&lt;String, Object&gt; options);
+String convertFile(File file, Map&lt;String, Object&gt; options);
+
+void convert(Reader contentReader, Writer rendererWriter, Map&lt;String, Object&gt; options) throws IOException;
+
+&lt;T&gt; T convert(String content, Map&lt;String, Object&gt; options, Class&lt;T&gt; expectedResult);
+&lt;T&gt; T convertFile(File file, Map&lt;String, Object&gt; options, Class&lt;T&gt; expectedResult);
+
+String[] convertDirectory(Iterable&lt;File&gt; directoryWalker, Map&lt;String, Object&gt; options);
+String[] convertFiles(Collection&lt;File&gt; files, Map&lt;String, Object&gt; options);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Removed load methods</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Document load(String content, Map&lt;String, Object&gt; options);
+Document loadFile(File file, Map&lt;String, Object&gt; options);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For each of the methods above there&#8217;s an equivalent using <code>org.asciidoctor.Options</code>.
+Use those when migrating to v3.0.0.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_removal_of_methods_using_optionsbuilder_as_options_input">Removal of methods using <code>OptionsBuilder</code> as options input</h3>
+<div class="paragraph">
+<p>Likewise to the methods seen in the previous section, the following methods are also no longer available.</p>
+</div>
+<div class="listingblock">
+<div class="title">Removed convert methods</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">String convert(String content, OptionsBuilder options);
+String convertFile(File file, OptionsBuilder options);
+
+void convert(Reader contentReader, Writer rendererWriter, OptionsBuilder options) throws IOException;
+
+&lt;T&gt; T convert(String content, OptionsBuilder options, Class&lt;T&gt; expectedResult);
+&lt;T&gt; T convertFile(File file, OptionsBuilder options, Class&lt;T&gt; expectedResult);
+
+String[] convertDirectory(Iterable&lt;File&gt; directoryWalker, OptionsBuilder options);
+String[] convertFiles(Collection&lt;File&gt; files, OptionsBuilder options);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For each of the methods above there&#8217;s an equivalent using <code>org.asciidoctor.Options</code>.
+Use those when migrating to v3.0.0.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_removal_of_methods_readdocumentheader">Removal of methods <code>readDocumentHeader</code></h3>
+<div class="paragraph">
+<p>All implementations of <code>Asciidoctor::readDocumentHeader</code> have been removed because the same feature can be obtained using <code>load</code> with the <code>parse_header_only</code> option.</p>
+</div>
+<div class="listingblock">
+<div class="title">Using load to obtain Document header</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Options options = Options.builder().option("parse_header_only", true).build();
+Document document = asciidoctor.loadFile(documentHeaders, options);
+
+List&lt;Author&gt; authors = document.getAuthors();
+RevisionInfo revisionInfo = document.getRevisionInfo();
+String doctitle = document.getDoctitle();
+Title structuredDoctitle = document.getStructuredDoctitle();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As a consequence, class <code>org.asciidoctor.ast.DocumentHeader</code> has been also removed.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

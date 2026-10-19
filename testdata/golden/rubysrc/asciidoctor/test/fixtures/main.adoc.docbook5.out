@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?asciidoc-toc?>
+<?asciidoc-numbered?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0" xml:lang="en">
+<info>
+<title>Main Document</title>
+<date>2020-01-01</date>
+</info>
+<simpara>preamble</simpara>
+<section xml:id="_chapter_a">
+<title>Chapter A</title>
+<simpara>content</simpara>
+</section>
+</article>

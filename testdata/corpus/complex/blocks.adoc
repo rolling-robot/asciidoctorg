@@ -1,0 +1,152 @@
+= Blocks
+:source-language: ruby
+:listing-caption: Listing
+:example-caption: Example
+:table-caption: Table
+
+== Delimited Blocks
+
+.Listing title
+[#listing-1]
+----
+def hello name
+  puts "Hello, #{name}!" # <1>
+end
+hello 'world' # <2>
+----
+<1> Prints a greeting
+<2> Calls the method
+
+[source,python,linenums,highlight=2]
+----
+def add(a, b):
+    return a + b
+----
+
+[source%linenums,javascript,start=5]
+....
+console.log("literal-delimited source");
+....
+
+....
+Literal block
+  preserves   spacing
+....
+
+ Indented literal paragraph.
+
+[literal]
+Literal styled paragraph.
+
+.Example title
+====
+Example block with *formatting*.
+
+[NOTE]
+=====
+Nested admonition in example.
+=====
+====
+
+[%collapsible]
+.Click to reveal
+====
+Collapsible content.
+====
+
+.Sidebar title
+****
+Sidebar content.
+****
+
+[quote,Albert Einstein,Relativity]
+____
+Imagination is more important than knowledge.
+____
+
+[verse,Carl Sandburg,Fog]
+____
+The fog comes
+on little cat feet.
+____
+
+"I hold it that a little rebellion now and then is a good thing."
+-- Thomas Jefferson, Papers of Thomas Jefferson
+
+[quote]
+Paragraph-style quote.
+
+--
+Open block content.
+--
+
+[abstract]
+--
+Abstract open block.
+--
+
+[comment]
+--
+This comment block must not render.
+--
+
+////
+Comment block
+////
+
+// single line comment
+
+== Admonitions
+
+NOTE: A note paragraph.
+
+TIP: A tip.
+
+IMPORTANT: Important.
+
+CAUTION: Caution.
+
+WARNING: Warning with a footnote.footnote:[Admonition footnote.]
+
+[IMPORTANT]
+.Admonition title
+====
+Admonition block with list:
+
+* one
+* two
+====
+
+== Paragraph Variants
+
+[.lead]
+Lead paragraph.
+
+[%hardbreaks]
+Line one
+line two
+
+Line with forced +
+break.
+
+[normal]
+Normal paragraph.
+
+[#para-id.role-a]
+.Paragraph title
+Titled paragraph with id and role.
+
+'''
+
+<<<
+
+== Callouts in XML
+
+[source,xml]
+----
+<root> <!--1-->
+  <child/> <!--2-->
+</root>
+----
+<1> The root
+<2> The child

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?asciidoc-toc?>
+<?asciidoc-numbered?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0" xml:lang="en">
+<info>
+<title>tool(1)</title>
+<date>2020-01-01</date>
+<author>
+<personname>
+<firstname>Jane</firstname>
+<surname>Doe</surname>
+</personname>
+</author>
+<authorinitials>JD</authorinitials>
+</info>
+<refentry>
+<refmeta>
+<refentrytitle>tool</refentrytitle>
+<manvolnum>1</manvolnum>
+<refmiscinfo class="source">Tool 1.0</refmiscinfo>
+<refmiscinfo class="manual">Tool Manual</refmiscinfo>
+</refmeta>
+<refnamediv>
+<refname>tool</refname>
+<refpurpose>does things</refpurpose>
+</refnamediv>
+<refsynopsisdiv xml:id="_synopsis">
+<title>Synopsis</title>
+<simpara><emphasis role="strong">tool</emphasis> [<emphasis>OPTION</emphasis>]&#8230;&#8203; <emphasis>FILE</emphasis>&#8230;&#8203;</simpara>
+</refsynopsisdiv>
+<refsection xml:id="_options">
+<title>Options</title>
+<variablelist>
+<varlistentry>
+<term><emphasis role="strong">-v, --verbose</emphasis></term>
+<listitem>
+<simpara>Be verbose.</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term><emphasis role="strong">-o</emphasis> <emphasis>FILE</emphasis></term>
+<listitem>
+<simpara>Write output to <emphasis>FILE</emphasis>.</simpara>
+</listitem>
+</varlistentry>
+</variablelist>
+</refsection>
+<refsection xml:id="_example">
+<title>Example</title>
+<screen>$ tool -v input.txt</screen>
+</refsection>
+<refsection xml:id="_exit_status">
+<title>Exit Status</title>
+<variablelist>
+<varlistentry>
+<term><emphasis role="strong">0</emphasis></term>
+<listitem>
+<simpara>Success.</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term><emphasis role="strong">1</emphasis></term>
+<listitem>
+<simpara>Failure.</simpara>
+</listitem>
+</varlistentry>
+</variablelist>
+</refsection>
+</refentry>
+</article>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Include Processor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body id="includeprocessor" class="article">
+<div id="header">
+<h1>Include Processor</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>Asciidoctor supports including other documents via the include directive.
+With it, you can simply write <code>include::other.adoc[]</code> to include the contents of the file <code>other.adoc</code>.
+Include Processors allow to intercept this mechanism and for instance include the content over the network.</p>
+</div>
+<div class="paragraph">
+<p>For example, similar to the *unix <code>ls</code> command, an Include Processor could resolve the include directive <code>include::ls[]</code>, and insert the contents of the current directory in the document.
+Our example will replace the include directive <code>include::ls[]</code> with the directory contents, adding one line for every file found.</p>
+</div>
+<div class="listingblock">
+<div class="title">ls-include.adoc</div>
+<div class="content">
+<pre class="highlight"><code>----
+include::ls[]
+----</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The processor could look like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">LsIncludeProcessor.java</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in include-processor.adoc - include::example$org/asciidoctor/integrationguide/extension/LsIncludeProcessor.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Every Include Processor must extend the class <code>org.asciidoctor.extension.IncludeProcessor</code>.</p>
+</li>
+<li>
+<p>Asciidoctor calls the method <code>handles()</code> with the target for every include directive it finds.
+The method must return <code>true</code> if it feels responsible for this directive.
+In our case it returns <code>true</code> if the target is <code>ls</code>.</p>
+</li>
+<li>
+<p>The implementation of the method <code>process()</code> lists the directory contents of the current directory and creates a string with one line per file.</p>
+</li>
+<li>
+<p>Finally the call to the method <code>push_include</code> inserts the contents.
+The second and third parameters contain the 'file name' of the include content.
+In our example this will be basically the name <code>ls</code> and the path of the current directory.
+The parameter <code>1</code> is the line number of the first line of the included content.
+This makes the most sense when partial content is included.</p>
+</li>
+</ol>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

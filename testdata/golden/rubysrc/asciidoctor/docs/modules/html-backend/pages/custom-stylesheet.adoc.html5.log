@@ -1,0 +1,4 @@
+ERROR: custom-stylesheet.adoc: line 36: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/html-backend/pages/example$my-document.adoc
+ERROR: custom-stylesheet.adoc: line 38: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/html-backend/pages/example$my-document.adoc
+ERROR: custom-stylesheet.adoc: line 80: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/html-backend/pages/example$my-document.adoc
+ERROR: custom-stylesheet.adoc: line 83: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/html-backend/pages/example$my-document.adoc

@@ -1,0 +1,2 @@
+ERROR: custom.adoc: line 369: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/convert/pages/example$dita-converter.rb
+ERROR: custom.adoc: line 425: include file not found: {repo}/rubysrc/asciidoctor/docs/modules/convert/pages/example$text-converter.rb

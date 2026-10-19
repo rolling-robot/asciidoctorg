@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Running AsciidoctorJ on WildFly</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Running AsciidoctorJ on WildFly</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>If you want to use AsciidoctorJ in an application deployed on <em class="app">WildFly</em>, you have to follow the instruction below:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create an <strong>Asciidoctor module</strong> for <em class="app">WildFly</em>.</p>
+</li>
+<li>
+<p>Create the following folder tree: <em class="path">$JBOSS_HOME/modules/org/asciidoctor/main</em>.</p>
+</li>
+<li>
+<p>Create the module descriptor file <em class="path">module.xml</em>.</p>
+<div class="listingblock">
+<div class="title">Asciidoctor module descriptor for WildFly</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;module xmlns="urn:jboss:module:1.0" name="org.asciidoctor"&gt;
+    &lt;resources&gt;
+        &lt;resource-root path="asciidoctorj-api-{artifact-version}.jar"/&gt;
+        &lt;resource-root path="asciidoctorj-{artifact-version}.jar"/&gt;
+        &lt;resource-root path="jcommander-1.72.jar"/&gt;
+        &lt;resource-root path="jruby-complete-{jruby-version}.jar"/&gt;
+    &lt;/resources&gt;
+    &lt;dependencies&gt;
+        &lt;module name="sun.jdk" export="true"&gt;
+            &lt;imports&gt;
+                &lt;include path="sun/misc/Unsafe" /&gt;
+            &lt;/imports&gt;
+        &lt;/module&gt;
+        &lt;module name="javax.management.j2ee.api"/&gt;
+        &lt;module name="javax.api"/&gt;
+        &lt;module name="org.slf4j"/&gt;
+    &lt;/dependencies&gt;
+&lt;/module&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Copy the jar files into the same folder as the <em>module.xml</em> file.</p>
+</li>
+<li>
+<p>Make sure the version numbers of the jar files agree with what&#8217;s in the current set.
+Restart WildFly for the new module to take effect.</p>
+</li>
+<li>
+<p>Add a dependency on your Java archive to this WildFly module using one of the following options:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Add the dependency just into the <em class="path">MANIFEST.MF</em> file.</p>
+<div class="listingblock">
+<div class="title">MANIFEST.MF file example with dependency to Asciidoctor module</div>
+<div class="content">
+<pre>Manifest-Version: 1.0
+Dependencies: org.asciidoctor
+...</pre>
+</div>
+</div>
+</li>
+<li>
+<p><em>Or</em>, configure the dependency into the <em class="path">pom.xml</em> with the <em class="app">Maven JAR/WAR plugin</em>.</p>
+<div class="listingblock">
+<div class="title">pom.xml file example with Maven WAR plugin configuration to add a dependency</div>
+<div class="content">
+<pre class="highlight"><code class="language-xml" data-lang="xml">...
+&lt;dependencies&gt;
+  &lt;dependency&gt;
+    &lt;groupId&gt;org.asciidoctor&lt;/groupId&gt;
+    &lt;artifactId&gt;asciidoctorj&lt;/artifactId&gt;
+    &lt;version&gt;{artifact-version}&lt;/version&gt;
+    &lt;scope&gt;provided&lt;/scope&gt; &lt;!--<b class="conum">(1)</b>--&gt;
+    ...
+  &lt;/dependency&gt;
+&lt;/dependencies&gt;
+...
+&lt;plugin&gt;
+  &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;maven-war-plugin&lt;/artifactId&gt;
+    &lt;version&gt;2.4&lt;/version&gt;
+    &lt;configuration&gt;
+      &lt;archive&gt;
+        &lt;manifestEntries&gt;
+          &lt;Dependencies&gt;org.asciidoctor&lt;/Dependencies&gt; &lt;!--<b class="conum">(2)</b>--&gt;
+        &lt;/manifestEntries&gt;
+      &lt;/archive&gt;
+    &lt;/configuration&gt;
+&lt;/plugin&gt;
+...</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The AsciidoctorJ dependency and the transitives dependencies don&#8217;t need to be added to the final WAR since all JARs are available through the module.</p>
+</li>
+<li>
+<p>The module dependency will be added to the <em class="path">MANIFEST.MF</em> file.</p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

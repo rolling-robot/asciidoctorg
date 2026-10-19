@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?asciidoc-toc?>
+<?asciidoc-numbered?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0" xml:lang="en">
+<info>
+<title>Blocks</title>
+<date>2020-01-01</date>
+</info>
+<section xml:id="_delimited_blocks">
+<title>Delimited Blocks</title>
+<formalpara xml:id="listing-1">
+<title>Listing title</title>
+<para>
+<programlisting language="ruby" linenumbering="unnumbered">def hello name
+  puts "Hello, #{name}!" <co xml:id="CO1-1"/>
+end
+hello 'world' <co xml:id="CO1-2"/></programlisting>
+</para>
+</formalpara>
+<calloutlist>
+<callout arearefs="CO1-1">
+<para>Prints a greeting</para>
+</callout>
+<callout arearefs="CO1-2">
+<para>Calls the method</para>
+</callout>
+</calloutlist>
+<programlisting language="python" linenumbering="numbered">def add(a, b):
+    return a + b</programlisting>
+<programlisting language="javascript" linenumbering="numbered" startinglinenumber="5">console.log("literal-delimited source");</programlisting>
+<literallayout class="monospaced">Literal block
+  preserves   spacing</literallayout>
+<literallayout class="monospaced">Indented literal paragraph.</literallayout>
+<literallayout class="monospaced">Literal styled paragraph.</literallayout>
+<example>
+<title>Example title</title>
+<simpara>Example block with <emphasis role="strong">formatting</emphasis>.</simpara>
+<note>
+<simpara>Nested admonition in example.</simpara>
+</note>
+</example>
+<example>
+<title>Click to reveal</title>
+<simpara>Collapsible content.</simpara>
+</example>
+<sidebar>
+<title>Sidebar title</title>
+<simpara>Sidebar content.</simpara>
+</sidebar>
+<blockquote>
+<attribution>
+Albert Einstein
+<citetitle>Relativity</citetitle>
+</attribution>
+<simpara>Imagination is more important than knowledge.</simpara>
+</blockquote>
+<blockquote>
+<attribution>
+Carl Sandburg
+<citetitle>Fog</citetitle>
+</attribution>
+<literallayout>The fog comes
+on little cat feet.</literallayout>
+</blockquote>
+<blockquote>
+<attribution>
+Thomas Jefferson
+<citetitle>Papers of Thomas Jefferson</citetitle>
+</attribution>
+<simpara>I hold it that a little rebellion now and then is a good thing.</simpara>
+</blockquote>
+<blockquote>
+<simpara>Paragraph-style quote.</simpara>
+</blockquote>
+<simpara>Open block content.</simpara>
+<abstract>
+<simpara>Abstract open block.</simpara>
+</abstract>
+</section>
+<section xml:id="_admonitions">
+<title>Admonitions</title>
+<note>
+<simpara>A note paragraph.</simpara>
+</note>
+<tip>
+<simpara>A tip.</simpara>
+</tip>
+<important>
+<simpara>Important.</simpara>
+</important>
+<caution>
+<simpara>Caution.</simpara>
+</caution>
+<warning>
+<simpara>Warning with a footnote.<footnote><simpara>Admonition footnote.</simpara></footnote></simpara>
+</warning>
+<important>
+<title>Admonition title</title>
+<simpara>Admonition block with list:</simpara>
+<itemizedlist>
+<listitem>
+<simpara>one</simpara>
+</listitem>
+<listitem>
+<simpara>two</simpara>
+</listitem>
+</itemizedlist>
+</important>
+</section>
+<section xml:id="_paragraph_variants">
+<title>Paragraph Variants</title>
+<simpara role="lead">Lead paragraph.</simpara>
+<simpara>Line one<?asciidoc-br?>
+line two</simpara>
+<simpara>Line with forced<?asciidoc-br?>
+break.</simpara>
+<simpara>Normal paragraph.</simpara>
+<formalpara xml:id="para-id" role="role-a">
+<title>Paragraph title</title>
+<para>Titled paragraph with id and role.</para>
+</formalpara>
+<simpara><?asciidoc-hr?></simpara>
+<simpara><?asciidoc-pagebreak?></simpara>
+</section>
+<section xml:id="_callouts_in_xml">
+<title>Callouts in XML</title>
+<programlisting language="xml" linenumbering="unnumbered">&lt;root&gt; <co xml:id="CO2-1"/>
+  &lt;child/&gt; <co xml:id="CO2-2"/>
+&lt;/root&gt;</programlisting>
+<calloutlist>
+<callout arearefs="CO2-1">
+<para>The root</para>
+</callout>
+<callout arearefs="CO2-2">
+<para>The child</para>
+</callout>
+</calloutlist>
+</section>
+</article>

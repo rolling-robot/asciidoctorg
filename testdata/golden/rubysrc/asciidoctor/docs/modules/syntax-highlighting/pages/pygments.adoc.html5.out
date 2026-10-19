@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Pygments</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Pygments</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://pygments.org" target="_blank" rel="noopener">Pygments</a> is a popular syntax highlighter that supports a broad range of <a href="https://pygments.org/languages/" target="_blank" rel="noopener">programming and template languages</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_install_pygments">Install Pygments</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In order to use Pygments with Asciidoctor, you need <a href="https://www.python.org">Python</a> and the <a href="https://rubygems.org/gems/pygments.rb" target="_blank" rel="noopener">pygments.rb gem</a>.
+The pygments.rb gem manages calls to Pygments, which is an external program that runs using Python.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+You do not need to install Pygments itself.
+It comes bundled with the pygments.rb gem.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+You must have Python installed to use pygments.rb.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The version of Python required depends on which pygments.rb release you&#8217;re using:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>pygments.rb 1.x requires Python 2.
+Check that you have a <code>python2</code> (Linux), <code>python</code> (macOS), or <code>py -2</code> (Windows) executable on your PATH.
+(On macOS, verify that the <code>python</code> executable uses Python 2 by running <code>python -V</code>).</p>
+</li>
+<li>
+<p>pygments.rb 2.x requires Python 3.
+Check that you have a <code>python3</code> (Linux/macOS) or <code>py -3</code> (Windows) executable on your PATH.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">Installing Python and the pygments.rb gem via the CLI (cross platform)</div>
+<div class="content">
+<pre class="highlight"><code class="language-console" data-lang="console">$ "`\which apt-get || \which dnf || \which yum || \which brew`" install python # <b class="conum">(1)</b>
+$ gem install pygments.rb # <b class="conum">(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Install Python using your package manager</p>
+</li>
+<li>
+<p>Install the pygments.rb gem</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_activate_pygments">Activate Pygments</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Once you&#8217;ve installed these libraries, assign <code>pygments</code> to the <code>source-highlighter</code> attribute in your document&#8217;s header.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">:source-highlighter: pygments</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pygments_attributes">Pygments attributes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can further customize the source block output with additional Pygments attributes.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">pygments-style</dt>
+<dd>
+<p>Sets the name of the color theme Pygments uses.
+To see the list of available style names, see <a href="#listing-pygments-style-names">Available Pygments style names</a>.
+Default: <code>pastie</code>.</p>
+</dd>
+<dt class="hdlist1">pygments-css</dt>
+<dd>
+<p>Controls what method is used for applying CSS to the tokens.
+Can be <code>class</code> (CSS classes) or <code>style</code> (inline styles).
+See the <a href="html-backend:source-highlighting-stylesheets.html#pygments">Pygments stylesheet section</a> to learn more about how the value <code>class</code> is handled.
+Default: <code>class</code>.</p>
+</dd>
+<dt class="hdlist1">pygments-linenums-mode</dt>
+<dd>
+<p>Controls how line numbers are arranged when line numbers are enabled on the source block.
+Can be <code>table</code> or <code>inline</code>.
+If line wrapping is enabled on preformatted blocks (i.e., <code>prewrap</code>), and you want to use line numbering on source blocks, you must set the value of this attribute to <code>inline</code> in order for the numbers to line up properly with their target lines.
+Default: <code>table</code>.</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="title">Customizing a source block with Pygments attributes</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">:source-highlighter: pygments
+:pygments-style: manni
+:pygments-linenums-mode: inline
+
+[%linenums,ruby]
+----
+ORDERED_LIST_KEYWORDS = {
+  'loweralpha' =&gt; 'a',
+  'lowerroman' =&gt; 'i',
+  'upperalpha' =&gt; 'A',
+  'upperroman' =&gt; 'I'
+   #'lowergreek' =&gt; 'a'
+   #'arabic'     =&gt; '1'
+   #'decimal'    =&gt; '1'
+}
+----</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="listing-pygments-style-names">Available Pygments style names</h3>
+<div class="paragraph">
+<p>To list the available Pygments styles, run the following command in a terminal:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ $(dirname $(gem which pygments.rb))/../vendor/pygments-main/pygmentize -L styles</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The pygments.rb gem uses a bundled version of Pygments (often ahead of the latest release).
+This command ensures that you are invoking the <code>pygmentize</code> command from the Pygments used by that gem.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="pygments-timeout">Pygments timeout (pygments.rb 1.x only)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you&#8217;re using pygments.rb 1.x, you may need to adjust the timeout.
+This configuration step is not necessary if you&#8217;re using pygments.rb 2.x with Python 3.</p>
+</div>
+<div class="paragraph">
+<p>Since Pygments is an external program, the call to that command in pygments.rb 1.x is managed by a timeout to safeguard against a hanging process.
+By default, this timeout is 8 seconds.
+If you discover that the call is failing to complete within this timeout period, you can increase the timeout (in seconds) by setting the <code>MENTOS_TIMEOUT</code> environment variable.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>export MENTOS_TIMEOUT=30</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now the call to Pygments (via pygments.rb 1.x) will be allocated up to 30 seconds to complete.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_use_a_custom_pygments_installation">Use a custom Pygments installation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you already have Pygments installed on your system, you want to use your own fork, or you want to customize how Pygments is configured, you can get Asciidoctor to use a custom version of Pygments instead of the one bundled with the pygments.rb gem.</p>
+</div>
+<div class="paragraph">
+<p>First, install your own version of Pygments.
+You can do this, for instance, by cloning the upstream Pygments repository:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ hg clone https://bitbucket.org/birkenfeld/pygments-main pygments</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Find the directory that contains the file <em class="path">pygmentize</em> or the <em class="path">Makefile</em>.
+That&#8217;s your Pygments installation path.
+Make note of it.</p>
+</div>
+<div class="paragraph">
+<p>Next, create a script to run <em>before</em> invoking Asciidoctor for the first time.
+Let&#8217;s call it <em class="path">pygments_init.rb</em>.
+Populate the script with the following content:</p>
+</div>
+<div class="listingblock">
+<div class="title">pygments_init.rb</div>
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'pygments'
+
+# use a custom Pygments installation (directory that contains pygmentize)
+Pygments.start '/path/to/pygments'
+
+# example of registering a missing or additional lexer
+#Pygments::Lexer.create name: 'Turtle', aliases: ['turtle'],
+#    filenames: ['*.ttl'], mimetypes: ['text/turtle', 'application/x-turtle']</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+You could enhance this script to read the Pygments installation path from an environment variable (or configuration file).
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Now just require this script before your invoke Asciidoctor the first time.
+When using the <code>asciidoctor</code> command, pass the script using the <code>-r</code> flag:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -r ./pygments_init.rb document.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When using the Asciidoctor API, require the script using <code>require</code> or <code>require_relative</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'asciidoctor'
+require_relative './pygments_init.rb'
+
+Asciidoctor.convert_file 'document.adoc', safe: :safe</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now Asciidoctor is using your custom installation of Pygments instead of the one bundled with the pygments.rb gem.</p>
+</div>
+<div class="paragraph">
+<p>Alternately, you can <a href="custom.html#extend">extend the adapter for Pygments</a> and put this logic inside that adapter.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

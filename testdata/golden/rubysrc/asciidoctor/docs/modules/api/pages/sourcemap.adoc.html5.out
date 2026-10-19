@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Map Source Location of Blocks</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Map Source Location of Blocks</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Since Asciidoctor&#8217;s primary focus is on converting documents efficiently, it does not attempt to track the source location of blocks when parsing by default.
+However, such information can be useful for extracting information from the source document, improving error messages, and for use in extensions.
+Therefore, Asciidoctor provides a flag to map the source location of blocks, known as the sourcemap.
+This page examples how to enable the sourcemap and how to make use of the information it provides.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_what_does_the_sourcemap_provide">What does the sourcemap provide?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The sourcemap provides line and file information for all blocks in the parsed document.
+Specifically, it provides information about the start of each block.
+The start of the block does not include any block metadata (block anchor and block attributes) above the block.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+The sourcemap also tracks the start line of every preprocessor conditional directive so its position can be reported if the directive isn&#8217;t closed.
+If the sourcemap isn&#8217;t enabled, the location at the end of the document is used instead.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The sourcemap only adds source location information to blocks.
+It does not track the source location for inline elements, such as formatted text or an inline image, or for attribute entries.</p>
+</div>
+<div class="paragraph">
+<p>The sourcemap information is available on the <code>source_location</code> property of the block.
+When the sourcemap is enabled, the value of this property is a <code>Cursor</code> object.
+The <code>Cursor</code> object contains the following properties:</p>
+</div>
+<div class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+file
+</td>
+<td class="hdlist2">
+<p>the absolute filename of the source file where the block starts (if input is a string, the value is <code>nil</code>)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+dir
+</td>
+<td class="hdlist2">
+<p>the absolute directory of the source file where the block starts (if input is a string, the value is the base dir)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+lineno
+</td>
+<td class="hdlist2">
+<p>the line number in the source file where the block starts (after any empty or block metadata lines)</p>
+</td>
+</tr>
+<tr>
+<td class="hdlist1">
+path
+</td>
+<td class="hdlist2">
+<p>the relative path (starting from docdir) of the source file where the block starts (if input is a string, the value is <code>&lt;stdin&gt;</code>)</p>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The <code>lineno</code> and <code>file</code> properties can be accessed as properties with the same name on the block itself.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+The sourcemap is not perfect.
+There are certain edge cases, such as when the block is split across multiple files or the block starts and ends on the last line of an include file, when the sourcemap may report the wrong file or line information.
+If you&#8217;re writing a processor that relies on the sourcemap, it&#8217;s a good idea to verify that the line at the cursor is the one you expect to find, then adjust accordingly.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_enable_using_sourcemap_option">Enable using :sourcemap option</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The sourcemap feature can be controlled from the API using the <code>:sourcemap</code> option.
+The value of this option is a boolean.
+If the value is <code>false</code> (default), the sourcemap is not enabled.
+If the value is <code>true</code>, the sourcemap is enabled.
+The <code>:sourcemap</code> option is accepted by all <a href="index.html#entrypoints">entrypoint methods</a> (e.g., Asciidoctor#load_file).</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example of how to enable the sourcemap using the API:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">doc = Asciidoctor.load_file 'doc.adoc', safe: :safe, sourcemap: true</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_enable_from_extension">Enable from extension</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can enable the sourcemap using an Asciidoctor preprocessor extension.
+This technique is useful if your extension needs access to the source location of blocks, but you don&#8217;t want to require users to pass an additional option to Asciidoctor.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">Asciidoctor::Document.prepend (Module.new do
+  attr_writer :sourcemap
+end) unless Asciidoctor::Document.method_defined? :sourcemap=
+
+# A preprocessor that enables the sourcemap feature if not already enabled via the API.
+Asciidoctor::Extensions.register do
+  preprocessor do
+    process do |doc, reader|
+      doc.sourcemap = true
+      nil
+    end
+  end
+end</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now that the sourcemap is enabled, your extension can access the source location of the block elements in the parsed document.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_use_the_sourcemap">Use the sourcemap</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>When the sourcemap is enabled, the parser will store source information on the <code>source_location</code> property on each block in the parsed document.
+Let&#8217;s look at an example.</p>
+</div>
+<div class="paragraph">
+<p>Start by creating the following AsciiDoc file named <em class="path">doc.adoc</em>.</p>
+</div>
+<div class="listingblock">
+<div class="title">doc.adoc</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">= Document Title
+
+== Section
+
+Paragraph.
+
+Another paragraph.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now, load this file using Asciidoctor with the <code>:sourcemap</code> option enabled:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">doc = Asciidoctor.load_file 'doc.adoc', safe: :safe, sourcemap: true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Let&#8217;s find the first paragraph in the document and inspect its source location:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">first_paragraph = (doc.find_by context: :paragraph)[0]
+puts first_paragraph.source_location</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You&#8217;ll see output similar to what&#8217;s shown below:</p>
+</div>
+<div class="literalblock output">
+<div class="content">
+<pre>doc.adoc: line 5</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>What you&#8217;re seeing here is the string value of the cursor.
+There&#8217;s more information to see if you replace <code>puts</code> with <code>pp</code>:</p>
+</div>
+<div class="literalblock output">
+<div class="content">
+<pre>#&lt;Asciidoctor::Reader::Cursor
+ @dir="/path/to/docdir",
+ @file="/path/to/docdir/doc.adoc",
+ @lineno=5,
+ @path="doc.adoc"&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Since file and lineno are the most useful properties, they can be accessed directly from the block:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">puts first_paragraph.file
+puts first_paragraph.lineno</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you move the source of the section to an include file, as shown here:</p>
+</div>
+<div class="listingblock">
+<div class="title">doc.adoc</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">= Document Title
+
+include::partials/section.adoc[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>then the source location will follow the paragraph into that file:</p>
+</div>
+<div class="literalblock output">
+<div class="content">
+<pre>#&lt;Asciidoctor::Reader::Cursor
+ @dir="/path/to/docdir/partials",
+ @file="/path/to/docdir/partials/section.adoc",
+ @lineno=3,
+ @path="partials/section.adoc"&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the block has metadata lines, those lines are skipped when reporting the start location of the block.
+For example, let&#8217;s assume the paragraph is defined as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">[#p1]
+Paragraph.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The lineno of the paragraph in the source location is now one greater than before:</p>
+</div>
+<div class="literalblock output">
+<div class="content">
+<pre>#&lt;Asciidoctor::Reader::Cursor
+ @dir="/path/to/docdir/partials",
+ @file="/path/to/docdir/partials/section.adoc",
+ @lineno=4,
+ @path="partials/section.adoc"&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re writing a custom converter, the source location is not available for inline elements.
+However, you can access the source location of the parent element (e.g., <code>node.parent.source_location</code>), which should at least get you close to the location of the element.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

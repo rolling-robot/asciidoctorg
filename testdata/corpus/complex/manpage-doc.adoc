@@ -1,0 +1,33 @@
+= tool(1)
+Jane Doe
+v1.0
+:doctype: manpage
+:manmanual: Tool Manual
+:mansource: Tool 1.0
+
+== Name
+
+tool - does things
+
+== Synopsis
+
+*tool* [_OPTION_]... _FILE_...
+
+== Options
+
+*-v, --verbose*::
+  Be verbose.
+
+*-o* _FILE_::
+  Write output to _FILE_.
+
+== Example
+
+----
+$ tool -v input.txt
+----
+
+== Exit Status
+
+*0*:: Success.
+*1*:: Failure.

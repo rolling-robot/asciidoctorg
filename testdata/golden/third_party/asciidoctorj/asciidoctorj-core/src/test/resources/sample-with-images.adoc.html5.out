@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>This is a title</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>This is a title</h1>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_a_few_images">A few images</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>A block image</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/block-image.jpg" alt="block image">
+</div>
+</div>
+<div class="paragraph">
+<p>An inlined image <span class="image"><img src="images/inline-image.png" alt="inline image"></span> in the text.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Removal of deprecated methods in org.asciidoctor.ast package</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_removal_of_deprecated_methods_in_org_asciidoctor_ast_package">Removal of deprecated methods in <code>org.asciidoctor.ast</code> package</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Several methods under <code>org.asciidoctor.ast</code> that were marked as <code>@Deprecated</code> have been removed.
+The new methods align better with Java naming patterns and are easily identifiable.</p>
+</div>
+<div class="paragraph">
+<p>Here follows the list of affected interfaces, describing for each one the removed methods and the substitutions.</p>
+</div>
+<div class="sect2">
+<h3 id="_block">Block</h3>
+<div class="listingblock">
+<div class="title">Removed deprecated methods</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; lines()
+String source()</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Final methods</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">List&lt;String&gt; getLines()
+String getSource()</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_descriptionlist_phrasenode_and_list">DescriptionList, PhraseNode and List</h3>
+<div class="listingblock">
+<div class="title">Removed deprecated method</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">String render()</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Final method</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">String convert()</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_contentnode">ContentNode</h3>
+<div class="listingblock">
+<div class="title">Removed deprecated methods</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">String id()
+ContentNode parent()
+String context()
+Document document()
+String role()
+
+Object getAttr(Object name, Object defaultValue, boolean inherit)
+Object getAttr(Object name, Object defaultValue)
+Object getAttr(Object name)
+
+boolean hasAttr(Object name)
+boolean hasAttr(Object name, boolean inherited)
+
+boolean isAttr(Object name, Object expected)
+boolean isAttr(Object name, Object expected, boolean inherit)
+
+boolean setAttr(Object name, Object value, boolean overwrite)</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Final methods</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">String getId()
+ContentNode getParent()
+String getContext()
+Document getDocument()
+String getRole()
+
+Object getAttribute(Object name, Object defaultValue, boolean inherit)
+Object getAttribute(Object name, Object defaultValue)
+Object getAttribute(Object name)
+
+boolean hasAttribute(Object name)
+boolean hasAttribute(Object name, boolean inherited)
+
+boolean isAttribute(Object name, Object expected)
+boolean isAttribute(Object name, Object expected, boolean inherit)
+
+boolean setAttribute(Object name, Object value, boolean overwrite)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_section">Section</h3>
+<div class="paragraph">
+<p>On top of the methods replaced by Java getters, both <code>number</code> and <code>getNumber</code> are replaced by <code>getNumeral</code>.
+This is done to support non-number numerals.</p>
+</div>
+<div class="listingblock">
+<div class="title">Removed deprecated methods</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">int index()
+int number()
+int getNumber()
+
+String sectname()
+boolean special()
+
+boolean numbered()</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Final methods</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">int getIndex()
+String getNumeral()
+
+String getSectionName()
+boolean isSpecial()
+
+boolean isNumbered()</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_structuralnode">StructuralNode</h3>
+<div class="listingblock">
+<div class="title">Removed deprecated methods</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Object content()
+String style()
+String title()
+List&lt;StructuralNode&gt; blocks()</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Final methods</div>
+<div class="content">
+<pre>Object getContent()
+String getStyle()
+String getTitle()
+List&lt;StructuralNode&gt; getBlocks()</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

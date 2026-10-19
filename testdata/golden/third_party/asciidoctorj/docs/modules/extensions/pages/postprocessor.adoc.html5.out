@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Postprocessor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body id="postprocessor" class="article">
+<div id="header">
+<h1>Postprocessor</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>Postprocessors are called when Asciidoctor has converted the document to its target format and have the chance to modify the result.
+A Postprocessor could for example insert a custom copyright notice into the footer element of the resulting HTML document.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Postprocessors in AsciidoctorJ currently only supports String based target formats.
+That means it is not possible at the moment to write Postprocessors for binary formats like PDF or EPUB.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>As example, a Postprocessor that adds a copyright notice would look like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">A Postprocessor that inserts a copyright notice in the footer element</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in postprocessor.adoc - include::example$org/asciidoctor/integrationguide/extension/CopyrightFooterPostprocessor.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>All Postprocessors must extend the class <code>org.asciidoctor.extension.Postprocessor</code> and implement the method <code>process()</code>.</p>
+</li>
+<li>
+<p>The processor parses the resulting HTML text using the Jsoup library.
+This returns the document as a data structure.</p>
+</li>
+<li>
+<p>Find the element with the ID <code>footer-text</code>.
+This element contains the footer text, which usually contains the document generation timestamp.
+If this element is available its text is modified by appending the copyright notice.</p>
+</li>
+<li>
+<p>Finally, convert the modified document back to the HTML string and let the processor return it.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Make sure <code>header_footer</code> option is not set to <code>false</code>, otherwise these will not be added to the document.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

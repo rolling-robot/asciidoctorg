@@ -1,0 +1,69 @@
+= Inline and Block Macros
+:experimental:
+:icons: font
+:imagesdir: images
+:stem: latexmath
+:xrefstyle: short
+
+[[top]]
+== Links
+
+https://asciidoctor.org, <https://example.org/angle>, https://example.org/caret[Caret^],
+link:relative/path.html[Relative], link:++https://example.org/a_b_c++[Escaped],
+mailto:jane@example.org[Mail Jane, Subject Line, Body text], jane@example.org,
+https://example.org[role=external,window=_blank,opts=nofollow].
+Not a link: \https://example.org.
+
+== Cross References
+
+See <<top>>, <<top,the top>>, xref:sec-images[], xref:sec-images[Images section],
+<<table-1>>, <<listing-1>>, xref:other-doc.adoc#anchor[Other doc], and <<missing-ref>>.
+
+[#sec-images]
+== Images
+
+image:inline.png[Inline,16,16] and image:icon.svg[role=icon,title="An icon"].
+
+.A block image
+[#fig-1,link=https://example.org]
+image::diagram.png[Diagram,300,200,align=center]
+
+image::photo.jpg[float=right,width=50%]
+
+== UI Macros
+
+Press kbd:[Ctrl+Shift+N] or kbd:[F11], click btn:[Save], select menu:File[Save As...] and menu:View[Zoom > Reset].
+
+== Footnotes and Index
+
+Text with a footnote.footnote:[The footnote text.]
+Another with an id.footnote:fn1[Reusable footnote.] Reuse it.footnote:fn1[]
+Index terms ((visible term)) and (((hidden, secondary, tertiary))) and indexterm:[concealed] and indexterm2:[flow].
+
+== Anchors and Formatting
+
+[[inline-anchor]]Anchored text, anchor:another[Ref text] and [#phrase-id.role1.role2]*styled phrase*.
+*strong* _emphasis_ `mono` #highlight# ^super^ ~sub~ **un**constrained __emp__hasis ``mo``no ##ma##rk.
+[.underline]#underlined# [.line-through]#struck# [.big]#big# [small]#small#.
+"`double curved`" '`single curved`' it's (C) (R) (TM) -- ... -> => <- <= &#169; &amp; &#x2122;.
+
+== STEM
+
+Inline stem:[\sqrt{x^2+1}] and latexmath:[E=mc^2] and asciimath:[sum_(i=1)^n i].
+
+[stem]
+++++
+\int_0^\infty e^{-x} \, dx = 1
+++++
+
+== Icons
+
+icon:heart[2x,role=red] icon:check[] icon:download[link=https://example.org,window=_blank].
+
+== Block Macros
+
+video::video-file.mp4[width=640,start=10,end=20,options="autoplay,loop"]
+video::rPQoq7ThGAU[youtube]
+video::67480300[vimeo]
+audio::sound.ogg[options=autoplay]
+toc::[]

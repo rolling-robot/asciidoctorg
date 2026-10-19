@@ -1,0 +1,7 @@
+= Included Chapter
+
+Content from an included file with attribute {includedir}.
+
+== Included Subsection
+
+More included content.

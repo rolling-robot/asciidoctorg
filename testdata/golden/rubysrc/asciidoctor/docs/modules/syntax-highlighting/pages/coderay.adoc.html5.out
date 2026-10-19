@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>CodeRay</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>CodeRay</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="http://coderay.rubychan.de/" target="_blank" rel="noopener">CodeRay</a> is an encoding-aware, syntax highlighter that supports the languages listed below.</p>
+</div>
+<table class="tableblock frame-none grid-none fit-content">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">C</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">C++</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Clojure</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">CSS</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Delphi</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">diff</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ERB</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Go</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Groovy</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HAML</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">HTML</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Java</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JavaScript</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">JSON</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Lua</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PHP</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Python</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ruby</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sass</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">SQL</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Taskpaper</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">XML</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">YAML</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_install_coderay">Install CodeRay</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To use CodeRay with Asciidoctor, you need the <a href="https://rubygems.org/gems/coderay" target="_blank" rel="noopener">coderay gem</a>.
+You can use one of the following methods to install CodeRay.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Install using gem (all systems)</dt>
+<dd>
+<div class="literalblock">
+<div class="content">
+<pre>$ gem install coderay</pre>
+</div>
+</div>
+</dd>
+<dt class="hdlist1">Install using apt-get (Debian-based systems)</dt>
+<dd>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo apt-get install ruby-coderay</pre>
+</div>
+</div>
+</dd>
+<dt class="hdlist1">Install using dnf (Fedora-based systems)</dt>
+<dd>
+<div class="literalblock">
+<div class="content">
+<pre>$ sudo dnf install rubygem-coderay</pre>
+</div>
+</div>
+</dd>
+</dl>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_activate_coderay">Activate CodeRay</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Once you&#8217;ve installed the gem, assign the <code>coderay</code> value to the <code>source-highlighter</code> attribute in the document header to activate it.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">:source-highlighter: coderay</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_coderay_attributes">CodeRay attributes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can further customize the source block output with additional CodeRay attributes.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">coderay-css</dt>
+<dd>
+<p>Controls what method is used for applying CSS to the tokens.
+Can be <code>class</code> or <code>style</code>.
+Default: <code>class</code>.</p>
+</dd>
+<dt class="hdlist1">coderay-linenums-mode</dt>
+<dd>
+<p>Controls how line numbers are laid out.
+Can be <code>table</code> or <code>inline</code>.
+If line wrapping is enabled on preformatted blocks (i.e., <code>prewrap</code>), and you want to use line numbering on source blocks, you must set the value of this attribute to <code>inline</code> in order for the numbers to line up properly with their target lines.
+Default: <code>table</code>.</p>
+</dd>
+</dl>
+</div>
+<div class="listingblock">
+<div class="title">Customizing a source block with CodeRay line numbers</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">:source-highlighter: coderay
+:coderay-linenums-mode: inline
+
+[%linenums,ruby]
+----
+ORDERED_LIST_KEYWORDS = {
+  'loweralpha' =&gt; 'a',
+  'lowerroman' =&gt; 'i',
+  'upperalpha' =&gt; 'A',
+  'upperroman' =&gt; 'I'
+   #'lowergreek' =&gt; 'a'
+   #'arabic'     =&gt; '1'
+   #'decimal'    =&gt; '1'
+}
+----</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>See the <a href="html-backend:source-highlighting-stylesheets.html#coderay">CodeRay stylesheet section</a> to learn about the <code>coderay-css</code> attribute.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

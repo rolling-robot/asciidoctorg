@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Local Development</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Local Development</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Project is fully handled using <a href="https://gradle.org/">Gradle</a>.
+That includes from dependency management, to building, testing and releasing.</p>
+</div>
+<div class="paragraph">
+<p>While IDE integration is the most common workflow, all tasks can be run using the <code>gradlew</code> command (i.e., the Gradle Wrapper).</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+We strongly recommend that you use Gradle via the <a href="https://www.timroes.de/2013/09/12/speed-up-gradle">Gradle daemon</a>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_build_the_artifacts">Build the artifacts</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To clone the project, compile the source and build the artifacts (i.e., jars) locally, run:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ git clone https://github.com/asciidoctor/asciidoctorj
+$ cd asciidoctorj
+$ ./gradlew assemble</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then, you can find the built artifacts in the <em class="path">asciidoctorj-*/build/libs</em> folders.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_test">Test</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To execute tests when running the build, use:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ ./gradlew build</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To only execute the tests, run:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ ./gradlew check</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also run tests for a single module:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ cd asciidoctorj-core
+  ../gradlew check</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To run a single test in the asciidoctorj-core subproject, use:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ ../gradlew -Dsingle.test=NameOfTestClass test</pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_create_distribution">Create distribution</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>To create the distribution containing all files, run:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ ./gradlew distZip</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can find the distribution in the <em class="path">asciidoctorj-distribution/build/distributions</em> folder.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_locally_install_the_artifacts">Locally install the artifacts</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If you need to install the artifacts in local Maven repository, for example to be used as dependency for another project.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ ./gradlew publishToMavenLocal</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Artifacts will be at <em class="path">~/.m2/repository/org/asciidoctor/asciidoctorj</em>.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

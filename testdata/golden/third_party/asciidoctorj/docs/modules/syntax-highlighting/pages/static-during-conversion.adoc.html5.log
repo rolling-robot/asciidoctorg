@@ -1,0 +1,8 @@
+ERROR: static-during-conversion.adoc: line 13: include file not found: {repo}/third_party/asciidoctorj/docs/modules/syntax-highlighting/pages/example$org/asciidoctor/integrationguide/syntaxhighlighter/PrismJsHighlighter.java
+WARN: static-during-conversion.adoc: line 15: no callout found for <1>
+WARN: static-during-conversion.adoc: line 16: no callout found for <2>
+WARN: static-during-conversion.adoc: line 17: no callout found for <3>
+WARN: static-during-conversion.adoc: line 19: no callout found for <4>
+ERROR: static-during-conversion.adoc: line 31: include file not found: {repo}/third_party/asciidoctorj/docs/modules/syntax-highlighting/pages/example$org/asciidoctor/integrationguide/syntaxhighlighter/PrismJsHighlighterTest.java
+WARN: static-during-conversion.adoc: line 33: no callout found for <1>
+WARN: static-during-conversion.adoc: line 34: no callout found for <2>

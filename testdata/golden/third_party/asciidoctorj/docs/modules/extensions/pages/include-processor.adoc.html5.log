@@ -1,0 +1,5 @@
+ERROR: include-processor.adoc: line 27: include file not found: {repo}/third_party/asciidoctorj/docs/modules/extensions/pages/example$org/asciidoctor/integrationguide/extension/LsIncludeProcessor.java
+WARN: include-processor.adoc: line 29: no callout found for <1>
+WARN: include-processor.adoc: line 30: no callout found for <2>
+WARN: include-processor.adoc: line 33: no callout found for <3>
+WARN: include-processor.adoc: line 34: no callout found for <4>

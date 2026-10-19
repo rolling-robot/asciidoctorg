@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?asciidoc-toc?>
+<?asciidoc-numbered?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0" xml:lang="en">
+<info>
+<title>Tables</title>
+<date>2020-01-01</date>
+</info>
+<table xml:id="table-1" frame="topbot" rowsep="1" colsep="0">
+<title>Basic table</title>
+<?dbhtml table-width="80%"?>
+<?dbfo table-width="80%"?>
+<?dblatex table-width="80%"?>
+<tgroup cols="4">
+<colspec colname="col_1" colwidth="48.5713*"/>
+<colspec colname="col_2" colwidth="97.1427*"/>
+<colspec colname="col_3" colwidth="145.7141*"/>
+<colspec colname="col_4" colwidth="48.5717*"/>
+<thead>
+<row>
+<entry align="left" valign="top">Name</entry>
+<entry align="left" valign="top">Description</entry>
+<entry align="center" valign="top">Centered</entry>
+<entry align="right" valign="top">Code</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>Alpha</simpara></entry>
+<entry align="left" valign="top"><itemizedlist>
+<listitem>
+<simpara>list in cell</simpara>
+</listitem>
+<listitem>
+<simpara>another</simpara>
+</listitem>
+</itemizedlist></entry>
+<entry align="center" valign="top"><simpara>middle</simpara></entry>
+<entry align="right" valign="top"><simpara><literal>x = 1</literal></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top" namest="col_1" nameend="col_2"><simpara>Spanning two columns</simpara></entry>
+<entry align="left" valign="top"><simpara>centered</simpara></entry>
+<entry align="center" valign="top"><simpara>y</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top" morerows="1"><simpara>Row span</simpara></entry>
+<entry align="left" valign="top"><simpara>a</simpara></entry>
+<entry align="center" valign="top"><simpara>b</simpara></entry>
+<entry align="right" valign="top"><simpara><literal>c</literal></simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>d</simpara></entry>
+<entry align="left" valign="top"><simpara>e</simpara></entry>
+<entry align="center" valign="top"><simpara>f</simpara></entry>
+</row>
+</tbody>
+<tfoot>
+<row>
+<entry align="left" valign="top"><simpara>Footer 1</simpara></entry>
+<entry align="left" valign="top"><simpara>Footer 2</simpara></entry>
+<entry align="center" valign="top"><simpara>Footer 3</simpara></entry>
+<entry align="right" valign="top"><simpara><literal>Footer 4</literal></simpara></entry>
+</row>
+</tfoot>
+</tgroup>
+</table>
+<informaltable frame="all" rowsep="1" colsep="1">
+<tgroup cols="6">
+<colspec colname="col_1" colwidth="16.6666*"/>
+<colspec colname="col_2" colwidth="16.6666*"/>
+<colspec colname="col_3" colwidth="16.6666*"/>
+<colspec colname="col_4" colwidth="16.6666*"/>
+<colspec colname="col_5" colwidth="16.6666*"/>
+<colspec colname="col_6" colwidth="16.667*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara><emphasis>emphasis</emphasis></simpara></entry>
+<entry align="left" valign="top"><simpara><emphasis role="strong">strong</emphasis></simpara></entry>
+<entry align="left" valign="top"><literallayout class="monospaced">literal  text</literallayout></entry>
+<entry align="left" valign="top"><simpara><emphasis role="strong">header</emphasis></simpara></entry>
+<entry align="left" valign="top"><simpara>default</simpara></entry>
+<entry align="left" valign="top"><simpara>verse
+text</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<informaltable role="stretch" frame="all" rowsep="1" colsep="1">
+<tgroup cols="3">
+<colspec colname="col_1" colwidth="33.3333*"/>
+<colspec colname="col_2" colwidth="33.3333*"/>
+<colspec colname="col_3" colwidth="33.3334*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>left</simpara></entry>
+<entry align="center" valign="top"><simpara>center</simpara></entry>
+<entry align="right" valign="top"><simpara>right</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>repeated</simpara></entry>
+<entry align="center" valign="top"><simpara>repeated</simpara></entry>
+<entry align="right" valign="top"><simpara>repeated</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<informaltable frame="all" rowsep="1" colsep="1">
+<tgroup cols="3">
+<colspec colname="col_1" colwidth="33.3333*"/>
+<colspec colname="col_2" colwidth="33.3333*"/>
+<colspec colname="col_3" colwidth="33.3334*"/>
+<thead>
+<row>
+<entry align="left" valign="top">Artist</entry>
+<entry align="left" valign="top">Track</entry>
+<entry align="left" valign="top">Genre</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>Baauer</simpara></entry>
+<entry align="left" valign="top"><simpara>Harlem Shake</simpara></entry>
+<entry align="left" valign="top"><simpara>Hip Hop</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>Comma, Inc</simpara></entry>
+<entry align="left" valign="top"><simpara>Song</simpara></entry>
+<entry align="left" valign="top"><simpara>Rock</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<informaltable frame="all" rowsep="1" colsep="1">
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>a</simpara></entry>
+<entry align="left" valign="top"><simpara>b</simpara></entry>
+</row>
+<row>
+<entry align="left" valign="top"><simpara>c</simpara></entry>
+<entry align="left" valign="top"><simpara>d</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<informaltable frame="all" rowsep="1" colsep="1">
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>x</simpara></entry>
+<entry align="left" valign="top"><simpara>y</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<informaltable frame="all" rowsep="1" colsep="1">
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>custom</simpara></entry>
+<entry align="left" valign="top"><simpara>separator</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<table frame="all" rowsep="1" colsep="1">
+<title>Nested table</title>
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><informaltable frame="all" rowsep="1" colsep="1">
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>nested a</simpara></entry>
+<entry align="left" valign="top"><simpara>nested b</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable></entry>
+<entry align="left" valign="top"><simpara>outer</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</table>
+<informaltable frame="all" rowsep="1" colsep="1">
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<thead>
+<row>
+<entry align="left" valign="top">H1</entry>
+<entry align="left" valign="top">H2</entry>
+</row>
+</thead>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>r1</simpara></entry>
+<entry align="left" valign="top"><simpara>r2</simpara></entry>
+</row>
+</tbody>
+<tfoot>
+<row>
+<entry align="left" valign="top"><simpara>F1</simpara></entry>
+<entry align="left" valign="top"><simpara>F2</simpara></entry>
+</row>
+</tfoot>
+</tgroup>
+</informaltable>
+<informaltable frame="none" rowsep="0" colsep="0">
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>no grid</simpara></entry>
+<entry align="left" valign="top"><simpara>no frame</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<informaltable frame="all" rowsep="1" colsep="1">
+<tgroup cols="2">
+<colspec colname="col_1" colwidth="50*"/>
+<colspec colname="col_2" colwidth="50*"/>
+<tbody>
+<row>
+<entry align="left" valign="top"><simpara>a</simpara></entry>
+<entry align="left" valign="top"><simpara>b</simpara></entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+</article>

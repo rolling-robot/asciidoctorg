@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Set the Safe Mode Using the CLI</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Set the Safe Mode Using the CLI</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>When Asciidoctor is invoked via the CLI, the <a href="ROOT:safe-modes.html">safe mode</a> is set to <code>UNSAFE</code> by default.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_assign_safe_mode_level">Assign safe mode level</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can change the security level by executing one of the following commands:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>-S</code>, <code>--safe-mode=SAFE_MODE</code></dt>
+<dd>
+<p>Sets the safe mode level of the document according to the assigned level (<code>UNSAFE</code>, <code>SAFE</code>, <code>SERVER</code>, <code>SECURE</code>).</p>
+</dd>
+<dt class="hdlist1"><code>--safe</code>, <code>asciidoctor-safe</code></dt>
+<dd>
+<p>Sets the safe mode level to <code>SAFE</code>.
+Provided for compatibility with the python AsciiDoc <code>safe</code> command.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>You can also set the <a href="api:set-safe-mode.html">safe mode from the API</a> and <a href="ROOT:reference-safe-mode.html">enable or disable content based on the current safe mode</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Set the Safe Mode Using the API</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Set the Safe Mode Using the API</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>When using Asciidoctor via the API, the default <a href="ROOT:safe-modes.html">safe mode</a> is <code>SECURE</code>.
+You can change the safe mode using the <code>:safe</code> API option.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_set_safe_option">Set :safe option</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The safe mode can be controlled from the API using the <code>:safe</code> option.
+The <code>:safe</code> option is accepted by all <a href="index.html#entrypoints">entrypoint methods</a> (e.g., <code>Asciidoctor#convert_file</code>).</p>
+</div>
+<div class="paragraph">
+<p>The <code>:safe</code> option accepts the safe mode as a string:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">Asciidoctor.convert_file 'doc.adoc', safe: 'server'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>as a symbol (preferred):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">Asciidoctor.convert_file 'doc.adoc', safe: :server</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>as an integer:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">Asciidoctor.convert_file 'doc.adoc', safe: 10</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also set the <a href="cli:set-safe-mode.html">safe mode from the CLI</a> and <a href="ROOT:reference-safe-mode.html">enable or disable content based on the current safe mode</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

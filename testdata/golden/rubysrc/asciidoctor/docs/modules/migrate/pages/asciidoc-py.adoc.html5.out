@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<meta name="description" content="This page covers the differences between Asciidoctor and the legacy Python-based AsciiDoc processor, AsciiDoc.py, and provides guidance for migrating your content and processor settings from AsciiDoc.py to Asciidoctor.">
+<title>Migrate from AsciiDoc.py</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Migrate from AsciiDoc.py</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>AsciiDoc.py is the original and legacy Python-based processor for the AsciiDoc language.
+It has been superseded by Asciidoctor.
+If you&#8217;re currently using AsciiDoc.py to convert your AsciiDoc documents and are ready to switch to Asciidoctor, you&#8217;ll need to migrate your legacy AsciiDoc content to the official AsciiDoc syntax defined and supported by Asciidoctor.
+In doing so, you&#8217;ll also benefit from the enhancements that have been added to the AsciiDoc language since Asciidoctor took over development of the language.
+This page covers those differences and how to migrate.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+This documentation specifically covers migration from AsciiDoc.py 8.6.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_processor_call">Processor call</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Asciidoctor processor is a drop-in replacement for AsciiDoc.py.
+You can replace the call to AsciiDoc.py (<code>asciidoc</code>) with the equivalent call to Asciidoctor (<code>asciidoctor</code>).</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor document.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If your document makes heavy use of the legacy AsciiDoc syntax supported by AsciiDoc.py, you may have better luck enabling compat mode:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -a compat-mode document.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>However, compat mode is strictly a migration aid.
+You should only use it as an interim measure while you&#8217;re migrating your content.
+It&#8217;s not something you want to rely on long term and is considered deprecated.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_default_html_backend">Default HTML backend</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>AsciiDoc.py used XHTML 1.1 as its default output.
+Asciidoctor&#8217;s default output is HTML 5 (i.e., <code>backend=html5</code>) and the <code>html</code> backend maps to <code>html5</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_themes">Themes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>AsciiDoc.py provided a theming mechanism that encapsulated CSS, JavaScript, and images.
+The <code>--theme</code> option activated one of these themes, which was resolved from your home directory.
+In Asciidoctor, you control the theme using CSS stylesheets, which you specify using <code>-a stylesheet=&lt;stylesheet&gt;</code>.</p>
+</div>
+<div class="paragraph">
+<p>If you require more advanced theming, you can inject additional resources using a <a href="ROOT:docinfo.html">docinfo file</a> or a <a href="extensions:postprocessor.html">postprocessor extension</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="migrate-stylesheet">Default HTML stylesheet</h3>
+<div class="paragraph">
+<p>The Asciidoctor and AsciiDoc.py stylesheets look quite different, but they&#8217;re mostly interchangeable since the underlying HTML structure of the two processors is nearly identical.</p>
+</div>
+<div class="paragraph">
+<p>If you prefer the AsciiDoc.py stylesheet, you can use it by copying it from the AsciiDoc.py <em class="path">stylesheets</em> directory and instructing Asciidoctor to apply it using:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -a stylesheet=asciidoc.css document.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Keep in mind that the default stylesheet in Asciidoctor is just that, a default.
+If you don&#8217;t like its appearance, you can customize it.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Important</div>
+</td>
+<td class="content">
+Unlike AsciiDoc.py, Asciidoctor loads some resources from a CDN.
+It&#8217;s possible to configure Asciidoctor to load all resources from local files.
+For instance, you can unset the <code>webfonts</code> attribute so that the generated HTML does not use fonts from Google Fonts.
+There are similar attributes to control how additional resources are resolved.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_updated_and_deprecated_asciidoc_syntax">Updated and deprecated AsciiDoc syntax</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>As the steward of the AsciiDoc language, Asciidoctor reworked some of the AsciiDoc syntax originally introduced by AsciiDoc.py in an effort to make it more consistent, easier to learn, and, in some cases, more concise.
+This section outlines those improvements to the modern AsciiDoc syntax and how it differs from the legacy AsciiDoc recognized by AsciiDoc.py.</p>
+</div>
+<div class="paragraph">
+<p><strong>If a feature or attribute isn&#8217;t mentioned in the following tables, then it works in Asciidoctor just like it worked in AsciiDoc.py.</strong></p>
+</div>
+<div class="sect2">
+<h3 id="_inline_formatting">Inline formatting</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Feature</th>
+<th class="tableblock halign-left valign-top">AsciiDoc.py</th>
+<th class="tableblock halign-left valign-top">Asciidoctor</th>
+<th class="tableblock halign-left valign-top">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>italic text</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">'italic text' or _italic text_</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">_italic text_</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="asciidoc:text:italic.html">asciidoc:text:italic.html</a>.<br>
+Reverts to AsciiDoc.py syntax when <code>compat-mode</code> is enabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>monospace text</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">+monospace text+</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">`monospace text` or [x-]+monospace text+</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="asciidoc:text:monospace.html">asciidoc:text:monospace.html</a>.<br>
+Reverts to AsciiDoc.py syntax when <code>compat-mode</code> is enabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>literal monospace text</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">`literal monospace text`</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">`+literal monospace text+` or [x-]`literal monospace text`</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="asciidoc:text:monospace.html#literal-monospace">Literal monospace</a>.<br>
+Reverts to AsciiDoc.py syntax when <code>compat-mode</code> is enabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Curved &#8220;double quotes&#8221;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">``double quotes''</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">"`double quotes`"</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="asciidoc:text:quotation-marks-and-apostrophes.html">asciidoc:text:quotation-marks-and-apostrophes.html</a>.<br>
+Reverts to AsciiDoc.py syntax when <code>compat-mode</code> is enabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Curved &#8216;single quotes&#8217;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">`single quotes'</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">'`single quotes`'</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="asciidoc:text:quotation-marks-and-apostrophes.html">asciidoc:text:quotation-marks-and-apostrophes.html</a>.<br>
+Reverts to AsciiDoc.py syntax when <code>compat-mode</code> is enabled.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inline role(s)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[role]#text# or [role1 role2]#text#</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">[.role]#text# or [.role1.role2]#text#</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="asciidoc:text:text-span-built-in-roles.html">asciidoc:text:text-span-built-in-roles.html</a>.<br>
+While Asciidoctor still recognizes the bare, space-separated syntax for inline roles, the shorthand-style with the leading dot is preferred.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Font size roles</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>big</code>, <code>small</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">user-specified role (e.g., <code>[.details]</code>) with corresponding CSS rules provided by stylesheet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="asciidoc:text:custom-inline-styles.html">asciidoc:text:custom-inline-styles.html</a>.<br>
+The default stylesheet in Asciidoctor still provides CSS for these built-in roles, but they are considered deprecated.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Color roles</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>aqua</code>, <code>aqua-background</code>, etc.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">user-specified role <code>[.brand-primary]</code> with corresponding CSS rules provided by stylesheet</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="asciidoc:text:custom-inline-styles.html">asciidoc:text:custom-inline-styles.html</a>.<br>
+The default stylesheet in Asciidoctor still provides CSS for these built-in roles, but they are considered deprecated.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_table_of_contents">Table of contents</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Feature</th>
+<th class="tableblock halign-left valign-top">AsciiDoc.py</th>
+<th class="tableblock halign-left valign-top">Asciidoctor</th>
+<th class="tableblock halign-left valign-top">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Scrollable, left margin TOC</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>toc2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:toc: left</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="asciidoc:toc:position.html">asciidoc:toc:position.html</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TOC location</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>toc-placement</code> and <code>toc-position</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:toc: &lt;value&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="asciidoc:toc:position.html">asciidoc:toc:position.html</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">User-specified TOC location</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:toc-placement: manual</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>:toc: macro</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="asciidoc:toc:position.html">asciidoc:toc:position.html</a>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_document_and_section_titles">Document and section titles</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col>
+<col>
+<col width="30%">
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Feature</th>
+<th class="tableblock halign-left valign-top">AsciiDoc.py</th>
+<th class="tableblock halign-left valign-top">Asciidoctor</th>
+<th class="tableblock halign-left valign-top">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Two-line style (setext) document title</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Title</code><br>
+<code>=====</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>= Title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="asciidoc:document:title.html">asciidoc:document:title.html</a>.<br>
+When Asciidoctor detects the two-line style document title, it switches to compat mode by implicitly setting <code>compat-mode</code>.
+To revert this behavior, explicitly unset <code>compat-mode</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Underlined section titles</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Underline length must match title length +/- 2 characters.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>== Level 1 title</code><br>
+<code>=== Level 2 title</code><br>
+<code>==== Level 3 title</code><br>
+<code>===== Level 4 title</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="asciidoc:sections:titles-and-levels.html">asciidoc:sections:titles-and-levels.html</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Section numbers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>numbered</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>sectnums</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="asciidoc:sections:numbers.html">asciidoc:sections:numbers.html</a>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Asciidoctor is more careful when deriving automatic IDs for sections from the section title to avoid generating obscure IDs.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Asciidoctor removes any start and end HTML/XML tags, whereas AsciiDoc.py does not.</p>
+</li>
+<li>
+<p>Asciidoctor removes any character references (e.g., <code>&amp;copy;</code>), whereas AsciiDoc.py does not (see next rule).</p>
+</li>
+<li>
+<p>Asciidoctor removes any invalid characters (e.g., <code>$</code>), whereas AsciiDoc.py replaces these characters with the value of the <code>idseparator</code> attribute.</p>
+</li>
+<li>
+<p>Asciidoctor automatically generates IDs for discrete headings, whereas AsciiDoc.py does not.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>To ensure your IDs have maximum portability, it&#8217;s best to define them explicitly if the section title contains special characters or formatting.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_tables">Tables</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Feature</th>
+<th class="tableblock halign-left valign-top">AsciiDoc.py</th>
+<th class="tableblock halign-left valign-top">Asciidoctor</th>
+<th class="tableblock halign-left valign-top">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Table cell</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a|</code> or <code>asciidoc|</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>a|</code> only</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="asciidoc:tables:add-cells-and-rows.html">asciidoc:tables:add-cells-and-rows.html</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Table cell separator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A Python regular expression.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">One or more literal characters or <code>\t</code> for tab.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="asciidoc:tables:add-cells-and-rows.html">asciidoc:tables:add-cells-and-rows.html</a>, <a href="asciidoc:tables:data-format.html">asciidoc:tables:data-format.html</a>, and <a href="asciidoc:tables:data-format.html#custom-delimiters">custom separators</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Horizontal and vertical alignment for tables cells</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>halign</code>, <code>valign</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Column and cell specifiers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="asciidoc:tables:align-by-column.html">asciidoc:tables:align-by-column.html</a> and <a href="asciidoc:tables:align-by-cell.html">asciidoc:tables:align-by-cell.html</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Make tables full page width in DocBook</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>options="pgwide"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>not implemented</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_blocks">Blocks</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Feature</th>
+<th class="tableblock halign-left valign-top">AsciiDoc.py</th>
+<th class="tableblock halign-left valign-top">Asciidoctor</th>
+<th class="tableblock halign-left valign-top">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Block delimiters</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Delimiter lines do not have to match in length.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The length of start and end delimiter lines must match exactly.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="asciidoc:blocks:delimited.html">asciidoc:blocks:delimited.html</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default substitutions for passthrough blocks</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Applies attributes and macros substitutions to passthrough blocks</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Does not apply any substitutions to passthrough blocks</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Add <code>[subs="attributes,macros"]</code> above block to restore behavior.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_substitutions">Substitutions</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Feature</th>
+<th class="tableblock halign-left valign-top">AsciiDoc.py</th>
+<th class="tableblock halign-left valign-top">Asciidoctor</th>
+<th class="tableblock halign-left valign-top">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Substitute <code>+</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>replacements2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>post_replacements</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="asciidoc:subs:post-replacements.html">asciidoc:subs:post-replacements.html</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Suppress inline substitutions and retain block indents when importing large blocks of plain text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>plaintext</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>not implemented</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Close equivalent is a <a href="asciidoc:pass:pass-block.html">passthrough block</a> or a listing block with <a href="asciidoc:directives:include-with-indent.html#the-indent-attribute">the indent attribute</a>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_mathematical_expressions">Mathematical expressions</h3>
+<div class="paragraph">
+<p>AsciiDoc.py and Asciidoctor can convert embedded LaTeX and AsciiMath expressions (e.g., <code>asciimath:[expression]</code>, <code>latexmath:[expression]</code>, etc.).
+In Asciidoctor, activate STEM support first using the <a href="asciidoc:stem:stem.html">stem attribute</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_miscellaneous">Miscellaneous</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col>
+<col>
+<col>
+<col width="30.0004%">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Feature</th>
+<th class="tableblock halign-left valign-top">AsciiDoc.py</th>
+<th class="tableblock halign-left valign-top">Asciidoctor</th>
+<th class="tableblock halign-left valign-top">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ifeval::[ ]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Evaluates any Python expression.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Evaluates simple logical expressions testing the value of attributes.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">See <a href="asciidoc:directives:ifeval.html">asciidoc:directives:ifeval.html</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provide name of current document</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>infile</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>not implemented</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Provide directory of current document</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>indir</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>not implemented</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apply special formatting to named text</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>specialwords</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>not implemented</em></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Replace tabs with spaces in all text, using a default tab size of 8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>tabsize</code> (in-document and include directive)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">in-document only</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Asciidoctor only replaces tabs with spaces in verbatim blocks, and the attribute has no default.
+In other words, tabs are not expanded in verbatim content blocks unless this attribute is set on the block or the document.
+For all other text, Asciidoctor tabs are fixed at 4 spaces by the CSS.
+See <a href="asciidoc:directives:include-with-indent.html">normalize block indentation</a>.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_docinfo_attributes">docinfo attributes</h3>
+<div class="paragraph">
+<p><code>docinfo</code> attribute values were introduced into AsciiDoc by Asciidoctor 1.5.5 to replace the less descriptive <code>docinfo1</code> and <code>docinfo2</code> attributes.
+Here are the equivalents of the old attributes using the new values:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>:docinfo:</code> = <code>:docinfo: private</code></p>
+</li>
+<li>
+<p><code>:docinfo1:</code> = <code>:docinfo: shared</code></p>
+</li>
+<li>
+<p><code>:docinfo2:</code> = <code>:docinfo: shared,private</code></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_showcomments">showcomments</h3>
+<div class="paragraph">
+<p>In AsciiDoc.py, single line comments could be turned into DocBook <code>&lt;remark&gt;</code> elements using <code>showcomments</code>.
+This feature isn&#8217;t implemented in Asciidoctor, but you can send remarks to the output, using an extension, or ifdef directives and passthrough blocks like the example shown below.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">ifdef::showcomments+basebackend-docbook[]
+++++
+&lt;remark&gt;Your comment here&lt;/remark&gt;
+++++
+endif::[]</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_compatibility_mode">Compatibility mode</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We want to continue to evolve and refine the AsciiDoc syntax, but we also recognize that compatibility is very important.
+That&#8217;s why Asciidoctor provides a compatibility mode (aka compat mode) with AsciiDoc.py (as well as some inline transitional syntax).</p>
+</div>
+<div class="paragraph">
+<p>Compat mode will help you either stay with or transition away from the legacy AsciiDoc syntax recognized by AsciiDoc.py to the modern AsciiDoc syntax recognized by Asciidoctor.
+This mode should only be used as a tool to assist with migration, not as a long-term strategy.</p>
+</div>
+<div class="paragraph">
+<p>If you can&#8217;t migrate right now, you can activate compat mode by setting the <code>compat-mode</code> document attribute in the document header or by passing it to the processor:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor -a compat-mode document.adoc</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can also enable compat mode implicitly by beginning the document with a setext-style (i.e., two-line) document title:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">Compat Mode
+===========
+
+ifdef::compat-mode[Compat mode is on!]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you prefer the setext-style document title, but don&#8217;t want compat mode to be enabled, you must unset the <code>compat-mode</code> attribute explicitly.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">Not Compat Mode
+===============
+:!compat-mode:
+
+ifndef::compat-mode[Compat mode is not on.]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When compat mode is enabled, Asciidoctor adapts some of its behavior and its interpretation of AsciiDoc to more closely align with AsciiDoc.py.
+The most noticeable difference is that backticks now only indicate monospace text as opposed to literal monospace.
+Literal monospace is signified using a compound markup that combines an inline passthrough with monospace formatting.</p>
+</div>
+<table class="tableblock frame-all grid-all" width="75%">
+<colgroup>
+<col width="33.3333%">
+<col width="33.3333%">
+<col width="33.3334%">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Feature</th>
+<th class="tableblock halign-left valign-top">Source</th>
+<th class="tableblock halign-left valign-top">Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Monospace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">`1...10`</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1&#8230;&#8203;10</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Literal monospace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">`+1...10+`</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>1...10</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Italic</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">'text'</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>text</em></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>To learn more about the adaptations that are activated by compat mode, refer to <a href="#inline-formatting">inline formatting</a>.</p>
+</div>
+<div class="paragraph">
+<p>If you&#8217;ve written content to be processed with AsciiDoc.py, and you aren&#8217;t yet ready to migrate, or need to ease into that migration, Asciidoctor&#8217;s compatibility mode will help ensure that your existing content will continue to work (to the extent possible).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuration_files">Configuration files</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Asciidoctor does not use <em class="path">.conf</em> files or filters, so <code>--conf-file</code>, <code>--dump-conf</code>, and <code>--filter</code> are not applicable.
+Instead, Asciidoctor provides an <a href="extensions:register.html">extension API</a> that replaces the configuration-based extension and filter mechanisms in AsciiDoc.py.</p>
+</div>
+<div class="sect2">
+<h3 id="_localization">Localization</h3>
+<div class="paragraph">
+<p>AsciiDoc.py has built-in <em class="path">.conf</em> files that translated built-in labels.
+In Asciidoctor, you must define the translations for these labels explicitly.
+See <a href="ROOT:localization-support.html">ROOT:localization-support.html</a> for details.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="migrate-extensions">AsciiDoc.py extensions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The extension mechanism is completely different in Asciidoctor, but most of the standard extensions have been re-implemented, so they should work with minor changes.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">AsciiDoc.py</th>
+<th class="tableblock halign-left valign-top">Asciidoctor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>source</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
+<ul>
+<li>
+<p>You can choose from a number of <a href="asciidoc:verbatim:source-highlighter.html#built-in-values">source highlighters</a>.</p>
+</li>
+<li>
+<p>Source highlighter values are built-in.</p>
+</li>
+<li>
+<p><code>src_numbered</code>, <code>src_tab</code>, <code>args</code> are not implemented directly, but check the highlighter you are using for what features it has and how to configure them.</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">music</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Not implemented.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[latex]</code> block macro</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Use a <a href="asciidoc:stem:stem.html#block">stem block</a>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>graphviz</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Use <a href="diagram-extension::index.html">Asciidoctor Diagram</a>.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect2">
+<h3 id="_custom_extensions">Custom extensions</h3>
+<div class="paragraph">
+<p>AsciiDoc.py custom extensions are Python commands, so they don&#8217;t work with Asciidoctor.
+Depending on the Asciidoctor processor you choose, you can re-write your <a href="extensions:index.html">extensions in Ruby, Java, or JavaScript</a>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_extract_text">Extract text</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>AsciiDoc.py provides a frontend to the DocBook toolchain named a2x.py.
+This script can produce various output formats from an AsciiDoc document.
+One of those formats is text (aka &#8220;plain text&#8221;).
+In order to extract the text, the DocBook toolchain first converts the AsciiDoc to HTML, then extracts the text from that document using lynx.</p>
+</div>
+<div class="paragraph">
+<p>There are numerous approaches to extracting text from AsciiDoc in Asciidoctor.
+One way is to write an Asciidoctor converter mapped to the <code>text</code> backend that <a href="convert:custom.html#convert-to-text-only">converts AsciiDoc to text only</a>.
+Another approach is to convert the AsciiDoc to HTML, then extract text from the HTML output document using a text-based browser, just like the DocBook toolchain does.</p>
+</div>
+<div class="paragraph">
+<p>Before continuing, it&#8217;s worth noting that there&#8217;s no universal definition of &#8220;plain text&#8221;.
+It all depends on what information you are trying to extract.
+That&#8217;s why you won&#8217;t find a text backend provided by Asciidoctor core.
+Let&#8217;s consider what tools are available.</p>
+</div>
+<div class="paragraph">
+<p>As an alternative to lynx, the text-based browser w3m does a nice job of extracting text from an HTML document.
+For example:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ w3m -dump -cols 120 doc.html &gt; doc.txt</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>You can set the number of columns so lines aren&#8217;t hard wrapped at a fixed line width.
+The upper bounds for this value is MAX_INT (2147483647).
+You can retrieve that value dynamically using Perl.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ w3m -dump -cols $(perl -MPOSIX -e 'print INT_MAX') doc.html &gt; doc.txt</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It doesn&#8217;t seem possible to configure w3m to preserve markup that indicates headings.
+However, the text-based browser <code>elinks</code> offers this behavior by default through indentation.</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ elinks -dump 1 -no-references -no-numbering -dump-width 50000 doc.html &gt; doc.txt</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Yet another option is the <a href="https://www.npmjs.com/package/html-to-text" target="_blank" rel="noopener">html-to-text</a> module for Node.js, which parses HTML and returns beautiful text.</p>
+</div>
+<div class="paragraph">
+<p>If you want to extract the text during AsciiDoc conversion, you can do so using an Asciidoctor postprocessor extension.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-ruby" data-lang="ruby">require 'open3'
+
+Asciidoctor::Extensions.register do
+  postprocessor do
+    process do |doc, output|
+      outfile = (doc.attr 'outfile').sub %r/\.\S+$/, '.txt'
+      Open3.popen2 'elinks -dump 1 -no-references -no-numbering' do |is, os|
+        is.print output
+        is.close
+        File.write outfile, os.read
+      end
+      output
+    end
+  end
+end</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This extension will write a file with a .txt extension adjacent to the document written by the converter.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_doctest">Doctest</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>AsciiDoc.py <code>--doctest</code> ran its unit tests.
+See the <a href="https://github.com/asciidoctor/asciidoctor/blob/HEAD/CONTRIBUTING.adoc#writing-and-executing-tests" target="_blank" rel="noopener">contributing guide</a> to learn how to run the Asciidoctor unit tests.
+Asciidoctor also has a {url-org}/asciidoctor-doctest[doctest tool^] which you can use when creating custom HTML or XML-based converters.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_help_topics">Help topics</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In both AsciiDoc.py and Asciidoctor, the <code>--help</code> CLI option shows the command usage by default.
+It can also show a syntax crib sheet using <code>--help syntax</code> or the man page using <code>--help manpage</code>.</p>
+</div>
+<div class="paragraph">
+<p>In AsciiDoc.py, the <code>--help manpage</code> option emits a plaintext version of the man page.
+Asciidoctor, on the other hand, outputs the formatted man page so you can use it with a man pager.
+To view it, you need to pipe the result to the <code>man</code> command as follows:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor --help manpage | man /dev/stdin</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor --help manpage | man -l -</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you want to view the plaintext version with Asciidoctor, you can route the output through the <code>col</code> command as follows:</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>$ asciidoctor --help manpage | man -l - | col -bx</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternately, you can view the man page for Asciidoctor online at {url-project}/man/asciidoctor[asciidoctor(1)].</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

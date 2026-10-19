@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Conversion Options</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body id="options" class="article">
+<div id="header">
+<h1>Conversion Options</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Asciidoctor provides many options that can be passed when converting content.
+This section explains the most important and commonly used options when converting Asciidoctor content.</p>
+</div>
+<div class="paragraph">
+<p>The options for conversion of a document are held in an instance of the class <code>org.asciidoctor.Options</code>.
+The builder <code>OptionsBuilder</code> (obtained via <code>Options.builder()</code>) allows for simple configuration of that instance that can be passed to the respective methods of the <code>Asciidoctor</code> interface.
+The following example shows how to set the options so that the resulting HTML document is rendered for embedding it into another document.
+That means that the result only contains the content of a HTML body element:</p>
+</div>
+<div class="listingblock">
+<div class="title">Example for converting to an embeddable document</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in asciidoctor-api-options.adoc - include::example$org/asciidoctor/integrationguide/OptionsTest.java[tags=simpleOptionsExampleEmbeddableDocument]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Create a new <code>OptionsBuilder</code> that is used to prepare the options with a fluent API.</p>
+</li>
+<li>
+<p>Set the option <code>header_footer</code> to <code>false</code>, meaning that an embeddable document will be rendered,</p>
+</li>
+<li>
+<p>Get the built <code>Options</code> instance and pass it to the conversion method.</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+The <code>convert</code> method is overloaded so <code>org.asciidoctor.Options</code>, <code>org.asciidoctor.OptionsBuild</code> or <code>java.util.Map</code> can be used.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_attributes">attributes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This option allows to define document attributes externally.
+There are several ways to accomplish that.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Use <code>Attributes.builder()</code> to obtain a fluent API builder.</p>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Warning</div>
+</td>
+<td class="content">
+This is the supported method for its ease of use and type validation.
+Other way found below have been deprecated since v2.4.4 and may not be available in future releases.
+</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="title">Attributes builder initialization</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Attributes attributes = Attributes.builder()
+                            .icons("font")
+                            .experimental(true)
+                            .attribute("my-attribute", "my-value")
+                            .build();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The builder also allows passing a chain of values in a <code>String</code> or <code>Array</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Attributes builder initialization as String</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Attributes attributes = Attributes.builder().arguments("toc numbered").build();</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Attributes builder initialization as String array</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">String[] attributesArray = new String[]{"toc", "source-highlighter=coderay"};
+Attributes attributes = Attributes.builder().arguments(attributesArray).build();</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Create an instance of <code>Attributes</code> and set them as a normal POJO.</p>
+<div class="listingblock">
+<div class="title">Attributes instance initialization as POJO</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Attributes attributes = new Attributes();
+attributes.setBackend("pdf");
+attributes.setExperimental(true)
+attributes.setAttribute("my-attribute", "my-value");</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It is also possible to use a <code>String</code> of attributes similar to the CLI.</p>
+</div>
+<div class="listingblock">
+<div class="title">Attributes instance initialization as String</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">attributes.setAttributes("toc numbered icons=font");</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Directly pass a collection of key-values using Map&lt;String,Object&gt;.</p>
+<div class="listingblock">
+<div class="title">Attributes instance initialization as Map</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, Object&gt; attributesMap = new HashMap&lt;&gt;();
+attributesMap.put("icons", "font");
+attributesMap.put("experimental", Boolean.TRUE);
+attributesMap.put("my-attribute", "my-value");
+
+Attributes attributes = new Attributes(attributesMap);</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">Attributes builder initialization as Map</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Map&lt;String, Object&gt; attributesMap = new HashMap&lt;&gt;();
+attributesMap.put("icons", "font");
+attributesMap.put("experimental", Boolean.TRUE);
+attributesMap.put("my-attribute", "my-value");
+
+Attributes.builder()
+            .attributes(attributesMap);</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_backend">backend</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Defines the target format for which the document should be converted.
+Among the possible values are <code>html5</code>, <code>pdf</code> or <code>docbook</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Converting a document to PDF</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in asciidoctor-api-options.adoc - include::example$org/asciidoctor/integrationguide/OptionsTest.java[tags=optionsPDFBackend]</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_inplace">inPlace</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Tells the converter to store the output to a file adjacent to the input file.
+This is <code>true</code> by default.</p>
+</div>
+<div class="listingblock">
+<div class="title">Setting inPlace option</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">OptionsBuilder optionsBuilder =
+            Options.builder().inPlace(true);</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="safemode">safe</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Asciidoctor provides security levels that control the read and write access of attributes, the include directive, macros, and scripts while a document is processing.
+Each level includes the restrictions enabled in the prior security level.
+All safe modes are defined by the enum <code>org.asciidoctor.SafeMode</code>.</p>
+</div>
+<div class="paragraph">
+<p>Unresolved directive in asciidoctor-api-options.adoc - include::partial$safe-modes.adoc[]</p>
+</div>
+<div class="paragraph">
+<p>So if you want to render documents in the same way as the CLI does you have to set the safe mode to <code>Unsafe</code>.
+Without it you will for example not get the stylesheet embedded into the resulting document.</p>
+</div>
+<div class="listingblock">
+<div class="title">Converting a document in unsafe mode</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in asciidoctor-api-options.adoc - include::example$org/asciidoctor/integrationguide/OptionsTest.java[tags=unsafeConversion]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Sets the safe mode from <code>SECURE</code> to <code>UNSAFE</code>.</p>
+</li>
+<li>
+<p>Don&#8217;t convert the file to another file but to a string so that we can easier verify the contents.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The example above will succeed with these two asciidoc files:</p>
+</div>
+<div class="listingblock">
+<div class="title">includingcontent.adoc</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">= Including content
+
+include::includedcontent.adoc[]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">includedcontent.adoc</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">This is included content</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sourcemap">sourcemap</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Keeps track of the file and line number for each parsed block.
+This is useful for tooling applications where the association between the converted output and the source file is important.
+The default for this option is <code>false</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Setting the option sourcemap</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">OptionsBuilder optionsBuilder =
+            Options.builder().sourcemap(true);</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_standalone">standalone</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If <code>true</code>, generates a standalone output document (which includes the shell around the body content, such as the header and footer).
+When converting to a file, the default value is <code>true</code>.
+Otherwise, the default value is <code>false</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Setting the option sourcemap</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">OptionsBuilder optionsBuilder =
+            Options.builder().standalone(false);</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+This option replaces and works in the same way as the previous <code>headerFooter</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_templatedirs">templateDirs</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Specifies a directory of {url-tilt}[Tilt]-compatible templates to be used instead of the default built-in templates.</p>
+</div>
+<div class="listingblock">
+<div class="title">Setting templateDirs option</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">OptionsBuilder optionsBuilder =
+            Options.builder().templateDirs(new File("templates_path"));</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_tofile">toFile</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Via the option <code>toFile</code> it is possible to define if a document should be written to a file at all and to which file.</p>
+</div>
+<div class="paragraph">
+<p>To make the API return the converted document and not write to a file set <code>toFile(false)</code>.</p>
+</div>
+<div class="paragraph">
+<p>To make Asciidoctor write to the default file set <code>toFile(true)</code>.
+The default file is computed by taking the base name of the input file and adding the default suffix for the target format like <code>.html</code> or <code>.pdf</code>.
+That is for the input file <code>test.adoc</code> the resulting file would be in the same directory with the name <code>test.html</code>.<br>
+<strong>This is also the way the CLI behaves.</strong></p>
+</div>
+<div class="paragraph">
+<p>To write to a certain file set <code>toFile(targetFile)</code>.
+This is also necessary if you want to convert string content to files.</p>
+</div>
+<div class="paragraph">
+<p>The following example shows how to convert content to a dedicated file:</p>
+</div>
+<div class="listingblock">
+<div class="title">Example for converting to a dedicated file</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in asciidoctor-api-options.adoc - include::example$org/asciidoctor/integrationguide/OptionsTest.java[tags=optionToFile]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Set the option <code>toFile</code> so that the result will be written to the file pointed to by <code>targetFile</code>.</p>
+</li>
+<li>
+<p>Set the safe mode to <code>UNSAFE</code> so that files can be written.
+See <a href="#safemode">safe</a> for a description of this option.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

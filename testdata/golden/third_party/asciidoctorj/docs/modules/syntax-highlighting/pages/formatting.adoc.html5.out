@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Format the Source Block Element</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Format the Source Block Element</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>{url-highlightjs}[highlight.js^] tries to automatically determine the source language, which might fail or result in wrong matches.
+To help highlight.js in identifying the correct source language the <code>&lt;code/&gt;</code> element can be annotated with the language as a class.</p>
+</div>
+<div class="paragraph">
+<p>That means instead of simply wrapping the code in <code>&lt;pre/&gt;</code> and <code>&lt;code/&gt;</code> elements we want to wrap it inside <code>&lt;pre&gt;</code> and <code>&lt;code class="java"/&gt;</code>.
+To allow Asciidoctor to apply the styles to properly embed a source block inside the document, the <code>&lt;pre/&gt;</code> element should also have the class <code>highlight</code>.
+Therefore we want to wrap the source text inside this construct:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-html" data-lang="html">&lt;pre class="highlight"&gt;
+  &lt;code class="java"&gt;
+    ...
+  &lt;/code&gt;
+&lt;/pre&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To allow a syntax highlighter to create this construct it also has to implement the interface <code>org.asciidoctor.syntaxhighlighter.Formatter</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in formatting.adoc - include::example$org/asciidoctor/integrationguide/syntaxhighlighter/HighlightJsWithLanguageHighlighter.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The <code>SyntaxHighlighterAdapter</code> also has to implement the interface <code>Formatter</code>.
+This interface only requires the implementation of the method <code>format()</code> that receives the <code>org.asciidoctor.ast.Block</code> that is highlighted, the source language, and additional options.</p>
+</li>
+<li>
+<p>The implementation of <code>format()</code> wraps everything in a <code>&lt;pre/&gt;</code> and <code>&lt;code/&gt;</code> element with the required classes.
+The value for the class of the <code>&lt;code/&gt;</code> element is the source language which is passed as an argument to the method.</p>
+</li>
+<li>
+<p>The source text to be nested into the <code>&lt;pre/&gt;</code> and <code>&lt;code/&gt;</code> elements has to be obtained using <code>node.getContent()</code>.
+This guarantees that further processing like substitutions work properly.</p>
+</li>
+</ol>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

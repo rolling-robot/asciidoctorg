@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Block Processor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body id="blockprocessor" class="article">
+<div id="header">
+<h1>Block Processor</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>A block processor is very similar to a block macro processor.
+But in contrast to a block macro a block processor is called for a block having a certain name instead of a macro invocation.
+Therefore block processors rather transform blocks instead of creating them as block macro processors do.</p>
+</div>
+<div class="paragraph">
+<p>The following example shows a block processor that converts the whole text of a block to upper case if it has the name <code>yell</code>.
+That means that our block processor will convert blocks like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">yell-block.adoc</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">Unresolved directive in block-processor.adoc - include::example$yell-block.adoc[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>After the processing this block will look like this</p>
+</div>
+<div class="exampleblock">
+<div class="content">
+<div class="paragraph">
+<p>Unresolved directive in block-processor.adoc - include::example$yell-block-result.txt[]</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The BlockProcessor looks like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">A BlockProcessor that transforms the content of a block to upper case</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in block-processor.adoc - include::example$org/asciidoctor/integrationguide/extension/YellBlockProcessor.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The annotation <code>@Name</code> defines the block name that this block processor handles.</p>
+</li>
+<li>
+<p>The annotation <code>@Contexts</code> defines the block types that this block processor handles like paragraphs, listing blocks, or open blocks.
+Constants for all contexts are also defined in this annotation.
+Note that this annotation takes a list of block types, so that a block processor can process paragraph blocks as well as example blocks with the same block name.</p>
+</li>
+<li>
+<p>The annotation <code>@ContentModel</code> defines what this processor produces.
+Constants for all contexts are also defined for the annotation class.
+In this case the block processor creates a simple paragraph, therefore the content model <code>ContentModel.SIMPLE</code> is defined.</p>
+</li>
+<li>
+<p>All block processors must extend <code>org.asciidoctor.extension.BlockProcessor</code>.</p>
+</li>
+<li>
+<p>A block processor must implement the method <code>process()</code>.
+Here the implementation gets the raw block content from the reader, transforms it and creates and returns a new block that contains the transformed content.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_attributes">Attributes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Block Processors receive attributes in their <code>process()</code> method.
+These attributes contain the additional key value pairs that were applied to the block.
+You can read more about element attributes in general in the <a href="asciidoc:attributes:element-attributes.html">AsciiDoc documentation</a>.</p>
+</div>
+<div class="paragraph">
+<p>If we convert the following document:</p>
+</div>
+<div class="listingblock">
+<div class="title">yell-block-attributes.adoc</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">Unresolved directive in block-processor.adoc - include::example$yell-block-attributes.adoc[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then a Block Processor can access the attribute <code>loudness</code> like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">YellBlockProcessorWithAttributes.java</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in block-processor.adoc - include::example$org/asciidoctor/integrationguide/extension/YellBlockProcessorWithAttributes.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Attribute values from the source document are usually Strings.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_positional_attributes">Positional attributes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Besides defining attributes as key value pairs like in <code>[yell,loudness=3]</code> AsciiDoc also supports positional attributes.
+For positional attributes the meaning is implicitly derived from the position in the attribute list.
+In our example the attribute <code>loudness</code> might be defined as the first positional attribute after the block style:</p>
+</div>
+<div class="listingblock">
+<div class="title">yell-block-positional.adoc</div>
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">Unresolved directive in block-processor.adoc - include::example$yell-block-positional.adoc[]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Then a Block Processor can access the attribute <code>loudness</code> like this:</p>
+</div>
+<div class="listingblock">
+<div class="title">YellBlockProcessorWithPositionalAttributes.java</div>
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in block-processor.adoc - include::example$org/asciidoctor/integrationguide/extension/YellBlockProcessorWithPositionalAttributes.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>The attribute names defined in the annotation reflect the attribute positions, i.e., <code>loudness</code> is the first positional attribute.
+A second attribute <code>exclamationmark</code> would be defined as <code>@PositionalAttributes({"loudness", "exclamationmark"})</code> so that the Block Processor can access the attributes of the block defined with <code>[yell,3,"¡"]</code>.</p>
+</li>
+<li>
+<p>For the code itself there is no difference between a positional and a named attribute.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

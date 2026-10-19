@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Skip Front Matter</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Skip Front Matter</h1>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_front_matter_for_static_site_generators">Front matter for static site generators</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Many static site generators (i.e., Jekyll, Middleman) rely on <strong class="term">front matter</strong> added to the top of the document to determine how to convert the content.
+Front matter typically starts on the first line of a file and is bounded by block delimiters (e.g., <code>---</code>).</p>
+</div>
+<div class="paragraph">
+<p>Here&#8217;s an example of a document that contains front matter:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">---  <b class="conum">(1)</b>
+layout: default <b class="conum">(2)</b>
+---  <b class="conum">(3)</b>
+= Document Title
+
+content</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<ol>
+<li>
+<p>Front matter opening delimiter</p>
+</li>
+<li>
+<p>Front matter data</p>
+</li>
+<li>
+<p>Front matter closing delimiter</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The static site generator removes these lines before passing the document to the AsciiDoc processor to be converted.
+Outside of the tool, however, these extra lines can throw off the processor.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_skip_front_matter_attribute">skip-front-matter attribute</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If the <code>skip-front-matter</code> attribute is set via the API or CLI (e.g., <code>-a skip-front-matter</code>), Asciidoctor will recognize the front matter and consume it before parsing the primary document (not include files).
+Asciidoctor stores the content it extracts in the <code>front-matter</code> attribute to make it available for integrations.</p>
+</div>
+<div class="paragraph">
+<p>Asciidoctor can also remove front matter when reading <a href="asciidoc:directives:include.html">include files</a>.
+When the <code>skip-front-matter</code> option is set on the include directive, Asciidoctor drops the front matter from the included content.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-asciidoc" data-lang="asciidoc">include::post.adoc[opts=skip-front-matter]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this case, the front matter is not stored.</p>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

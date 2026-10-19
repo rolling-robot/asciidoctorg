@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?asciidoc-toc?>
+<?asciidoc-numbered?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0" xml:lang="en">
+<info>
+<title>Lists</title>
+<date>2020-01-01</date>
+</info>
+<section xml:id="_unordered">
+<title>Unordered</title>
+<itemizedlist>
+<listitem>
+<simpara>Level one</simpara>
+<itemizedlist>
+<listitem>
+<simpara>Level two</simpara>
+<itemizedlist>
+<listitem>
+<simpara>Level three</simpara>
+<itemizedlist>
+<listitem>
+<simpara>Level four</simpara>
+<itemizedlist>
+<listitem>
+<simpara>Level five</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+</itemizedlist>
+</listitem>
+</itemizedlist>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara>Back to one</simpara>
+<simpara>Attached paragraph.</simpara>
+<screen>attached listing</screen>
+<itemizedlist>
+<listitem>
+<simpara>Hyphen list</simpara>
+</listitem>
+<listitem>
+<simpara>second</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+</itemizedlist>
+<itemizedlist mark="none">
+<listitem>
+<simpara>Square style</simpara>
+</listitem>
+<listitem>
+<simpara>&#10003; checked</simpara>
+</listitem>
+<listitem>
+<simpara>&#10063; unchecked</simpara>
+</listitem>
+<listitem>
+<simpara>&#10003; checked star</simpara>
+</listitem>
+</itemizedlist>
+<itemizedlist mark="none">
+<listitem>
+<simpara>&#10003; interactive checked</simpara>
+</listitem>
+<listitem>
+<simpara>&#10063; interactive unchecked</simpara>
+</listitem>
+</itemizedlist>
+</section>
+<section xml:id="_ordered">
+<title>Ordered</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>One</simpara>
+</listitem>
+<listitem>
+<simpara>Two</simpara>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>Two A</simpara>
+</listitem>
+<listitem>
+<simpara>Two B</simpara>
+<orderedlist numeration="lowerroman">
+<listitem>
+<simpara>Two B i</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</listitem>
+<listitem>
+<simpara>Three</simpara>
+</listitem>
+</orderedlist>
+<orderedlist numeration="arabic" startingnumber="4">
+<listitem>
+<simpara>Four</simpara>
+</listitem>
+<listitem>
+<simpara>Five</simpara>
+</listitem>
+</orderedlist>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Reversed one</simpara>
+</listitem>
+<listitem>
+<simpara>Reversed two</simpara>
+</listitem>
+</orderedlist>
+<orderedlist numeration="loweralpha">
+<listitem>
+<simpara>alpha a</simpara>
+</listitem>
+<listitem>
+<simpara>alpha b</simpara>
+</listitem>
+</orderedlist>
+<orderedlist numeration="upperroman">
+<listitem>
+<simpara>roman I</simpara>
+</listitem>
+<listitem>
+<simpara>roman II</simpara>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>explicit one</simpara>
+</listitem>
+<listitem>
+<simpara>explicit two</simpara>
+</listitem>
+</orderedlist>
+</listitem>
+</orderedlist>
+</section>
+<section xml:id="_description_lists">
+<title>Description Lists</title>
+<variablelist>
+<varlistentry>
+<term>CPU</term>
+<listitem>
+<simpara>The brain.</simpara>
+</listitem>
+</varlistentry>
+<varlistentry>
+<term>RAM</term>
+<listitem>
+<simpara>Memory.</simpara>
+<variablelist>
+<varlistentry>
+<term>SSD</term>
+<listitem>
+<simpara>Nested storage.</simpara>
+</listitem>
+</varlistentry>
+</variablelist>
+</listitem>
+</varlistentry>
+</variablelist>
+<informaltable tabstyle="horizontal" frame="none" colsep="0" rowsep="0">
+<tgroup cols="2">
+<colspec colwidth="15*"/>
+<colspec colwidth="85*"/>
+<tbody valign="top">
+<row>
+<entry>
+<simpara>Term A</simpara>
+</entry>
+<entry>
+<simpara>Horizontal definition A</simpara>
+</entry>
+</row>
+<row>
+<entry>
+<simpara>Term B</simpara>
+</entry>
+<entry>
+<simpara>Definition on next line</simpara>
+</entry>
+</row>
+</tbody>
+</tgroup>
+</informaltable>
+<qandaset>
+<qandaentry>
+<question>
+<simpara>What is it?</simpara>
+</question>
+<answer>
+<simpara>It is a test.</simpara>
+</answer>
+</qandaentry>
+<qandaentry>
+<question>
+<simpara>Why?</simpara>
+</question>
+<answer>
+<simpara>Because.</simpara>
+</answer>
+</qandaentry>
+<qandaentry>
+<question>
+<simpara>Term with list</simpara>
+</question>
+<answer>
+<itemizedlist>
+<listitem>
+<simpara>item a</simpara>
+</listitem>
+<listitem>
+<simpara>item b</simpara>
+</listitem>
+</itemizedlist>
+</answer>
+</qandaentry>
+<qandaentry>
+<question>
+<simpara>Multiple terms</simpara>
+<simpara>Second term</simpara>
+</question>
+<answer>
+<simpara>Shared definition</simpara>
+</answer>
+</qandaentry>
+</qandaset>
+</section>
+<section xml:id="_complex_nesting">
+<title>Complex Nesting</title>
+<orderedlist numeration="arabic">
+<listitem>
+<simpara>Step one</simpara>
+<programlisting language="sh" linenumbering="unnumbered">$ make</programlisting>
+</listitem>
+<listitem>
+<simpara>Step two</simpara>
+<itemizedlist>
+<listitem>
+<simpara>nested bullet</simpara>
+<note>
+<simpara>Attached admonition.</simpara>
+</note>
+</listitem>
+</itemizedlist>
+</listitem>
+<listitem>
+<simpara>Step three</simpara>
+<simpara>Open block in list item.</simpara>
+<simpara>Second paragraph.</simpara>
+<itemizedlist>
+<listitem>
+<simpara>item</simpara>
+</listitem>
+</itemizedlist>
+</listitem>
+</orderedlist>
+<itemizedlist>
+<listitem>
+<simpara>separate list after comment</simpara>
+</listitem>
+</itemizedlist>
+</section>
+</article>

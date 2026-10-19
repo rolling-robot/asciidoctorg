@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Inline and Block Macros</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Inline and Block Macros</h1>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="top">Links</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a href="https://asciidoctor.org" class="bare">https://asciidoctor.org</a>, <a href="https://example.org/angle" class="bare">https://example.org/angle</a>, <a href="https://example.org/caret" target="_blank" rel="noopener">Caret</a>,
+<a href="relative/path.html">Relative</a>, <a href="https://example.org/a_b_c">Escaped</a>,
+<a href="mailto:jane@example.org?subject=Subject%20Line&amp;body=Body%20text">Mail Jane</a>, <a href="mailto:jane@example.org">jane@example.org</a>,
+<a href="https://example.org" class="bare external" target="_blank" rel="nofollow noopener">https://example.org</a>.
+Not a link: https://example.org.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cross_references">Cross References</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>See <a href="#top">Links</a>, <a href="#top">the top</a>, <a href="#sec-images">Images</a>, <a href="#sec-images">Images section</a>,
+<a href="#table-1">[table-1]</a>, <a href="#listing-1">[listing-1]</a>, <a href="other-doc.html#anchor">Other doc</a>, and <a href="#missing-ref">[missing-ref]</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="sec-images">Images</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="image"><img src="images/inline.png" alt="Inline" width="16" height="16"></span> and <span class="image icon"><img src="images/icon.svg" alt="icon" title="An icon"></span>.</p>
+</div>
+<div id="fig-1" class="imageblock text-center">
+<div class="content">
+<a class="image" href="https://example.org"><img src="images/diagram.png" alt="Diagram" width="300" height="200"></a>
+</div>
+<div class="title">Figure 1. A block image</div>
+</div>
+<div class="imageblock right">
+<div class="content">
+<img src="images/photo.jpg" alt="photo" width="50%">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ui_macros">UI Macros</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Press <span class="keyseq"><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>N</kbd></span> or <kbd>F11</kbd>, click <b class="button">Save</b>, select <span class="menuseq"><b class="menu">File</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Save As&#8230;&#8203;</b></span> and <span class="menuseq"><b class="menu">View</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="submenu">Zoom</b>&#160;<i class="fa fa-angle-right caret"></i> <b class="menuitem">Reset</b></span>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_footnotes_and_index">Footnotes and Index</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Text with a footnote.<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup>
+Another with an id.<sup class="footnote" id="_footnote_fn1">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup> Reuse it.<sup class="footnoteref">[<a class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup>
+Index terms visible term and  and  and flow.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_anchors_and_formatting">Anchors and Formatting</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><a id="inline-anchor"></a>Anchored text, <a id="another"></a> and <strong id="phrase-id" class="role1 role2">styled phrase</strong>.
+<strong>strong</strong> <em>emphasis</em> <code>mono</code> <mark>highlight</mark> <sup>super</sup> <sub>sub</sub> <strong>un</strong>constrained <em>emp</em>hasis <code>mo</code>no <mark>ma</mark>rk.
+<span class="underline">underlined</span> <span class="line-through">struck</span> <span class="big">big</span> <span class="small">small</span>.
+&#8220;double curved&#8221; &#8216;single curved&#8217; it&#8217;s &#169; &#174; &#8482;&#8201;&#8212;&#8201;&#8230;&#8203; &#8594; &#8658; &#8592; &#8656; &#169; &amp; &#x2122;.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_stem">STEM</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Inline \(\sqrt{x^2+1}\) and \(E=mc^2\) and \$sum_(i=1)^n i\$.</p>
+</div>
+<div class="stemblock">
+<div class="content">
+\[\int_0^\infty e^{-x} \, dx = 1\]
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_icons">Icons</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p><span class="icon red"><i class="fa fa-heart fa-2x"></i></span> <span class="icon"><i class="fa fa-check"></i></span> <span class="icon"><a class="image" href="https://example.org" target="_blank" rel="noopener"><i class="fa fa-download"></i></a></span>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_block_macros">Block Macros</h2>
+<div class="sectionbody">
+<div class="videoblock">
+<div class="content">
+<video src="images/video-file.mp4#t=10,20" width="640" autoplay controls loop>
+Your browser does not support the video tag.
+</video>
+</div>
+</div>
+<div class="videoblock">
+<div class="content">
+<iframe src="https://www.youtube.com/embed/rPQoq7ThGAU?rel=0" referrerpolicy="strict-origin-when-cross-origin" frameborder="0" allowfullscreen></iframe>
+</div>
+</div>
+<div class="videoblock">
+<div class="content">
+<iframe src="https://player.vimeo.com/video/67480300" frameborder="0" allowfullscreen></iframe>
+</div>
+</div>
+<div class="audioblock">
+<div class="content">
+<audio src="images/sound.ogg" autoplay controls>
+Your browser does not support the audio tag.
+</audio>
+</div>
+</div>
+<!-- toc disabled -->
+</div>
+</div>
+</div>
+<div id="footnotes">
+<hr>
+<div class="footnote" id="_footnotedef_1">
+<a href="#_footnoteref_1">1</a>. The footnote text.
+</div>
+<div class="footnote" id="_footnotedef_2">
+<a href="#_footnoteref_2">2</a>. Reusable footnote.
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [["\\(", "\\)"]],
+    displayMath: [["\\[", "\\]"]],
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+  TeX: { equationNumbers: { autoNumber: "none" } }
+})
+MathJax.Hub.Register.StartupHook("AsciiMath Jax Ready", function () {
+  MathJax.InputJax.AsciiMath.postfilterHooks.Add(function (data, node) {
+    if ((node = data.script.parentNode) && (node = node.parentNode) && node.classList.contains("stemblock")) {
+      data.math.root.display = "block"
+    }
+    return data
+  })
+})
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+</body>
+</html>

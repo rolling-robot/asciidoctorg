@@ -1,0 +1,2 @@
+ERROR: includes.adoc: line 30: include file not found: {repo}/testdata/corpus/complex/includes/does-not-exist.adoc
+INFO: includes.adoc: line 32: optional include dropped because include file not found: {repo}/testdata/corpus/complex/includes/also-missing.adoc

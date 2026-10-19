@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Untitled</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+</div>
+<div id="content">
+<div class="paragraph">
+<p>first line of included content
+second line of included content
+third line of included content
+fourth line of included content
+fifth line of included content
+sixth line of included content
+seventh line of included content
+eighth line of included content</p>
+</div>
+<div class="paragraph">
+<p>snippetA content</p>
+</div>
+<div class="paragraph">
+<p>non-tagged content</p>
+</div>
+<div class="paragraph">
+<p>snippetB content</p>
+</div>
+<div class="paragraph">
+<p>more non-tagged content</p>
+</div>
+<div class="paragraph">
+<p>last line of included content</p>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

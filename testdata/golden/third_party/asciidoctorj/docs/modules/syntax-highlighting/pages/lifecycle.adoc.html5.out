@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Lifecycle of a SyntaxHighlighterAdapter</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Lifecycle of a SyntaxHighlighterAdapter</h1>
+</div>
+<div id="content">
+<div class="paragraph">
+<p>AsciidoctorJ will create an own instance for every document that it converts.</p>
+</div>
+<div class="paragraph">
+<p>It will try to instantiate the class by calling a constructor that has three parameters:</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1"><code>name</code></dt>
+<dd>
+<p>The name of the syntax highlighter as it was referenced by the <code>:source-highlighter</code> attribute.
+In the previous example this was <code>"myhighlightjs"</code>.</p>
+</dd>
+<dt class="hdlist1"><code>backend</code></dt>
+<dd>
+<p>The name of the backend used to convert the document.
+This is for example <code>"html5"</code>.
+Note that SyntaxHighlighters can only be used for HTML based backends.</p>
+</dd>
+<dt class="hdlist1"><code>options</code></dt>
+<dd>
+<p>A map containing options for this syntax highlighter.
+Currently this contains the current <code>org.asciidoctor.ast.Document</code> for the key <code>"document"</code>.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>This means the syntax highlighter class could also have this constructor:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="language-java" data-lang="java">Unresolved directive in lifecycle.adoc - include::example$org/asciidoctor/integrationguide/syntaxhighlighter/threeparams/HighlightJsHighlighter.java[tags=include]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A constructor with only the first two, or only the first parameter is also allowed.
+AsciidoctorJ will call the constructor with the most matching parameters.</p>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>
