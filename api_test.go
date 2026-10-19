@@ -110,7 +110,7 @@ func TestAttributePrecedence(t *testing.T) {
 		{"API", "Hello API"},
 		{"API@", "Hello Doc"}, // soft set: the document wins
 		{false, "Hello Doc"},  // unset by the API, then set by the document
-		{true, "Hello "}, // set to the empty string, overriding the document
+		{true, "Hello "},      // set to the empty string, overriding the document
 	} {
 		got := mustConvert(t, a, src, &asciidoctor.Options{Attributes: asciidoctor.Attributes{"name": tc.value}})
 		if !strings.Contains(got, "<p>"+tc.want+"</p>") {

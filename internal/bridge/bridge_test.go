@@ -55,6 +55,12 @@ func TestDispatch(t *testing.T) {
 			return nil, ruby.NewError("ArgumentError", "bad argument")
 		case "panic":
 			panic("boom")
+		case "panic_error":
+			_, err := c.Interp.Eval("raise KeyError, 'missing key'", "inner.rb", 1)
+			panic(err)
+		case "nil_deref":
+			var m map[string]*int
+			return *m["x"], nil
 		case "reenter":
 			// Code in a callback may use the bridge again without deadlocking.
 			var r string
@@ -77,6 +83,8 @@ func TestDispatch(t *testing.T) {
 		{"begin; AsciidoctorGo::Bridge.dispatch h, :argerror; rescue ArgumentError => e; e.message; end", `"bad argument"`},
 		{"begin; AsciidoctorGo::Bridge.dispatch h, :panic; rescue RuntimeError => e; e.message; end", `"panic in Go callback: boom"`},
 		{"AsciidoctorGo::Bridge.dispatch h, :reenter", `"42"`},
+		{"begin; AsciidoctorGo::Bridge.dispatch h, :panic_error; rescue KeyError => e; e.message; end", `"missing key"`},
+		{"begin; AsciidoctorGo::Bridge.dispatch h, :nil_deref; rescue RuntimeError => e; e.message.start_with? 'panic in Go callback: runtime error'; end", "true"},
 		{"begin; AsciidoctorGo::Bridge.dispatch h, :ruby_raise; rescue IOError => e; e.message; end", `"from ruby"`},
 		{"begin; AsciidoctorGo::Bridge.dispatch 999, :x; rescue RuntimeError => e; e.message; end", `"asciidoctor-go: no Go object for handle 999"`},
 		{"begin; AsciidoctorGo::Bridge.dispatch 'h', :x; rescue TypeError => e; e.message; end", `"dispatch handle must be an Integer"`},

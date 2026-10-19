@@ -6,6 +6,7 @@ package bridge
 import (
 	"errors"
 	"fmt"
+	goruntime "runtime"
 	"sync"
 	"sync/atomic"
 
@@ -155,10 +156,18 @@ func (b *Bridge) dispatch(c *ruby.Call) (any, error) {
 }
 
 // safeDispatch converts a panic in Go code called from Ruby into an error, so
-// that it raises in Ruby instead of tearing down the interpreter.
+// that it raises in Ruby instead of tearing down the interpreter. A panic with
+// an error value that is not a Go runtime error (node accessors panic with the
+// interpreter's error) re-raises that error; anything else is a PanicError.
 func safeDispatch(h Handler, c *ruby.Call, method string, args []ruby.Value) (res any, err error) {
 	defer func() {
 		if r := recover(); r != nil {
+			if e, ok := r.(error); ok {
+				if _, isRuntime := e.(goruntime.Error); !isRuntime {
+					err = e
+					return
+				}
+			}
 			err = &PanicError{Value: r}
 		}
 	}()

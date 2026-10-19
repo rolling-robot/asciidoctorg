@@ -1,0 +1,56 @@
+= Main Title: The Subtitle
+Jane Doe <jane@example.org>; John Q. Public
+v1.2, 2021-01-02: Initial draft
+:doctype: book
+:toc:
+:sectnums:
+:custom: value
+
+[preface]
+== Preface
+
+Preface text.footnote:[First note.]
+
+[[ch-one,Chapter One]]
+== First Chapter
+
+[#intro.lead.highlight%hardbreaks,source=docs]
+.Intro title
+This is the *intro* paragraph.
+Second line.footnote:fn2[Second note.]
+
+[source,ruby,linenums]
+----
+puts 'hello'
+----
+
+* item one
+* item _two_
+** nested
+
+//-
+
+term1:: def one
+term2::
+term3:: def two and three
+
+.A table
+[cols="1,2a",options="header"]
+|===
+|Name |Doc
+
+|cell *one*
+|
+* inner list
+|===
+
+=== Sub Section
+
+image::diagram.png[A diagram]
+
+== Second Chapter
+
+NOTE: An admonition.
+
+[appendix]
+== Extra
