@@ -5,20 +5,24 @@ is built: the real Asciidoctor Ruby implementation runs inside an embedded Ruby
 VM, and a typed Go API wraps it. AsciidoctorJ embeds JRuby; asciidoctor-go embeds
 [rbgo](https://github.com/go-embedded-ruby/ruby) (pure Go, `CGO_ENABLED=0`).
 
-Reference trees (read-only, siblings of this repository):
+Upstream sources:
 
-| Tree | Role |
-|---|---|
-| `../asciidoctor` | Asciidoctor 2.1.0.alpha.0 — vendored source, Ruby test suite |
-| `../asciidoctorj` | API design reference, Java test suite to port |
-| `../ruby` | rbgo v0.8.0 source (the module is consumed from the Go module cache) |
+| Path | Kind | Role |
+|---|---|---|
+| `rubysrc/asciidoctor` | git submodule (asciidoctor/asciidoctor) | Asciidoctor 2.1.0.alpha.0, run unmodified; Ruby test suite; corpus documents |
+| `third_party/asciidoctorj` | git submodule (asciidoctor/asciidoctorj) | API design reference; Java tests to port; corpus documents |
+| rbgo v0.8.0 | Go module dependency | the Ruby interpreter |
+
+Clone with `git clone --recursive` (or run `git submodule update --init`).
+Note: Go module downloads do not include submodule contents, so consumers using
+`go get` need the Asciidoctor sources made available another way; see step 9.
 
 ## Ground rules
 
 - **No stubs.** Every exported function does what it says. Anything not
   supported returns an explicit error naming the limitation.
 - **Green commits.** `go vet ./... && go test ./...` passes on every commit.
-- **Asciidoctor source stays pristine.** It is vendored verbatim. Gaps in rbgo
+- **Asciidoctor source stays pristine.** It comes from the submodule, unmodified. Gaps in rbgo
   are closed by (in order of preference): a Ruby shim in `ruby/shims`, a
   documented load-time source patch (exact-match, fails loudly on drift), or a Go
   binding. Every shim and patch carries the reason and a regression test.
@@ -38,7 +42,7 @@ Reference trees (read-only, siblings of this repository):
        shims (ruby/shims) + vendored Asciidoctor (ruby/asciidoctor)
 ```
 
-- **Runtime bootstrap.** The vendored Ruby tree (Asciidoctor `lib` + `data`,
+- **Runtime bootstrap.** The Ruby tree (Asciidoctor `lib` + `data` from the submodule,
   shims, glue) is embedded with `go:embed` and materialized once into a
   content-addressed directory (default `os.UserCacheDir()/asciidoctor-go/<hash>`,
   overridable), applying source patches during materialization. Asciidoctor then
@@ -67,7 +71,7 @@ Reference trees (read-only, siblings of this repository):
 Each step ends with a commit, all tests green.
 
 1. **Runtime boots unmodified Asciidoctor.**
-   Module skeleton; vendored Asciidoctor tree with license; shims; source
+   Module skeleton; Asciidoctor submodule; shims; source
    patches; embedded materialization; `internal/runtime` that returns a ready
    interpreter. Tests: boot, shim regression tests (each shim's MRI behaviour).
 2. **Differential corpus.** Goldens generated with MRI from the `.adoc` files in
@@ -117,8 +121,9 @@ Each step ends with a commit, all tests green.
    manipulation, catalog assets, document header, multiple documents,
    source highlighting, logging, …) rewritten against the Go API, with the
    same fixtures.
-9. **CLI and docs.** `cmd/asciidoctor` mirroring the Ruby CLI options, package
-   docs with runnable examples, README.
+9. **CLI, docs and distribution.** `cmd/asciidoctor` mirroring the Ruby CLI
+   options, package docs with runnable examples, README, and a solution for
+   `go get` consumers (who do not receive submodule contents).
 
 ## Status
 

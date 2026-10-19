@@ -1,0 +1,6 @@
+[submodule "rubysrc/asciidoctor"]
+	path = rubysrc/asciidoctor
+	url = https://github.com/asciidoctor/asciidoctor.git
+[submodule "third_party/asciidoctorj"]
+	path = third_party/asciidoctorj
+	url = https://github.com/asciidoctor/asciidoctorj.git
