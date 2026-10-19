@@ -11,11 +11,15 @@ module Gem
   end unless respond_to? :loaded_specs
 end
 
-# Libraries whose native rbgo implementation is replaced by a shim in this
-# directory. rbgo resolves its native libraries before $LOAD_PATH, so require
-# is intercepted for these names and loads the shim (once) instead.
+# Libraries whose native rbgo implementation is replaced. rbgo resolves its
+# native libraries before $LOAD_PATH, so require is intercepted for these names:
+# - SHIMS maps a library to a shim in this directory, loaded (once) instead.
+# - UNAVAILABLE lists native libraries too incomplete for Asciidoctor to use.
+#   Requiring one raises the LoadError of a missing gem, so Asciidoctor degrades
+#   exactly as it does on MRI when the optional gem is not installed.
 module AsciidoctorGoReplacedLibraries
   SHIMS = { 'logger' => (File.join __dir__, 'logger.rb') }.freeze
+  UNAVAILABLE = %w(rouge).freeze
   LOADED = {}
 
   private
@@ -26,12 +30,20 @@ module AsciidoctorGoReplacedLibraries
       LOADED[name] = true
       load shim
       true
+    elsif UNAVAILABLE.include?(name) || (UNAVAILABLE.include? (name.split '/', 2)[0])
+      error = ::LoadError.new %(cannot load such file -- #{name})
+      error.instance_variable_set :@path, name
+      raise error
     else
       super
     end
   end
 end
 Object.prepend AsciidoctorGoReplacedLibraries
+
+# rbgo predefines constants for its native libraries without a require.
+# Remove those of replaced and unavailable libraries.
+Object.send :remove_const, :Rouge if defined? ::Rouge
 
 # rbgo predefines a native ::Logger; remove it so the shim defines the class.
 Object.send :remove_const, :Logger if defined? ::Logger
@@ -40,17 +52,23 @@ require 'logger'
 require 'strscan'
 
 unless StringScanner.method_defined? :get_byte
-  # StringScanner#get_byte is missing from rbgo. It scans exactly one byte,
-  # which may be the lead byte of a multibyte character, and leaves the
-  # scanner in a state that #unscan can revert.
+  # StringScanner#get_byte is missing from rbgo. On MRI it scans exactly one
+  # byte, which may be the lead byte of a multibyte character. rbgo's scanner
+  # cannot match a pattern starting in the middle of a character, so stopping
+  # there would strand every later scan. Instead, a multibyte character is
+  # scanned whole. Asciidoctor only compares the result with ASCII characters
+  # or joins it with the text scanned next, so the outcome is the same as MRI's.
+  # An invalid byte is still consumed alone, and #unscan can revert it.
   module AsciidoctorGoStringScannerGetByte
     ASCII_BYTE_RX = /[\x00-\x7f]/
+    CHAR_RX = /./m
 
     def get_byte
       @__get_byte_origin = nil
       return if eos?
-      # ASCII byte: a regular scan, so matched, matched? and unscan behave natively
+      # a regular scan, so matched, matched? and unscan behave natively
       return scan ASCII_BYTE_RX if (byte = peek 1).ord < 0x80
+      return char if (char = scan CHAR_RX)
       origin = pos
       self.pos = origin + 1
       @__get_byte_origin = origin

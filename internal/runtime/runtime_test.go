@@ -173,22 +173,29 @@ func TestShims(t *testing.T) {
 	tests := []struct{ name, src, want string }{
 		{"cgi/escape", `require 'cgi/escape'; CGI.escapeHTML %(<a href="x">&'</a>)`, `"&lt;a href=&quot;x&quot;&gt;&amp;&#39;&lt;/a&gt;"`},
 		{"Gem.loaded_specs", `Gem.loaded_specs.key? 'logger'`, "true"},
-		{"get_byte multibyte and unscan", `
+		{"get_byte scans multibyte characters whole", `
 s = StringScanner.new "éa,b"
 r = []
 r << s.get_byte << s.pos
 s.unscan; r << s.pos
 r << s.get_byte << s.get_byte << s.get_byte << s.matched << s.pos
 s.unscan; r << s.pos
-r << s.scan(/a/) << s.get_byte << s.get_byte << s.get_byte << s.get_byte
-r`, `["\xC3", 1, 0, "\xC3", "\xA9", "a", "a", 3, 2, "a", ",", "b", nil, nil]`},
-		{"get_byte then scan clears byte unscan", `
-s = StringScanner.new "é,"
+r << s.scan(/a/) << s.get_byte << s.get_byte << s.get_byte
+r`, `["é", 2, 0, "é", "a", ",", ",", 4, 3, nil, ",", "b", nil]`},
+		{"get_byte consumes an invalid byte alone", `
+s = StringScanner.new "\xFFa".dup.force_encoding('UTF-8')
+r = [s.get_byte.bytes, s.pos]
+s.unscan
+r << s.pos << s.get_byte.bytes << s.get_byte << s.pos`, "[[255], 1, 0, [255], \"a\", 2]"},
+		{"scan after an invalid byte clears its unscan", `
+s = StringScanner.new "\xFF,".dup.force_encoding('UTF-8')
 s.get_byte
-s.pos = 2
 s.scan(/,/)
 s.unscan
-s.pos`, "2"},
+s.pos`, "1"},
+		{"get_byte keeps later scans working", `
+s = StringScanner.new "¦x,y"
+[s.get_byte, s.scan(/[^,]+/), s.get_byte, s.rest]`, `["¦", "x", ",", "y"]`},
 		{"File#mtime", `File.open(Asciidoctor::LIB_DIR + '/asciidoctor.rb') {|f| f.mtime == File.mtime(f.path) && Time === f.mtime }`, "true"},
 		{"Module#=== with extend", `
 m = Module.new
@@ -258,5 +265,28 @@ func TestCharLiteralConstants(t *testing.T) {
 	html := convert(t, rt, "{set:name:value} uses {name} but")
 	if want := "<div class=\"paragraph\">\n<p> uses value but</p>\n</div>"; html != want {
 		t.Fatalf("got %q, want %q", html, want)
+	}
+}
+
+// rbgo's native Rouge is too incomplete for Asciidoctor's adapter, so it is
+// reported as a missing gem; Asciidoctor then degrades exactly as MRI does
+// without the rouge gem.
+func TestRougeUnavailable(t *testing.T) {
+	rt := bootShared(t)
+	got := eval(t, rt, `
+r = [defined?(::Rouge)]
+begin
+  require 'rouge'
+rescue LoadError => e
+  r << e.message << e.path
+end
+logger = Asciidoctor::MemoryLogger.new
+old, Asciidoctor::LoggerManager.logger = Asciidoctor::LoggerManager.logger, logger
+html = Asciidoctor.convert %([source,ruby]\n----\nputs 1\n----), attributes: { 'source-highlighter' => 'rouge' }
+Asciidoctor::LoggerManager.logger = old
+r << (html.include? '<pre class="rouge highlight"><code data-lang="ruby">puts 1</code></pre>') << logger.messages`)
+	want := `[nil, "cannot load such file -- rouge", "rouge", true, [{severity: :WARN, message: "optional gem 'rouge' is not available. Functionality disabled."}]]`
+	if got != want {
+		t.Fatalf("got %s\nwant %s", got, want)
 	}
 }
