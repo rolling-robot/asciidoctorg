@@ -201,6 +201,11 @@ s = StringScanner.new "¦x,y"
 m = Module.new
 s = String.new('+').extend m
 [m === s, (case s when m then :match else :none end), m === String.new('+')]`, "[true, :match, false]"},
+		{"NotImplementedError is a ScriptError", `
+r = [NotImplementedError.superclass]
+begin; raise NotImplementedError, 'x'; rescue => e; r << :standard; rescue ScriptError => e; r << :script; end
+begin; File.birthtime(Asciidoctor::LIB_DIR + '/asciidoctor.rb'); rescue => e; r << e.class; rescue NotImplementedError => e; r << :native_script; end
+r`, "[ScriptError, :script, :native_script]"},
 		{"Module#=== without extend unchanged", `[Comparable === 1, Enumerable === [], Kernel === Object.new, Comparable === Object.new]`, "[true, true, true, false]"},
 	}
 	for _, tc := range tests {

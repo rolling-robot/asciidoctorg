@@ -23,3 +23,4 @@ has a regression test in `internal/runtime`).
 | 13 | `private_constant` still listed by `constants` | `module M; X = 1; private_constant :X; end; M.constants` → `[:X]` (MRI: `[]`) | avoided in shims |
 | 14 | `TracePoint.new(:raise)` never fires | block is not called when an exception is raised | none needed (debugging aid only) |
 | 15 | Parser accepts a command call in a rescue modifier | `x = 1 rescue p $!` parses (MRI: `SyntaxError`) | none needed |
+| 16 | `NotImplementedError` inherits from `StandardError` | `NotImplementedError.superclass` → `StandardError` (MRI: `ScriptError`), so `rescue => e` catches it | prelude redefines it under `ScriptError` |

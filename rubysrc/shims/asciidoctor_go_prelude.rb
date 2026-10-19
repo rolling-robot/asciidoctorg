@@ -118,3 +118,13 @@ module AsciidoctorGoExtendCaseEquality
   end
 end
 Object.prepend AsciidoctorGoExtendCaseEquality unless (::Module.new.tap {|m| (o = ::Object.new).extend m; break m === o })
+
+# rbgo makes NotImplementedError a StandardError; in Ruby it is a ScriptError,
+# so a bare `rescue` does not catch it. Asciidoctor relies on this (for
+# example, a missing converter must not be wrapped as a load failure). rbgo
+# raises built-in exceptions by class name, so redefining the constant also
+# applies to exceptions raised natively.
+unless NotImplementedError.superclass == ScriptError
+  Object.send :remove_const, :NotImplementedError
+  class NotImplementedError < ScriptError; end
+end
