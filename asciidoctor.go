@@ -24,6 +24,7 @@ type Asciidoctor struct {
 
 	extOnce sync.Once
 	ext     *ExtensionRegistry
+	logging logging
 }
 
 // An Option configures New.
@@ -63,7 +64,9 @@ func New(opts ...Option) (*Asciidoctor, error) {
 	if err != nil {
 		return nil, wrapError(err)
 	}
-	return &Asciidoctor{b: b}, nil
+	a := &Asciidoctor{b: b}
+	a.logging.level = SeverityWarn
+	return a, nil
 }
 
 // Close releases the instance. Later calls fail with ErrClosed.

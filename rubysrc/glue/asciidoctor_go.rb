@@ -4,6 +4,13 @@
 # AsciidoctorGo::Bridge.dispatch(handle, method, *args), which forwards a call
 # to the Go object registered under handle, and AsciidoctorGo::Writer, an
 # IO-like wrapper of a Go io.Writer.
+# Load the built-in converters now. Each registers itself for its backend when
+# loaded, so loading one lazily after a Go converter was registered for the
+# same backend would replace the Go converter.
+require 'asciidoctor/converter/html5'
+require 'asciidoctor/converter/docbook5'
+require 'asciidoctor/converter/manpage'
+
 module AsciidoctorGo
   # Converts input as Asciidoctor.convert does, and returns the converted
   # String, or nil when the output was written to a file or stream.
@@ -210,6 +217,127 @@ module AsciidoctorGo
 
     def process parent, target, attributes
       Bridge.dispatch @go_handle, :process, parent, target, attributes
+    end
+  end
+
+  # Converter proxy. Each registration creates a subclass carrying the Go
+  # handle and backend traits; Asciidoctor instantiates it per document, and
+  # every instance forwards to the same Go converter.
+  class Converter < ::Asciidoctor::Converter::Base
+    class << self
+      attr_accessor :go_handle, :go_traits, :go_writer
+    end
+
+    def initialize backend, opts = {}
+      super
+      traits = ::Asciidoctor::Converter.derive_backend_traits backend, self.class.go_traits[:basebackend]
+      init_backend_traits traits.merge(self.class.go_traits.compact)
+    end
+
+    def convert node, transform = nil, opts = nil
+      Bridge.dispatch self.class.go_handle, :convert, node, (transform || node.node_name), opts
+    end
+
+    def handles? transform
+      Bridge.dispatch self.class.go_handle, :handles, transform
+    end
+  end
+
+  # Adds Writer behavior to a converter whose Go side writes its own output.
+  module ConverterWriter
+    include ::Asciidoctor::Writer
+
+    def write output, target
+      Bridge.dispatch self.class.go_handle, :write, output, target
+      nil
+    end
+  end
+
+  def self.register_converter handle, traits, writer, backends
+    converter = ::Class.new Converter
+    converter.go_handle = handle
+    converter.go_traits = traits
+    converter.include ConverterWriter if writer
+    ::Asciidoctor::Converter.register converter, *backends
+    converter
+  end
+
+  BUILTIN_CONVERTERS = { 'html5' => :Html5Converter, 'docbook5' => :DocBook5Converter, 'manpage' => :ManPageConverter }
+
+  # Returns a new instance of Asciidoctor's own converter for backend (even if
+  # another converter has been registered for it since), or nil.
+  def self.builtin_converter backend
+    return unless (class_name = BUILTIN_CONVERTERS[backend])
+    require %(asciidoctor/converter/#{backend})
+    ::Asciidoctor::Converter.const_get(class_name, false).new backend
+  end
+
+  # Syntax highlighter proxy; capabilities says which parts Go implements.
+  class SyntaxHighlighter < ::Asciidoctor::SyntaxHighlighter::Base
+    class << self
+      attr_accessor :go_handle, :go_capabilities
+    end
+
+    def docinfo? location
+      Bridge.dispatch self.class.go_handle, :has_docinfo, location
+    end
+
+    def docinfo location, doc, opts
+      Bridge.dispatch self.class.go_handle, :docinfo, location, doc, opts
+    end
+
+    def highlight?
+      self.class.go_capabilities.include? :highlight
+    end
+
+    def highlight node, source, lang, opts
+      Bridge.dispatch self.class.go_handle, :highlight, node, source, lang, opts
+    end
+
+    def format node, lang, opts
+      if self.class.go_capabilities.include? :format
+        Bridge.dispatch self.class.go_handle, :format, node, lang, (opts.reject {|k, _| k == :transform })
+      else
+        super
+      end
+    end
+
+    def write_stylesheet? doc
+      (self.class.go_capabilities.include? :stylesheet) && (Bridge.dispatch self.class.go_handle, :write_stylesheet?, doc)
+    end
+
+    def write_stylesheet doc, to_dir
+      Bridge.dispatch self.class.go_handle, :write_stylesheet, doc, to_dir
+    end
+  end
+
+  def self.register_syntax_highlighter handle, capabilities, names
+    highlighter = ::Class.new SyntaxHighlighter
+    highlighter.go_handle = handle
+    highlighter.go_capabilities = capabilities
+    ::Asciidoctor::SyntaxHighlighter.register highlighter, *names
+    highlighter
+  end
+
+  # Logger that forwards messages to Go log handlers (through handle) while
+  # tracking the maximum severity like Asciidoctor::Logger.
+  class Logger < ::Asciidoctor::Logger
+    def initialize handle, level
+      super nil, level: level
+      @go_handle = handle
+    end
+
+    def add severity, message = nil, progname = nil
+      severity ||= UNKNOWN
+      super severity, message, progname
+      return true if severity < level
+      message = block_given? ? yield : progname if message.nil?
+      if ::Hash === message && (message.key? :text)
+        Bridge.dispatch @go_handle, :log, severity, message[:text].to_s, message[:source_location]
+      else
+        Bridge.dispatch @go_handle, :log, severity, (::String === message ? message : message.inspect), nil
+      end
+      true
     end
   end
 end
