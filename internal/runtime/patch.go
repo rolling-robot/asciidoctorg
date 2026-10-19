@@ -47,6 +47,27 @@ var sourcePatches = []sourcePatch{
 		Count:  1,
 		Reason: "See the previous patch; this is the csv branch of the same loop.",
 	},
+	charLiteralPatch("asciidoctor/lib/asciidoctor/substitutors.rb", "CAN", `\u0018`),
+	charLiteralPatch("asciidoctor/lib/asciidoctor/substitutors.rb", "DEL", `\u007f`),
+	charLiteralPatch("asciidoctor/lib/asciidoctor/substitutors.rb", "PASS_START", `\u0096`),
+	charLiteralPatch("asciidoctor/lib/asciidoctor/substitutors.rb", "PASS_END", `\u0097`),
+	charLiteralPatch("asciidoctor/lib/asciidoctor/converter/manpage.rb", "ESC", `\u001b`),
+}
+
+// charLiteralPatch rewrites the constant assignment `NAME = ?<escape>` to the
+// double-quoted string `NAME = "<escape>"`. rbgo's parser mis-reads escape
+// sequences in character literals (?\u007f yields "u"), while the same escape
+// in a double-quoted string is correct. A character literal is a String, and
+// both forms are frozen under the file's frozen_string_literal comment, so the
+// rewrite is equivalent.
+func charLiteralPatch(file, name, escape string) sourcePatch {
+	return sourcePatch{
+		File:   file,
+		Old:    name + " = ?" + escape,
+		New:    name + ` = "` + escape + `"`,
+		Count:  1,
+		Reason: "rbgo mis-parses escapes in character literals; use the equivalent double-quoted string.",
+	}
 }
 
 // applyPatches returns content with every patch for file applied. It fails if

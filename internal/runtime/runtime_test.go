@@ -213,3 +213,50 @@ func TestListContinuation(t *testing.T) {
 		t.Fatalf("got\n%s\nwant\n%s", got, want)
 	}
 }
+
+// The logger shim replaces rbgo's native Logger, which cannot be subclassed.
+// Expected values come from MRI Ruby 3.4 with logger 1.6.
+func TestLoggerShim(t *testing.T) {
+	rt := bootShared(t)
+	tests := []struct{ name, src, want string }{
+		{"memory logger collects messages", `
+logger = Asciidoctor::MemoryLogger.new
+logger.warn 'careful'
+logger.error { 'broken' }
+[logger.class, logger.messages, logger.max_severity]`, `[Asciidoctor::MemoryLogger, [{severity: :WARN, message: "careful"}, {severity: :ERROR, message: "broken"}], 3]`},
+		{"asciidoctor logger format", `
+io = StringIO.new
+logger = Asciidoctor::Logger.new io
+logger.info 'hidden'
+logger.warn 'shown'
+logger.fatal 'stop'
+[io.string, logger.max_severity, logger.level]`, `["asciidoctor: WARNING: shown\nasciidoctor: FAILED: stop\n", 4, 2]`},
+		{"null logger", `l = Asciidoctor::NullLogger.new; l.error 'x'; [l.class, l.max_severity]`, "[Asciidoctor::NullLogger, 3]"},
+		{"default formatter", `Logger::Formatter.new.call('WARN', Time.at(1600000000, 123456, :usec).utc, 'prog', 'msg').sub(/#\d+/, '#PID')`, `"W, [2020-09-13T12:26:40.123456 #PID]  WARN -- prog: msg\n"`},
+		{"level coercion", `l = Logger.new nil; l.level = :error; r = [l.level]; begin; l.level = 'bogus'; rescue ArgumentError; r << $!.message; end; l.with_level(:debug) { r << l.level }; r << l.level`, `[3, "invalid log level: bogus", 0, 3]`},
+		{"severity constants", `Logger::Severity.constants.sort`, "[:DEBUG, :ERROR, :FATAL, :INFO, :UNKNOWN, :WARN]"},
+		{"require logger is the shim", `require 'logger'; [Logger::VERSION, Logger::ProgName]`, `["1.6.4", "logger.rb/v1.6.4"]`},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := eval(t, rt, tc.src); got != tc.want {
+				t.Fatalf("got %s, want %s", got, tc.want)
+			}
+		})
+	}
+}
+
+// rbgo mis-parses escapes in character literals; the patched constants must
+// hold the control characters Asciidoctor uses as placeholders.
+func TestCharLiteralConstants(t *testing.T) {
+	rt := bootShared(t)
+	got := eval(t, rt, `[Asciidoctor::Substitutors::CAN, Asciidoctor::Substitutors::DEL, Asciidoctor::Substitutors::PASS_START, Asciidoctor::Substitutors::PASS_END, (require 'asciidoctor/converter/manpage'; Asciidoctor::Converter::ManPageConverter::ESC)].map(&:bytes)`)
+	if want := "[[24], [127], [194, 150], [194, 151], [27]]"; got != want {
+		t.Fatalf("got %s, want %s", got, want)
+	}
+	// The set directive drops its placeholder with String#delete DEL.
+	html := convert(t, rt, "{set:name:value} uses {name} but")
+	if want := "<div class=\"paragraph\">\n<p> uses value but</p>\n</div>"; html != want {
+		t.Fatalf("got %q, want %q", html, want)
+	}
+}
