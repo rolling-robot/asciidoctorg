@@ -2,6 +2,8 @@ package runtime
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -47,6 +49,54 @@ var sourcePatches = []sourcePatch{
 		Count:  1,
 		Reason: "See the previous patch; this is the csv branch of the same loop.",
 	},
+	{
+		File: "asciidoctor/lib/asciidoctor/extensions.rb",
+		Old: `        super
+        option :content_model, :attributes`,
+		New: `        SyntaxProcessorDsl.instance_method(:resolve_attributes).bind_call self, *args
+        option :content_model, :attributes`,
+		Count: 1,
+		Reason: "rbgo cannot resolve super in a module method when the receiver is a class " +
+			"(a processor class using the DSL extends it). In MacroProcessorDsl#resolve_attributes " +
+			"the next definition is always SyntaxProcessorDsl#resolve_attributes, which the " +
+			"rewrite calls explicitly with the same arguments.",
+	},
+	{
+		File:  "asciidoctor/lib/asciidoctor/document.rb",
+		Old:   "(::Time.at Integer ::ENV['SOURCE_DATE_EPOCH'])",
+		New:   "(::Time.at Integer(::ENV['SOURCE_DATE_EPOCH']))",
+		Count: 1,
+		Reason: "rbgo parses `Integer ::ENV[...]` (a call of Kernel#Integer) as the scoped " +
+			"constant Integer::ENV; parentheses make the call explicit.",
+	},
+	{
+		File:  "asciidoctor/lib/asciidoctor/reader.rb",
+		Old:   "(@dir = file.dup).path = (dir = ::File.dirname file.path) == '/' ? '' : dir",
+		New:   "@dir = ::AsciidoctorGoURI.with_path file, ((dir = ::File.dirname file.path) == '/' ? '' : dir)",
+		Count: 1,
+		Reason: "rbgo's URI objects have no path= setter and dup shares their state with the " +
+			"original. The replacement builds a new URI from the original's components with " +
+			"the new path, which is what duplicating it and assigning the path produces.",
+	},
+	{
+		File:  "asciidoctor/lib/asciidoctor/rx.rb",
+		Old:   `\]|\2([^\s]+?)&gt;|([^\s\[\]<]*([^\s,.?!\[\]<\)]))))m`,
+		New:   `\]|(?<=&lt;https://|&lt;\\https://|&lt;http://|&lt;\\http://|&lt;file://|&lt;\\file://|&lt;ftp://|&lt;\\ftp://|&lt;irc://|&lt;\\irc://)([^\s]+?)&gt;|([^\s\[\]<]*([^\s,.?!\[\]<\)]))))m`,
+		Count: 1,
+		Reason: "rbgo's regexp engine lets a backreference to a group that did not participate " +
+			"match the empty string; Onigmo fails it. InlineLinkRx uses \\2 (an empty group that " +
+			"participates only after &lt;) as a condition. The lookbehind tests the same " +
+			"condition: &lt; (optionally followed by a backslash) and the scheme precede.",
+	},
+	{
+		File:  "asciidoctor/lib/asciidoctor/rx.rb",
+		Old:   `(?=\\\+))(?:\2(x-|[^\[\]]+ x-)\]|`,
+		New:   `(?=\\\+))(?:(?<!\\)\[(x-|[^\[\]]+ x-)\]|`,
+		Count: 1,
+		Reason: "See the previous patch. In InlinePassRx, \\2 consumes the [ that group 2 captured " +
+			"in a lookahead, which happens only when group 1 is not the escaped form; (?<!\\\\)\\[ " +
+			"consumes a [ not preceded by a backslash, which is the same condition.",
+	},
 	charLiteralPatch("asciidoctor/lib/asciidoctor/substitutors.rb", "CAN", `\u0018`),
 	charLiteralPatch("asciidoctor/lib/asciidoctor/substitutors.rb", "DEL", `\u007f`),
 	charLiteralPatch("asciidoctor/lib/asciidoctor/substitutors.rb", "PASS_START", `\u0096`),
@@ -85,4 +135,33 @@ func applyPatches(file string, content []byte) ([]byte, error) {
 		src = strings.ReplaceAll(src, p.Old, p.New)
 	}
 	return []byte(src), nil
+}
+
+// PatchTree applies the source patches to an Asciidoctor source tree on disk
+// (a directory with lib/), such as a copy of the asciidoctor submodule.
+func PatchTree(asciidoctorDir string) error {
+	done := map[string]bool{}
+	for _, p := range sourcePatches {
+		if done[p.File] {
+			continue
+		}
+		done[p.File] = true
+		rel, ok := strings.CutPrefix(p.File, "asciidoctor/")
+		if !ok {
+			return fmt.Errorf("asciidoctor-go: patch for %s is outside the asciidoctor tree", p.File)
+		}
+		path := filepath.Join(asciidoctorDir, filepath.FromSlash(rel))
+		src, err := os.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		patched, err := applyPatches(p.File, src)
+		if err != nil {
+			return err
+		}
+		if err := os.WriteFile(path, patched, 0o644); err != nil {
+			return err
+		}
+	}
+	return nil
 }

@@ -3,6 +3,7 @@ package runtime
 
 import (
 	"io"
+	"path/filepath"
 
 	ruby "github.com/go-embedded-ruby/ruby"
 )
@@ -15,6 +16,11 @@ type Config struct {
 	// Stdout and Stderr receive the interpreter's $stdout and $stderr. Nil
 	// discards the output.
 	Stdout, Stderr io.Writer
+	// AsciidoctorDir, if set, is an Asciidoctor source tree (with lib/ and
+	// data/) to load instead of the embedded one, for example a full checkout
+	// prepared with PatchTree. The shims and glue still come from the
+	// embedded tree.
+	AsciidoctorDir string
 }
 
 // Runtime is an interpreter with Asciidoctor loaded. It is not safe for
@@ -49,7 +55,11 @@ func Boot(cfg Config) (*Runtime, error) {
 	if err := in.Set("__agox_shim_dir", shimDir(root)); err != nil {
 		return nil, err
 	}
-	if err := in.Set("__agox_lib_dir", libDir(root)); err != nil {
+	lib := libDir(root)
+	if cfg.AsciidoctorDir != "" {
+		lib = filepath.Join(cfg.AsciidoctorDir, "lib")
+	}
+	if err := in.Set("__agox_lib_dir", lib); err != nil {
 		return nil, err
 	}
 	if err := in.Set("__agox_glue_dir", glueDir(root)); err != nil {

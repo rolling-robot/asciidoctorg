@@ -206,6 +206,40 @@ r = [NotImplementedError.superclass]
 begin; raise NotImplementedError, 'x'; rescue => e; r << :standard; rescue ScriptError => e; r << :script; end
 begin; File.birthtime(Asciidoctor::LIB_DIR + '/asciidoctor.rb'); rescue => e; r << e.class; rescue NotImplementedError => e; r << :native_script; end
 r`, "[ScriptError, :script, :native_script]"},
+		{"Class.new calls inherited before the body", `
+base = Class.new
+seen = []
+base.define_singleton_method(:inherited) {|sub| seen << sub.instance_variable_get(:@body) }
+sub = Class.new(base) { @body = :ran; def hi = :hi }
+named = Class.new(base)
+[seen, sub.new.hi, sub.superclass == base, Class.new.superclass, (Class.new {|k| @arg = k }).instance_variable_get(:@arg).class]`, "[[nil, nil], :hi, true, Object, Class]"},
+		{"full_message includes causes", `
+begin
+  begin
+    raise ArgumentError, 'inner cause'
+  rescue ArgumentError
+    raise IOError, 'outer'
+  end
+rescue IOError => e
+  m = e.full_message(highlight: false)
+  [m.include?('outer (IOError)'), m.include?('inner cause (ArgumentError)'), (m.index 'outer') < (m.index 'inner cause')]
+end`, "[true, true, true]"},
+		{"rstrip rejects invalid byte sequences", `
+s = "a\xFF ".dup.force_encoding('UTF-8')
+[(begin; s.rstrip; rescue Encoding::CompatibilityError => e; e.message; end), "ok  ".rstrip, " x ".strip, "\xFF ".b.rstrip]`, `["invalid byte sequence in UTF-8", "ok", "x", "\xFF"]`},
+		{"open-uri via autoload and require", `
+module AgoxAutoloadProbe; autoload :OpenURI, 'open-uri'; end
+[(require 'open-uri'), ::OpenURI.respond_to?(:open_uri), (begin; ::OpenURI.open_uri('ftp://x'); rescue ArgumentError => e; e.message; end)]`, `[true, true, "open-uri: unsupported scheme for ftp://x"]`},
+		{"Asciidoctor's top-level autoloads resolve", `Asciidoctor::Helpers.require_open_uri; (Module.new { def self.get = [::OpenURI, ::Pathname, ::StringScanner, ::URI] }).get.map(&:name)`, `["OpenURI", "Pathname", "StringScanner", "URI"]`},
+		{"URI with a replaced path", `[AsciidoctorGoURI.with_path(URI('https://u:p@example.org:8443/a/b.adoc?x=1#f'), '/a').to_s, AsciidoctorGoURI.with_path(URI('http://example.org/b.adoc'), '').to_s]`, `["https://u:p@example.org:8443/a?x=1#f", "http://example.org"]`},
+		{"FileUtils.rmdir and Pathname", `
+require 'tmpdir'
+Dir.mktmpdir do |d|
+  FileUtils.mkdir_p File.join(d, 'a', 'b')
+  FileUtils.rmdir File.join(d, 'a', 'b')
+  p1 = Pathname(File.join d, 'a')
+  [Dir.exist?(File.join d, 'a', 'b'), p1.directory?, p1.empty?, Pathname(p1).equal?(p1), (p1 + 'x').expand_path.basename.to_s, p1.children]
+end`, "[false, true, true, true, \"x\", []]"},
 		{"Module#=== without extend unchanged", `[Comparable === 1, Enumerable === [], Kernel === Object.new, Comparable === Object.new]`, "[true, true, true, false]"},
 	}
 	for _, tc := range tests {
@@ -293,5 +327,20 @@ r << (html.include? '<pre class="rouge highlight"><code data-lang="ruby">puts 1<
 	want := `[nil, "cannot load such file -- rouge", "rouge", true, [{severity: :WARN, message: "optional gem 'rouge' is not available. Functionality disabled."}]]`
 	if got != want {
 		t.Fatalf("got %s\nwant %s", got, want)
+	}
+}
+
+// Two of Asciidoctor's regexes use a backreference to a group that may not
+// participate, which rbgo's engine matches as empty; the patched regexes must
+// give MRI's results. Expected output was produced by Asciidoctor on MRI.
+func TestRegexBackreferencePatches(t *testing.T) {
+	rt := bootShared(t)
+	for src, want := range map[string]string{
+		"https://github.com/<org>/ and &lt;https://example.org&gt;": "<div class=\"paragraph\">\n<p><a href=\"https://github.com/&lt;org&gt;/\" class=\"bare\">https://github.com/&lt;org&gt;/</a> and <a href=\"https://example.org\" class=\"bare\">https://example.org</a></p>\n</div>",
+		"+ x-]+y+ and [x-]+z+": "<div class=\"paragraph\">\n<p>+ x-]y and <code>z</code></p>\n</div>",
+	} {
+		if got := convert(t, rt, src); got != want {
+			t.Errorf("%q:\ngot  %q\nwant %q", src, got, want)
+		}
 	}
 }
