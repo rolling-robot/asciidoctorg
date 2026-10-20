@@ -134,6 +134,121 @@ unless StringScanner.method_defined? :get_byte
   StringScanner.prepend AsciidoctorGoStringScannerGetByte
 end
 
+# StringScanner methods missing from rbgo that derive exactly from the ones
+# it has (CodeRay uses rest?).
+class StringScanner
+  def rest? = !eos? unless method_defined? :rest?
+  def restsize = rest_size unless method_defined? :restsize
+  def peep(len) = peek(len) unless method_defined? :peep
+  def getbyte = get_byte unless method_defined? :getbyte
+  def peek_byte = string.getbyte(pos) unless method_defined? :peek_byte
+
+  unless method_defined? :exist?
+    def exist? pattern
+      (found = check_until pattern) && found.bytesize
+    end
+  end
+
+  unless method_defined? :search_full
+    def search_full pattern, advance, return_string
+      found = advance ? (scan_until pattern) : (check_until pattern)
+      found && (return_string ? found : found.bytesize)
+    end
+  end
+
+  unless method_defined? :scan_full
+    def scan_full pattern, advance, return_string
+      found = advance ? (scan pattern) : (check pattern)
+      found && (return_string ? found : found.bytesize)
+    end
+  end
+end
+
+# rbgo's Hash#dup drops the default value and default proc, and dup or clone
+# of an instance of a Hash or Array subclass yields an object without the
+# native storage, which fails on first use (CodeRay dups its WordList, a Hash
+# subclass). The copies are made from an allocated instance, which has it.
+module AsciidoctorGoCoreCopy
+  def self.subclass_copy obj
+    copy = obj.class.allocate
+    copy.replace obj
+    obj.instance_variables.each {|iv| copy.instance_variable_set iv, (obj.instance_variable_get iv) }
+    copy
+  end
+
+  def self.finish_clone obj, copy, freeze
+    obj.singleton_class.included_modules.each {|m| copy.extend m unless copy.is_a? m }
+    copy.freeze if freeze || (freeze.nil? && obj.frozen?)
+    copy
+  end
+
+  def self.copy_default from, to
+    if (proc = from.default_proc)
+      to.default_proc = proc
+    else
+      to.default = from.default
+    end
+    to
+  end
+
+  module HashMethods
+    def dup
+      AsciidoctorGoCoreCopy.copy_default self, (instance_of?(::Hash) ? super : (AsciidoctorGoCoreCopy.subclass_copy self))
+    end
+
+    # A plain Hash keeps the native clone, which copies singleton methods.
+    def clone freeze: nil
+      return AsciidoctorGoCoreCopy.finish_clone self, dup, freeze unless instance_of? ::Hash
+      copy = AsciidoctorGoCoreCopy.copy_default self, (super freeze: false)
+      copy.freeze if freeze || (freeze.nil? && frozen?)
+      copy
+    end
+  end
+
+  module ArrayMethods
+    def dup
+      instance_of?(::Array) ? super : (AsciidoctorGoCoreCopy.subclass_copy self)
+    end
+
+    def clone freeze: nil
+      return super if instance_of? ::Array
+      AsciidoctorGoCoreCopy.finish_clone self, dup, freeze
+    end
+  end
+end
+Hash.prepend AsciidoctorGoCoreCopy::HashMethods
+Array.prepend AsciidoctorGoCoreCopy::ArrayMethods
+
+# rbgo's StringScanner keeps its native state only in objects made by
+# StringScanner.new, which also returns a StringScanner when called on a
+# subclass, so subclasses (such as CodeRay's scanners) cannot scan. A
+# subclass instead gets an initialize that wraps a native scanner and the
+# scanner methods, forwarded to it; the subclass's own methods and
+# initialize (calling super) work as on MRI.
+class StringScanner
+  module AsciidoctorGoSubclass
+    (::StringScanner.public_instance_methods - ::Object.public_instance_methods).each do |name|
+      define_method(name) {|*args, &block| @__agox_scanner.__send__ name, *args, &block }
+    end
+
+    def initialize string, *_args, **_opts
+      @__agox_scanner = ::StringScanner.new string
+    end
+  end
+
+  # NOTE no super: rbgo cannot resolve super from a class method to
+  # Class#inherited (see docs/rbgo-gaps.md)
+  def self.inherited subclass
+    return if subclass.include? AsciidoctorGoSubclass
+    subclass.include AsciidoctorGoSubclass
+    subclass.define_singleton_method :new do |*args, **opts, &block|
+      obj = allocate
+      obj.__send__ :initialize, *args, **opts, &block
+      obj
+    end
+  end
+end
+
 # File#mtime and friends are missing from rbgo; File#stat is present.
 class File
   %i(mtime atime ctime).each do |name|

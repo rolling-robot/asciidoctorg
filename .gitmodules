@@ -4,3 +4,6 @@
 [submodule "third_party/asciidoctorj"]
 	path = third_party/asciidoctorj
 	url = https://github.com/asciidoctor/asciidoctorj.git
+[submodule "rubysrc/coderay"]
+	path = rubysrc/coderay
+	url = https://github.com/rubychan/coderay.git

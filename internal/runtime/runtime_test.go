@@ -196,6 +196,47 @@ s.pos`, "1"},
 		{"get_byte keeps later scans working", `
 s = StringScanner.new "¦x,y"
 [s.get_byte, s.scan(/[^,]+/), s.get_byte, s.rest]`, `["¦", "x", ",", "y"]`},
+		{"StringScanner subclasses scan", `
+class AgoxScanner < StringScanner
+  def initialize source, extra
+    super source
+    @extra = extra
+  end
+  def extra = @extra
+end
+class AgoxSubScanner < AgoxScanner; end
+s = AgoxSubScanner.new "abc", 7
+r = [s.class, s.is_a?(StringScanner), s.extra, s.scan(/a/), s.pos, s.check(/b/), s.rest]
+s.string = "zz"
+r << s.scan(/z+/) << s.eos? << StringScanner.new("q").class
+r`, `[AgoxSubScanner, true, 7, "a", 1, "b", "bc", "zz", true, StringScanner]`},
+		{"Hash#dup and #clone keep the default", `
+h = Hash.new(5)
+def h.zz = :zz
+pr = Hash.new {|_, k| k * 2 }
+[h.dup[:x], h.clone[:x], h.clone.zz, h.freeze.clone.frozen?, h.clone[:x], pr.dup['ab'], pr.clone['ab'], Hash.new(1).dup.default_proc]`,
+			`[5, 5, :zz, true, 5, "abab", "abab", nil]`},
+		{"Hash and Array subclasses dup and clone", `
+class AgoxHash < Hash
+  def initialize(default = false) = super(default)
+end
+class AgoxArray < Array; end
+w = AgoxHash.new(:none)
+w['a'] = 1
+w.instance_variable_set :@iv, 2
+d = w.dup
+d['b'] = 3
+c = w.clone
+c['c'] = 4
+a = AgoxArray.new([1]).dup
+a << 2
+[d.class, d['a'], d['b'], d['zz'], d.instance_variable_get(:@iv), w.key?('b'), c.class, c['c'], a.class, a, AgoxArray.new([1]).clone.class]`,
+			`[AgoxHash, 1, 3, :none, 2, false, AgoxHash, 4, AgoxArray, [1, 2], AgoxArray]`},
+		{"StringScanner derived methods", `
+s = StringScanner.new "abc def"
+[s.rest?, s.restsize, s.peep(2), s.peek_byte, s.exist?(/d/), s.pos, s.search_full(/c/, true, true), s.pos,
+ s.scan_full(/ d/, false, false), s.pos, s.getbyte, s.scan(/.*/), s.rest?]`,
+			`[true, 7, "ab", 97, 5, 0, "abc", 3, 2, 3, " ", "def", false]`},
 		{"File#mtime", `File.open(Asciidoctor::LIB_DIR + '/asciidoctor.rb') {|f| f.mtime == File.mtime(f.path) && Time === f.mtime }`, "true"},
 		{"Module#=== with extend", `
 m = Module.new
