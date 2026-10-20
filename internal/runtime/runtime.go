@@ -65,6 +65,9 @@ func Boot(cfg Config) (*Runtime, error) {
 	if err := in.Set("__agox_glue_dir", glueDir(root)); err != nil {
 		return nil, err
 	}
+	if err := defineTemplateCompiler(in); err != nil {
+		return nil, err
+	}
 	if _, err := in.Eval(bootScript, "(asciidoctor-go boot)", 1); err != nil {
 		return nil, err
 	}
@@ -78,5 +81,6 @@ $LOAD_PATH.unshift __agox_lib_dir
 $LOAD_PATH.push __agox_glue_dir
 require 'asciidoctor'
 require 'asciidoctor/extensions'
+require 'asciidoctor_go_frame_local_match'
 nil
 `

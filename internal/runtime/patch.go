@@ -97,6 +97,16 @@ var sourcePatches = []sourcePatch{
 			"in a lookahead, which happens only when group 1 is not the escaped form; (?<!\\\\)\\[ " +
 			"consumes a [ not preceded by a backslash, which is the same condition.",
 	},
+	{
+		File:  "asciidoctor/lib/asciidoctor/converter/manpage.rb",
+		Old:   "%(.so #{basename}), mode: FILE_WRITE_MODE",
+		New:   "%(.so #{basename}), mode: ::Asciidoctor::FILE_WRITE_MODE",
+		Count: 1,
+		Reason: "In a class method of a class declared with a compound path (class " +
+			"Converter::ManPageConverter inside module Asciidoctor), rbgo's constant lookup " +
+			"skips the enclosing module. FILE_WRITE_MODE resolves to Asciidoctor::FILE_WRITE_MODE " +
+			"on MRI; the patch names it in full. It is the only such reference in Asciidoctor.",
+	},
 	charLiteralPatch("asciidoctor/lib/asciidoctor/substitutors.rb", "CAN", `\u0018`),
 	charLiteralPatch("asciidoctor/lib/asciidoctor/substitutors.rb", "DEL", `\u007f`),
 	charLiteralPatch("asciidoctor/lib/asciidoctor/substitutors.rb", "PASS_START", `\u0096`),

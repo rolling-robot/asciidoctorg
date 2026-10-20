@@ -232,6 +232,13 @@ module AgoxAutoloadProbe; autoload :OpenURI, 'open-uri'; end
 [(require 'open-uri'), ::OpenURI.respond_to?(:open_uri), (begin; ::OpenURI.open_uri('ftp://x'); rescue ArgumentError => e; e.message; end)]`, `[true, true, "open-uri: unsupported scheme for ftp://x"]`},
 		{"Asciidoctor's top-level autoloads resolve", `Asciidoctor::Helpers.require_open_uri; (Module.new { def self.get = [::OpenURI, ::Pathname, ::StringScanner, ::URI] }).get.map(&:name)`, `["OpenURI", "Pathname", "StringScanner", "URI"]`},
 		{"URI with a replaced path", `[AsciidoctorGoURI.with_path(URI('https://u:p@example.org:8443/a/b.adoc?x=1#f'), '/a').to_s, AsciidoctorGoURI.with_path(URI('http://example.org/b.adoc'), '').to_s]`, `["https://u:p@example.org:8443/a?x=1#f", "http://example.org"]`},
+		{"OptionParser skips nil and reports the invalid value", `
+r = []
+o = OptionParser.new {|op| op.on('-o FILE') {|v| r << v }; op.on('-d TYPE', %w(article book)) {|v| r << v } }
+a = ['-o', 'x', nil, 'y']
+r << o.parse!(a) << o.parse(['-o', 'z', nil])
+begin; o.parse! %w(-d chapter in.adoc); rescue OptionParser::InvalidArgument => e; r << e.message; end
+r`, `["x", ["y"], "z", [], "invalid argument: -d chapter"]`},
 		{"FileUtils.rmdir and Pathname", `
 require 'tmpdir'
 Dir.mktmpdir do |d|
@@ -342,5 +349,18 @@ func TestRegexBackreferencePatches(t *testing.T) {
 		if got := convert(t, rt, src); got != want {
 			t.Errorf("%q:\ngot  %q\nwant %q", src, got, want)
 		}
+	}
+}
+
+// rbgo's $~ is not frame-local; Asciidoctor's methods are wrapped so a match
+// made in a called method does not replace the caller's. In the manpage NAME
+// section, $2 is read after sub_attributes (which matches) has run on $1.
+func TestFrameLocalLastMatch(t *testing.T) {
+	rt := bootShared(t)
+	got := eval(t, rt, `
+doc = Asciidoctor.load "= {cmdname}(1)\n:doctype: manpage\n\n== NAME\n\n{cmdname} - {cmdname} puts the foo in your bar", backend: :manpage, attributes: { 'cmdname' => 'foobar' }
+[doc.attr('manname'), doc.attr('manpurpose'), (/(z)/ =~ 'z'; Asciidoctor::Helpers.basename('a/b.adoc', true); $1)]`)
+	if want := `["foobar", "foobar puts the foo in your bar", "z"]`; got != want {
+		t.Fatalf("got %s, want %s", got, want)
 	}
 }

@@ -21,6 +21,8 @@ module AsciidoctorGoReplacedLibraries
   SHIMS = {
     'logger' => (File.join __dir__, 'logger.rb'),
     'open-uri' => (File.join __dir__, 'open-uri.rb'),
+    'tilt' => (File.join __dir__, 'tilt.rb'),
+    'slim/include' => (File.join __dir__, 'slim_include.rb'),
   }.freeze
   UNAVAILABLE = %w(rouge).freeze
   LOADED = {}
@@ -292,4 +294,41 @@ module AsciidoctorGoURI
     result += %(##{uri.fragment}) if uri.fragment
     ::URI.parse result
   end
+end
+
+# rbgo's native OptionParser raises TypeError for nil elements in argv, which
+# Ruby's skips, and reports an invalid separate argument without its value
+# ("invalid argument: -d" instead of "invalid argument: -d chapter").
+require 'optparse'
+if (begin
+  ::OptionParser.new.parse! [nil]
+  false
+rescue ::TypeError
+  true
+end)
+  module AsciidoctorGoOptionParserCompat
+    %i(parse! order! permute!).each do |name|
+      define_method name do |*args, **kwargs, &block|
+        argv = ::Array === args[0] ? args[0] : default_argv
+        argv.compact!
+        original = argv.dup
+        begin
+          super(*args, **kwargs, &block)
+        rescue ::OptionParser::InvalidArgument => e
+          if e.args.size == 1 && (index = original.index e.args[0]) && (value = original[index + 1])
+            raise ::OptionParser::InvalidArgument.new(e.args[0], value)
+          end
+          raise
+        end
+      end
+    end
+
+    %i(parse order permute).each do |name|
+      define_method name do |*args, **kwargs, &block|
+        argv = (args.size == 1 && ::Array === args[0]) ? args[0].dup : args.dup
+        __send__ :"#{name}!", argv, **kwargs, &block
+      end
+    end
+  end
+  ::OptionParser.prepend AsciidoctorGoOptionParserCompat
 end
