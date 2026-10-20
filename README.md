@@ -77,6 +77,10 @@ for _, s := range sections {
 More, runnable, in [example_test.go](example_test.go) and the package
 documentation (`go doc github.com/asciidoctor-go/asciidoctor`).
 
+See [docs/compatibility.md](docs/compatibility.md) for what is not available
+(Pygments, `open-uri-cached`, most Rouge languages and themes) and how the API
+maps to AsciidoctorJ's.
+
 ## How it is tested
 
 - **Against Asciidoctor on MRI Ruby.** A corpus of 324 conversions (the
@@ -109,6 +113,7 @@ go test ./...
 | `rubysrc/coderay` | CodeRay (git submodule) |
 | `rubysrc/shims`, `rubysrc/glue` | Ruby that adapts Asciidoctor to rbgo, and the Ruby side of the bridge |
 | `third_party/asciidoctorj` | AsciidoctorJ (git submodule): API reference and test fixtures |
+| `docs/compatibility.md` | what works, what differs from Asciidoctor and AsciidoctorJ, test results |
 | `docs/rbgo-gaps.md` | every rbgo divergence from MRI found, with its workaround |
 
 Where rbgo differs from MRI, the fix is a Ruby shim, or else an exact-match
