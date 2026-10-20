@@ -1,7 +1,9 @@
 package asciidoctor
 
 import (
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"path"
 	"path/filepath"
@@ -26,11 +28,15 @@ type AsciiDocDirectoryWalker struct {
 	BaseDir string
 }
 
-// Scan returns the AsciiDoc files below BaseDir, sorted.
+// Scan returns the AsciiDoc files below BaseDir, sorted. A BaseDir that does
+// not exist has none.
 func (w AsciiDocDirectoryWalker) Scan() ([]string, error) {
 	var files []string
 	err := filepath.WalkDir(w.BaseDir, func(p string, d os.DirEntry, err error) error {
 		if err != nil {
+			if p == w.BaseDir && errors.Is(err, fs.ErrNotExist) {
+				return fs.SkipAll
+			}
 			return err
 		}
 		name := d.Name()
@@ -62,7 +68,8 @@ type GlobDirectoryWalker struct {
 	Glob string
 }
 
-// Scan returns the matching files and directories, sorted.
+// Scan returns the matching files and directories, sorted. An expression
+// without wildcards yields its path, whether or not the file exists.
 func (w GlobDirectoryWalker) Scan() ([]string, error) {
 	expr := filepath.ToSlash(w.Glob)
 	root, pattern := splitGlob(expr)
@@ -74,6 +81,10 @@ func (w GlobDirectoryWalker) Scan() ([]string, error) {
 		if !fi.IsDir() {
 			return nil, fmt.Errorf("asciidoctor: file must be a directory: %s", root)
 		}
+	}
+	// An expression without wildcards names a file, which need not exist.
+	if !strings.ContainsAny(pattern, "*?[") {
+		return []string{filepath.FromSlash(path.Join(root, pattern))}, nil
 	}
 	// Normalize "**x" and "x**" into separate segments, as AsciidoctorJ does.
 	pattern = regexp.MustCompile(`\*\*([^/])`).ReplaceAllString(pattern, "**/*$1")
