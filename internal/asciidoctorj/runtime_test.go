@@ -1,4 +1,4 @@
-package asciidoctor_test
+package asciidoctorj
 
 import (
 	"encoding/base64"
@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/asciidoctor-go/asciidoctor"
+	"github.com/asciidoctor-go/asciidoctor/internal/testutil"
 )
 
 // Ported from AsciidoctorJ's WhenCustomTemplatesAreUsed,
@@ -101,7 +102,7 @@ func TestAJOptionalLibraries(t *testing.T) {
 	}
 	t.Run("data-uri", func(t *testing.T) {
 		dir := t.TempDir()
-		gif, err := os.ReadFile("rubysrc/asciidoctor/test/fixtures/dot.gif")
+		gif, err := os.ReadFile(testutil.Path("rubysrc/asciidoctor/test/fixtures/dot.gif"))
 		if err != nil {
 			t.Fatal(err)
 		}

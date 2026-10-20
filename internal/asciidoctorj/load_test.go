@@ -1,8 +1,7 @@
-package asciidoctor_test
+package asciidoctorj
 
 import (
 	"path/filepath"
-	"reflect"
 	"strings"
 	"testing"
 
@@ -63,13 +62,6 @@ func mustLoadFile(t *testing.T, path string, o *asciidoctor.Options) *asciidocto
 		t.Fatal(err)
 	}
 	return d
-}
-
-func eqv[T any](t *testing.T, what string, got, want T) {
-	t.Helper()
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("%s = %#v, want %#v", what, got, want)
-	}
 }
 
 func compact() *asciidoctor.Options {

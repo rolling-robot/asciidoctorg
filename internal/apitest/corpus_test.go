@@ -1,4 +1,4 @@
-package asciidoctor_test
+package apitest
 
 import (
 	"bufio"
@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/asciidoctor-go/asciidoctor"
+	"github.com/asciidoctor-go/asciidoctor/internal/testutil"
 )
 
 // corpusAttributes mirrors CorpusConvert::ATTRIBUTES in
@@ -28,10 +29,7 @@ var corpusAttributes = asciidoctor.Attributes{
 // and compares the output with the golden rendered by Asciidoctor on MRI.
 // (internal/conformance also compares the log messages.)
 func TestCorpusThroughAPI(t *testing.T) {
-	repo, err := filepath.Abs(".")
-	if err != nil {
-		t.Fatal(err)
-	}
+	repo := testutil.RepoRoot()
 	golden := filepath.Join(repo, "testdata", "golden")
 	f, err := os.Open(filepath.Join(golden, "MANIFEST"))
 	if err != nil {

@@ -1,4 +1,4 @@
-package asciidoctor_test
+package apitest
 
 import (
 	"bytes"
@@ -11,79 +11,8 @@ import (
 	"testing"
 
 	"github.com/asciidoctor-go/asciidoctor"
+	"github.com/asciidoctor-go/asciidoctor/internal/testutil"
 )
-
-var (
-	runtimeDir string
-	sharedOnce sync.Once
-	shared     *asciidoctor.Asciidoctor
-	sharedErr  error
-)
-
-func TestMain(m *testing.M) {
-	dir, err := os.MkdirTemp("", "asciidoctor-go-test-")
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
-	}
-	runtimeDir = dir
-	code := m.Run()
-	if shared != nil {
-		shared.Close()
-	}
-	os.RemoveAll(dir)
-	os.Exit(code)
-}
-
-// instance returns an instance shared by the tests that do not change its
-// configuration.
-func instance(t *testing.T) *asciidoctor.Asciidoctor {
-	t.Helper()
-	sharedOnce.Do(func() { shared, sharedErr = asciidoctor.New(asciidoctor.WithRuntimeDir(runtimeDir)) })
-	if sharedErr != nil {
-		t.Fatal(sharedErr)
-	}
-	return shared
-}
-
-// newInstance returns a fresh instance, closed when the test ends.
-func newInstance(t *testing.T, opts ...asciidoctor.Option) *asciidoctor.Asciidoctor {
-	t.Helper()
-	a, err := asciidoctor.New(append([]asciidoctor.Option{asciidoctor.WithRuntimeDir(runtimeDir)}, opts...)...)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Cleanup(func() { a.Close() })
-	return a
-}
-
-func mustConvert(t *testing.T, a *asciidoctor.Asciidoctor, src string, o *asciidoctor.Options) string {
-	t.Helper()
-	out, err := a.Convert(src, o)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return out
-}
-
-func writeFile(t *testing.T, path, content string) {
-	t.Helper()
-	if err := os.MkdirAll(filepath.Dir(path), 0o755); err != nil {
-		t.Fatal(err)
-	}
-	if err := os.WriteFile(path, []byte(content), 0o644); err != nil {
-		t.Fatal(err)
-	}
-}
-
-func readFile(t *testing.T, path string) string {
-	t.Helper()
-	b, err := os.ReadFile(path)
-	if err != nil {
-		t.Fatal(err)
-	}
-	return string(b)
-}
 
 // Expected values in this file were produced by Asciidoctor on MRI Ruby.
 
@@ -396,7 +325,7 @@ func TestConcurrentUse(t *testing.T) {
 
 func TestPool(t *testing.T) {
 	setups := 0
-	p, err := asciidoctor.NewPool(3, func(a *asciidoctor.Asciidoctor) error { setups++; return nil }, asciidoctor.WithRuntimeDir(runtimeDir))
+	p, err := asciidoctor.NewPool(3, func(a *asciidoctor.Asciidoctor) error { setups++; return nil }, asciidoctor.WithRuntimeDir(testutil.RuntimeDir()))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -420,7 +349,7 @@ func TestPool(t *testing.T) {
 		t.Error("expected an error for size 0")
 	}
 	failing := errors.New("setup failed")
-	if _, err := asciidoctor.NewPool(1, func(*asciidoctor.Asciidoctor) error { return failing }, asciidoctor.WithRuntimeDir(runtimeDir)); !errors.Is(err, failing) {
+	if _, err := asciidoctor.NewPool(1, func(*asciidoctor.Asciidoctor) error { return failing }, asciidoctor.WithRuntimeDir(testutil.RuntimeDir())); !errors.Is(err, failing) {
 		t.Errorf("got %v", err)
 	}
 	if err := p.Close(); err != nil {

@@ -82,13 +82,13 @@ documentation (`go doc github.com/asciidoctor-go/asciidoctor`).
 - **Against Asciidoctor on MRI Ruby.** A corpus of 324 conversions (the
   Asciidoctor and AsciidoctorJ test documents and this repository's own) must
   produce output and log messages byte-identical with MRI Ruby 3.4
-  (`internal/conformance`; regenerate the goldens with
+  (`internal/conformance` and `internal/apitest`; regenerate the goldens with
   `ruby scripts/gen-goldens.rb`).
 - **Asciidoctor's own test suite** runs inside the embedded interpreter
   (`internal/rubytest`): 2864 tests pass; 13 that cannot apply to an embedded
   runtime are skipped, each with its reason.
 - **AsciidoctorJ's tests**, ported to the Go API, on AsciidoctorJ's fixtures
-  (`asciidoctorj_*_test.go`).
+  (`internal/asciidoctorj`).
 
 ```sh
 go test ./...
@@ -98,7 +98,10 @@ go test ./...
 
 | Path | What it holds |
 |---|---|
-| `*.go` | the Go API (package `asciidoctor`) |
+| `*.go` | the Go API (package `asciidoctor`) and its runnable examples |
+| `internal/apitest` | tests of the API, including the corpus converted through it |
+| `internal/asciidoctorj` | AsciidoctorJ's tests, ported |
+| `internal/testutil` | helpers shared by those tests |
 | `cmd/asciidoctor` | the command line |
 | `internal/runtime` | boots rbgo with Asciidoctor; source patches; Go-backed Ruby libraries |
 | `internal/bridge` | calls between Go and Ruby |

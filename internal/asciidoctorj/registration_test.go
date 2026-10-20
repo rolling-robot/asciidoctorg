@@ -1,4 +1,4 @@
-package asciidoctor_test
+package asciidoctorj
 
 import (
 	"strings"

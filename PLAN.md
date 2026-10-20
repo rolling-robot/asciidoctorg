@@ -125,26 +125,20 @@ Each step ends with a commit, all tests green.
 9. **CLI, docs and distribution.** `cmd/asciidoctor` mirroring the Ruby CLI
    options, package docs with runnable examples, README, and a solution for
    `go get` consumers (who do not receive submodule contents).
-10. **Directory structure.** The module root holds 47 Go files: the public
-    API (about 22 files) and its tests, including 17 `asciidoctorj_*_test.go`
-    ports. Decide on a layout and move files out of the root. Points to settle:
-    - The import path users write is the root package; moving the API into a
-      subpackage (e.g. `.../asciidoctor/asciidoctor`) makes imports longer,
-      while splitting it into several public packages (`ast`, `extension`,
-      `converter`) needs the shared node and bridge types in an internal
-      package and type aliases or wrappers to avoid import cycles.
-    - The AsciidoctorJ ports could become an external test package in
-      `internal/asciidoctorj` (or `test/asciidoctorj`), as they use only the
-      public API; the same goes for `conformance_test.go` and the
-      example-style API tests.
-    - The test helpers (HTML queries, fixtures, HTTP proxy) would then live
-      with those tests rather than in the root.
-    - Group the remaining API files by area (conversion, AST, extensions,
-      converters, logging, CLI) and keep names consistent.
+10. **Directory structure.** Option A was chosen: the public API stays in
+    the root package (one import, like AsciidoctorJ's single entry point),
+    and its tests moved out of the root — the API tests to `internal/apitest`,
+    the AsciidoctorJ ports to `internal/asciidoctorj`, their shared helpers to
+    `internal/testutil`; only `example_test.go` stays, as examples must sit
+    with the package. Remaining: group the API files by area (conversion,
+    AST, extensions, converters, logging, CLI) with consistent names.
+    Splitting the API into public subpackages (`ast`, `extension`,
+    `converter`) is set aside: it needs the shared node and bridge types in
+    an internal package, with type aliases or wrappers to avoid import cycles.
 
 ## Status
 
-Steps 1–8 are complete. Step 9 is in progress: the `asciidoctor` command (`RunCLI`), package documentation, runnable examples and the README are done; the `go get` distribution remains. Step 10 (directory structure) is open.
+Steps 1–8 are complete. Step 9 is in progress: the `asciidoctor` command (`RunCLI`), package documentation, runnable examples and the README are done; the `go get` distribution remains. Step 10 (directory structure): the tests are moved out of the root; grouping the API files remains.
 
 - Corpus (step 2): 324 conversions byte-identical with MRI (output and log),
   including CodeRay-highlighted listings in 20 languages.
@@ -152,7 +146,7 @@ Steps 1–8 are complete. Step 9 is in progress: the `asciidoctor` command (`Run
   its reason in `internal/rubytest/exclusions_test.go` (spawning the `ruby`
   executable, the open-uri-cached gem, Rouge's monokai theme, a FIFO).
 - AsciidoctorJ (step 8): the document-processing test classes of
-  `asciidoctorj-core` are ported in `asciidoctorj_*_test.go`, on AsciidoctorJ's
+  `asciidoctorj-core` are ported in `internal/asciidoctorj`, on AsciidoctorJ's
   own fixtures. Java-specific variants (registration by class or class name,
   annotations, class loaders, GEM_PATH) map to the Go equivalents (registration
   by value, `RegisterSetup` for service loading) or are noted as having none.

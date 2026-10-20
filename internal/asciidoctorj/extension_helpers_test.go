@@ -1,4 +1,4 @@
-package asciidoctor_test
+package asciidoctorj
 
 import (
 	"fmt"
@@ -14,11 +14,11 @@ import (
 	"testing"
 
 	"github.com/asciidoctor-go/asciidoctor"
+	"github.com/asciidoctor-go/asciidoctor/internal/testutil"
 )
 
 // Go versions of the extensions in AsciidoctorJ's test suite
-// (org.asciidoctor.extension), shared by the asciidoctorj_*extension*_test.go
-// files.
+// (org.asciidoctor.extension), shared by the extension tests.
 
 // ajRubyClassURL is the URI the sample-with-uri-include.ad fixture includes,
 // and ajRubyClassPrefix the start of the file served at it.
@@ -52,7 +52,7 @@ func ajProxy(t *testing.T, routes map[string]string) *http.Client {
 // ajRubyClassProxy serves AsciidoctorJ's asciidoctorclass.rb at ajRubyClassURL.
 func ajRubyClassProxy(t *testing.T) *http.Client {
 	return ajProxy(t, map[string]string{
-		ajRubyClassURL: "third_party/asciidoctorj/asciidoctorj-core/src/main/resources/org/asciidoctor/jruby/internal/asciidoctorclass.rb",
+		ajRubyClassURL: testutil.Path("third_party/asciidoctorj/asciidoctorj-core/src/main/resources/org/asciidoctor/jruby/internal/asciidoctorclass.rb"),
 	})
 }
 

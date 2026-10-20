@@ -1,4 +1,6 @@
-package asciidoctor_test
+// Package asciidoctorj holds the tests of AsciidoctorJ (asciidoctorj-core),
+// ported to the Go API and run on AsciidoctorJ's own fixtures.
+package asciidoctorj
 
 import (
 	"io/fs"
@@ -8,14 +10,17 @@ import (
 	"testing"
 
 	nokogiri "github.com/go-nokogiri/nokogiri"
+
+	"github.com/asciidoctor-go/asciidoctor"
+	"github.com/asciidoctor-go/asciidoctor/internal/testutil"
 )
 
-// Helpers for the tests ported from AsciidoctorJ (asciidoctorj_*_test.go).
+// Helpers for the tests ported from AsciidoctorJ.
 // The originals query the output with Jsoup; these parse it with go-nokogiri,
 // which parses HTML by the HTML5 algorithm as Jsoup does.
 
 // ajResourceDir is AsciidoctorJ's test resource directory.
-const ajResourceDir = "third_party/asciidoctorj/asciidoctorj-core/src/test/resources"
+var ajResourceDir = testutil.Path("third_party/asciidoctorj/asciidoctorj-core/src/test/resources")
 
 // ajResources copies AsciidoctorJ's test resources to a temporary directory
 // and returns it, so tests that write next to their input (as AsciidoctorJ's
@@ -182,4 +187,29 @@ func attr(n *nokogiri.Node, name string) string {
 	}
 	v, _ := n.Get(name)
 	return v
+}
+
+// The helpers shared with the other test packages, from internal/testutil.
+
+func TestMain(m *testing.M) { testutil.Main(m) }
+
+func instance(t *testing.T) *asciidoctor.Asciidoctor { t.Helper(); return testutil.Instance(t) }
+
+func newInstance(t *testing.T, opts ...asciidoctor.Option) *asciidoctor.Asciidoctor {
+	t.Helper()
+	return testutil.NewInstance(t, opts...)
+}
+
+func mustConvert(t *testing.T, a *asciidoctor.Asciidoctor, src string, o *asciidoctor.Options) string {
+	t.Helper()
+	return testutil.MustConvert(t, a, src, o)
+}
+
+func writeFile(t *testing.T, path, content string) { t.Helper(); testutil.WriteFile(t, path, content) }
+
+func readFile(t *testing.T, path string) string { t.Helper(); return testutil.ReadFile(t, path) }
+
+func eqv[T any](t *testing.T, what string, got, want T) {
+	t.Helper()
+	testutil.Equal(t, what, got, want)
 }
