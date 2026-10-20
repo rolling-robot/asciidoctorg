@@ -1,9 +1,9 @@
 package runtime
 
 import (
+	ruby "github.com/go-embedded-ruby/ruby"
 	haml "github.com/go-ruby-haml/haml"
 	slim "github.com/go-ruby-slim/slim"
-	ruby "github.com/go-embedded-ruby/ruby"
 )
 
 // defineTemplateCompiler exposes the Haml and Slim compilers to the Tilt shim
