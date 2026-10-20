@@ -125,10 +125,26 @@ Each step ends with a commit, all tests green.
 9. **CLI, docs and distribution.** `cmd/asciidoctor` mirroring the Ruby CLI
    options, package docs with runnable examples, README, and a solution for
    `go get` consumers (who do not receive submodule contents).
+10. **Directory structure.** The module root holds 47 Go files: the public
+    API (about 22 files) and its tests, including 17 `asciidoctorj_*_test.go`
+    ports. Decide on a layout and move files out of the root. Points to settle:
+    - The import path users write is the root package; moving the API into a
+      subpackage (e.g. `.../asciidoctor/asciidoctor`) makes imports longer,
+      while splitting it into several public packages (`ast`, `extension`,
+      `converter`) needs the shared node and bridge types in an internal
+      package and type aliases or wrappers to avoid import cycles.
+    - The AsciidoctorJ ports could become an external test package in
+      `internal/asciidoctorj` (or `test/asciidoctorj`), as they use only the
+      public API; the same goes for `conformance_test.go` and the
+      example-style API tests.
+    - The test helpers (HTML queries, fixtures, HTTP proxy) would then live
+      with those tests rather than in the root.
+    - Group the remaining API files by area (conversion, AST, extensions,
+      converters, logging, CLI) and keep names consistent.
 
 ## Status
 
-Steps 1–8 are complete; step 9 is next.
+Steps 1–8 are complete. Step 9 is in progress: the `asciidoctor` command (`RunCLI`), package documentation, runnable examples and the README are done; the `go get` distribution remains. Step 10 (directory structure) is open.
 
 - Corpus (step 2): 324 conversions byte-identical with MRI (output and log),
   including CodeRay-highlighted listings in 20 languages.
