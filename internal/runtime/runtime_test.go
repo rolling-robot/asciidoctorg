@@ -237,6 +237,13 @@ s = StringScanner.new "abc def"
 [s.rest?, s.restsize, s.peep(2), s.peek_byte, s.exist?(/d/), s.pos, s.search_full(/c/, true, true), s.pos,
  s.scan_full(/ d/, false, false), s.pos, s.getbyte, s.scan(/.*/), s.rest?]`,
 			`[true, 7, "ab", 97, 5, 0, "abc", 3, 2, 3, " ", "def", false]`},
+		{"file times are local", `
+f = Asciidoctor::LIB_DIR + '/asciidoctor.rb'
+times = [File.mtime(f), File.atime(f), File.ctime(f), File.stat(f).mtime, File.open(f, &:mtime)]
+[times.map {|t| t.utc_offset == Time.now.utc_offset }.uniq, File.mtime(f) == File.stat(f).mtime]`, "[[true], true]"},
+		{"OptionParser help after a banner ending with a newline", `
+o = OptionParser.new {|opts| opts.banner = %(Usage: x\n\n); opts.on('-b', 'set') {} }
+[o.help, o.to_s, o.banner]`, `["Usage: x\n\n    -b                               set\n", "Usage: x\n\n    -b                               set\n", "Usage: x\n\n"]`},
 		{"File#mtime", `File.open(Asciidoctor::LIB_DIR + '/asciidoctor.rb') {|f| f.mtime == File.mtime(f.path) && Time === f.mtime }`, "true"},
 		{"Module#=== with extend", `
 m = Module.new

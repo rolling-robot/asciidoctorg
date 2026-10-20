@@ -256,6 +256,30 @@ class File
   end
 end
 
+# rbgo returns file times in UTC, while MRI returns them in local time (which
+# shows in Asciidoctor's docdate, doctime and "Last updated" footer). The
+# File::Stat methods and the File class methods convert them; the class
+# methods are wrapped through aliases, as super from a module prepended to a
+# singleton class fails in rbgo (docs/rbgo-gaps.md).
+module AsciidoctorGoLocalFileTimes
+  %i(mtime atime ctime).each do |name|
+    define_method name do |*args|
+      time = super(*args)
+      time.utc? ? time.localtime : time
+    end
+  end
+end
+File::Stat.prepend AsciidoctorGoLocalFileTimes
+class << File
+  %i(mtime atime ctime).each do |name|
+    alias_method :"__agox_utc_#{name}", name
+    define_method name do |path|
+      time = __send__ :"__agox_utc_#{name}", path
+      time.utc? ? time.localtime : time
+    end
+  end
+end
+
 # rbgo's Module#=== ignores modules mixed into an object's singleton class with
 # Object#extend, although is_a? honors them. Asciidoctor relies on this to tag
 # strings (e.g., Parser::ListContinuationMarker). Rather than slow down every
@@ -448,3 +472,22 @@ end)
   end
   ::OptionParser.prepend AsciidoctorGoOptionParserCompat
 end
+
+# rbgo's OptionParser#help always puts a newline after the banner; Ruby's
+# first removes one trailing newline from it (banner.sub(/\n?\z/, "\n")), so
+# a banner that ends with a newline gets an extra blank line in rbgo.
+module AsciidoctorGoOptionParserHelp
+  def help
+    original = banner
+    return super unless original.end_with? "\n"
+    self.banner = original.chomp
+    begin
+      super
+    ensure
+      self.banner = original
+    end
+  end
+
+  def to_s = help
+end
+::OptionParser.prepend AsciidoctorGoOptionParserHelp if ::OptionParser.new {|o| o.banner = %(x\n) }.help == %(x\n\n)
