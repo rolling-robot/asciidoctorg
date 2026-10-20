@@ -13,7 +13,7 @@ module AsciidoctorGoTestLibraries
   }.freeze
   # Libraries the helper requires unconditionally that are not available;
   # tests that depend on them are excluded by the Go harness.
-  IGNORED = %w(rouge simplecov).freeze
+  IGNORED = %w(simplecov).freeze
   LOADED = {}
 
   private

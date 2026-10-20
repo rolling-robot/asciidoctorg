@@ -31,6 +31,13 @@ module CorpusConvert
     third_party/asciidoctorj/asciidoctorj-cli/src/**/*.adoc
   ).freeze
 
+  # Documents left out of the corpus, with the reason.
+  EXCLUDED = {
+    'third_party/asciidoctorj/asciidoctorj-distribution/src/test/resources/code-sample.adoc' =>
+      'sets source-highlighter: rouge, and the MRI oracle has no rouge gem (Rouge output is ' \
+      'checked by the Rouge tests of syntax_highlighter_test.rb instead)',
+  }.freeze
+
   # Documents converted with additional backends besides html5.
   EXTRA_BACKENDS = {
     'docbook5' => %r{\A(testdata/corpus/complex/[^/]+|rubysrc/asciidoctor/test/fixtures/[^/]+)\.adoc\z},
@@ -40,7 +47,7 @@ module CorpusConvert
   # Returns [[relative path, backend], ...] for every corpus document below the
   # repository root.
   def self.manifest root
-    (SOURCES.flat_map {|glob| Dir.glob glob, base: root }).uniq.sort.flat_map do |rel|
+    (SOURCES.flat_map {|glob| Dir.glob glob, base: root }).uniq.sort.reject {|rel| EXCLUDED.key? rel }.flat_map do |rel|
       [[rel, 'html5']] + (EXTRA_BACKENDS.select {|_, rx| rx.match? rel }.map {|backend, _| [rel, backend] })
     end
   end

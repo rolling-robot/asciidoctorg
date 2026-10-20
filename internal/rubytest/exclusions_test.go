@@ -6,14 +6,15 @@ const (
 		"an embedded runtime has no Ruby executable"
 	needsOpenURICached = "requires the open-uri-cached gem (cache-uri attribute), which is not available"
 	needsCodeRay       = "requires the coderay gem (source-highlighter=coderay), which is not available"
-	needsRouge         = "requires the rouge gem: the file calls Rouge.version while it loads, and rbgo " +
-		"has no Rouge that Asciidoctor's adapter can use"
+	needsMonokai       = "uses Rouge's monokai theme; go-rouge bundles only the base16, github and " +
+		"thankful_eyes themes"
 	fifoOpenBlocks = "rbgo holds the interpreter lock while opening a FIFO for reading, so the " +
 		"writer thread never runs (docs/rbgo-gaps.md)"
 )
 
 // exclusions lists the tests of Asciidoctor's suite that do not run here, by
-// test file, then "Class#test_method" ("*" for the whole file), with the
+// test file, then "Class#test_method" ("Class#*" for every test of a class,
+// "*" for the whole file), with the
 // reason. A test listed here is reported as skipped with its reason; every
 // other test must pass.
 var exclusions = map[string]map[string]string{
@@ -35,17 +36,24 @@ var exclusions = map[string]map[string]string{
 	"logger_test": {
 		"Minitest::Test::TestLogger::TestLogger#test_should_extend_Logger_from_logger_gem_if_gem_is_loaded": spawnsRuby,
 	},
+	"syntax_highlighter_test": {
+		"Minitest::Test::TestSyntaxHighlighter::TestCodeRay#*":                                                                                                needsCodeRay,
+		"Minitest::Test::TestSyntaxHighlighter#test_should_highlight_source_inside_AsciiDoc_table_cell_if_source_highlighter_attribute_is_set":                needsCodeRay,
+		"Minitest::Test::TestSyntaxHighlighter#test_should_read_source_language_from_source_language_document_attribute_if_not_specified_on_source_block":     needsCodeRay,
+		"Minitest::Test::TestSyntaxHighlighter::TestRouge#test_should_not_fail_to_load_rouge_if_the_Asciidoctor_module_is_included_into_the_global_namespace": spawnsRuby,
+		"Minitest::Test::TestSyntaxHighlighter::TestRouge#test_should_read_stylesheet_for_specified_style":                                                    needsMonokai,
+	},
 	"substitutions_test": {
 		"Minitest::Test::TestSubstitutions::TestResolveSubs#test_should_resolve_specialcharacters_sub_as_highlight_for_source_block_when_source_highlighter_is_coderay": needsCodeRay,
-	},
-	"syntax_highlighter_test": {
-		"*": needsRouge,
 	},
 }
 
 func excluded(file, class, method string) (string, bool) {
 	if m, ok := exclusions[file]; ok {
 		if reason, ok := m[class+"#"+method]; ok {
+			return reason, true
+		}
+		if reason, ok := m[class+"#*"]; ok {
 			return reason, true
 		}
 		if reason, ok := m["*"]; ok {

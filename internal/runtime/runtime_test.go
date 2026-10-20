@@ -314,26 +314,21 @@ func TestCharLiteralConstants(t *testing.T) {
 	}
 }
 
-// rbgo's native Rouge is too incomplete for Asciidoctor's adapter, so it is
-// reported as a missing gem; Asciidoctor then degrades exactly as MRI does
-// without the rouge gem.
-func TestRougeUnavailable(t *testing.T) {
+// Rouge is the go-rouge-backed shim: Asciidoctor's Rouge adapter highlights
+// with it, including RougeExt's line numbering.
+func TestRougeShim(t *testing.T) {
 	rt := bootShared(t)
-	got := eval(t, rt, `
-r = [defined?(::Rouge)]
-begin
-  require 'rouge'
-rescue LoadError => e
-  r << e.message << e.path
-end
-logger = Asciidoctor::MemoryLogger.new
-old, Asciidoctor::LoggerManager.logger = Asciidoctor::LoggerManager.logger, logger
-html = Asciidoctor.convert %([source,ruby]\n----\nputs 1\n----), attributes: { 'source-highlighter' => 'rouge' }
-Asciidoctor::LoggerManager.logger = old
-r << (html.include? '<pre class="rouge highlight"><code data-lang="ruby">puts 1</code></pre>') << logger.messages`)
-	want := `[nil, "cannot load such file -- rouge", "rouge", true, [{severity: :WARN, message: "optional gem 'rouge' is not available. Functionality disabled."}]]`
-	if got != want {
-		t.Fatalf("got %s\nwant %s", got, want)
+	html := eval(t, rt, `Asciidoctor.convert %([source%linenums,ruby]\n----\nputs 'hi'\n----), attributes: { 'source-highlighter' => 'rouge', 'rouge-css' => 'class' }`)
+	for _, want := range []string{`<span class=\"nb\">puts</span>`, `<span class=\"s1\">'hi'</span>`, `<table class=\"linenotable\">`} {
+		if !strings.Contains(html, want) {
+			t.Errorf("missing %s in %s", want, html)
+		}
+	}
+	if got := eval(t, rt, `[Rouge::Lexer.find('rb').tag, Rouge::Lexer.find_fancy('php?start_inline=true').options, Rouge::Lexer.find('nope'), Rouge::Theme.find('github').base_style.keys.sort, (Rouge::Theme.find('github').render scope: 'pre.rouge').start_with?('pre.rouge table td { padding: 5px; }')]`); got != `["ruby", {"start_inline" => "true"}, nil, [:bg, :fg], true]` {
+		t.Errorf("api: %s", got)
+	}
+	if got := eval(t, rt, `Rouge::Lexer.find_fancy('console?prompt=$>').lex("$> ls\nout\n").map {|t, v| [t.qualname, v] }`); !strings.HasPrefix(got, `[["Generic.Prompt", "$>"]`) || !strings.Contains(got, `["Generic.Output", "out\n"]`) {
+		t.Errorf("console: %s", got)
 	}
 }
 

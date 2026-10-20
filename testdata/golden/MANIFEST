@@ -205,7 +205,6 @@ third_party/asciidoctorj/asciidoctorj-core/src/test/resources/simple.adoc html5
 third_party/asciidoctorj/asciidoctorj-core/src/test/resources/sourcelocation.adoc html5
 third_party/asciidoctorj/asciidoctorj-core/src/test/resources/src/documents/_sample.adoc html5
 third_party/asciidoctorj/asciidoctorj-core/src/test/resources/src/documents/sample.adoc html5
-third_party/asciidoctorj/asciidoctorj-distribution/src/test/resources/code-sample.adoc html5
 third_party/asciidoctorj/asciidoctorj-distribution/src/test/resources/empty-table.adoc html5
 third_party/asciidoctorj/asciidoctorj-distribution/src/test/resources/image-sample.adoc html5
 third_party/asciidoctorj/asciidoctorj-distribution/src/test/resources/sample.adoc html5

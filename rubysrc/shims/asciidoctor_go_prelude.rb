@@ -14,17 +14,18 @@ end
 # Libraries whose native rbgo implementation is replaced. rbgo resolves its
 # native libraries before $LOAD_PATH, so require is intercepted for these names:
 # - SHIMS maps a library to a shim in this directory, loaded (once) instead.
-# - UNAVAILABLE lists native libraries too incomplete for Asciidoctor to use.
-#   Requiring one raises the LoadError of a missing gem, so Asciidoctor degrades
-#   exactly as it does on MRI when the optional gem is not installed.
+# - UNAVAILABLE lists native libraries too incomplete for Asciidoctor to use
+#   and not replaced. Requiring one raises the LoadError of a missing gem, so
+#   Asciidoctor degrades exactly as it does on MRI when the gem is not installed.
 module AsciidoctorGoReplacedLibraries
   SHIMS = {
     'logger' => (File.join __dir__, 'logger.rb'),
     'open-uri' => (File.join __dir__, 'open-uri.rb'),
     'tilt' => (File.join __dir__, 'tilt.rb'),
+    'rouge' => (File.join __dir__, 'rouge.rb'),
     'slim/include' => (File.join __dir__, 'slim_include.rb'),
   }.freeze
-  UNAVAILABLE = %w(rouge).freeze
+  UNAVAILABLE = %w().freeze
   LOADED = {}
 
   private

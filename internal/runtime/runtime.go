@@ -68,6 +68,9 @@ func Boot(cfg Config) (*Runtime, error) {
 	if err := defineTemplateCompiler(in); err != nil {
 		return nil, err
 	}
+	if err := defineRouge(in); err != nil {
+		return nil, err
+	}
 	if _, err := in.Eval(bootScript, "(asciidoctor-go boot)", 1); err != nil {
 		return nil, err
 	}
