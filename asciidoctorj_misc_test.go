@@ -5,6 +5,7 @@ import (
 	"io"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/asciidoctor-go/asciidoctor"
@@ -136,4 +137,51 @@ func TestAJSectionNumberedByDoctype(t *testing.T) {
 			eqv(t, doctype+" numbered", s.IsNumbered(), sectnums)
 		}
 	}
+}
+
+// Ported from AsciidoctorJ's WhenSourceHighlightingIsUsed.
+
+const ajJavaSource = "[source,java]\n----\npublic class Main {\n  public static void main(String[] args) {\n    println(\"Hello World\")\n  }\n}\n----\n"
+
+// go-rouge (v0.3.0) has no Java lexer, so the Rouge case also runs on Ruby
+// source, which it lexes.
+const ajRubySource = "[source,ruby]\n----\ndef greet(name)\n  puts \"Hello, #{name}\"\nend\n----\n"
+
+func TestAJSourceHighlighting(t *testing.T) {
+	for _, tc := range []struct {
+		name, highlighter, source, selector, css, skip string
+	}{
+		{"rouge java", "rouge", ajJavaSource, "pre.rouge span.kd", "pre.rouge .kd",
+			"go-rouge v0.3.0 has no Java lexer"},
+		{"rouge ruby", "rouge", ajRubySource, "pre.rouge span.k", "pre.rouge .k", ""},
+		{"coderay java", "coderay", ajJavaSource, "pre.CodeRay span.class", ".CodeRay .class", ""},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			if tc.skip != "" {
+				t.Skip(tc.skip)
+			}
+			out := mustConvert(t, instance(t), tc.source, &asciidoctor.Options{
+				Standalone: asciidoctor.Bool(true), Safe: asciidoctor.SafeModeUnsafe,
+				Attributes: asciidoctor.Attributes{}.SourceHighlighter(tc.highlighter),
+			})
+			if len(parseHTML(t, out).Select(tc.selector)) == 0 {
+				t.Errorf("no %s elements", tc.selector)
+			}
+			if !strings.Contains(out, tc.css) {
+				t.Errorf("stylesheet lacks %s", tc.css)
+			}
+		})
+	}
+}
+
+// Ported from AsciidoctorJ's ContextChangeTest.
+func TestAJContextChange(t *testing.T) {
+	d := mustLoad(t, "= Document Title\n\n== Section A\n\n. This it item 1 in an ordered list\n\n"+
+		". This is item 2 in an ordered list\n\n. This is item 3 in and ordered list\n\n",
+		&asciidoctor.Options{Attributes: asciidoctor.Attributes{}.SectionNumbers(false)})
+	eqv(t, "blocks", len(d.Blocks()), 1)
+	list := d.Blocks()[0].Blocks()[0]
+	eqv(t, "context", list.Context(), "olist")
+	list.SetContext("colist")
+	eqv(t, "changed context", list.Context(), "colist")
 }

@@ -65,6 +65,9 @@ func Boot(cfg Config) (*Runtime, error) {
 	if err := in.Set("__agox_glue_dir", glueDir(root)); err != nil {
 		return nil, err
 	}
+	if err := in.Set("__agox_coderay_dir", coderayLibDir(root)); err != nil {
+		return nil, err
+	}
 	if err := defineTemplateCompiler(in); err != nil {
 		return nil, err
 	}
@@ -82,6 +85,7 @@ $LOAD_PATH.unshift __agox_shim_dir
 require 'asciidoctor_go_prelude'
 $LOAD_PATH.unshift __agox_lib_dir
 $LOAD_PATH.push __agox_glue_dir
+$LOAD_PATH.push __agox_coderay_dir
 require 'asciidoctor'
 require 'asciidoctor/extensions'
 require 'asciidoctor_go_frame_local_match'

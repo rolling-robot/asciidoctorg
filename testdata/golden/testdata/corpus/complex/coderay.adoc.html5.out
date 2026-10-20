@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Asciidoctor 2.1.0.alpha.0">
+<title>Source Highlighting with CodeRay</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CNoto+Sans+Mono:400,700">
+<link rel="stylesheet" href="./asciidoctor.css">
+<link rel="stylesheet" href="./coderay-asciidoctor.css">
+</head>
+<body class="article">
+<div id="header">
+<h1>Source Highlighting with CodeRay</h1>
+</div>
+<div id="content">
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>Listings in the languages CodeRay scans, with the options Asciidoctor passes
+to it.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ruby_with_line_numbers_and_highlighted_lines">Ruby with line numbers and highlighted lines</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="ruby"><table class="CodeRay"><tr>
+  <td class="line-numbers"><pre>1
+<strong class="highlighted">2</strong>
+<strong class="highlighted">3</strong>
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre></td>
+  <td class="code"><pre><span class="keyword">module</span> <span class="class">Greeter</span>
+  <span class="comment"># Greets someone by name.</span>
+  <span class="keyword">def</span> <span class="predefined-constant">self</span>.<span class="function">greet</span>(name, <span class="key">punctuation</span>: <span class="string"><span class="delimiter">'</span><span class="content">!</span><span class="delimiter">'</span></span>)
+    message = <span class="string"><span class="delimiter">&quot;</span><span class="content">Hello, </span><span class="inline"><span class="inline-delimiter">#{</span>name<span class="inline-delimiter">}</span></span><span class="inline"><span class="inline-delimiter">#{</span>punctuation<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span>
+    puts message.upcase <span class="keyword">if</span> name =~ <span class="regexp"><span class="delimiter">/</span><span class="content">^[A-Z]</span><span class="delimiter">/</span></span>
+    <span class="instance-variable">@count</span> = (<span class="instance-variable">@count</span> || <span class="integer">0</span>) + <span class="integer">1</span>
+    <span class="global-variable">$stdout</span>.flush
+    <span class="symbol">:done</span>
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+data = <span class="string"><span class="delimiter">&lt;&lt;~EOS</span></span><span class="string"><span class="content">
+  heredoc </span><span class="inline"><span class="inline-delimiter">#{</span><span class="integer">1</span> + <span class="integer">1</span><span class="inline-delimiter">}</span></span><span class="delimiter">
+EOS</span></span>
+<span class="string"><span class="delimiter">%w(</span><span class="content">a b</span><span class="delimiter">)</span></span>.each_with_index {|w, i| p [w, i, <span class="integer">0x1f</span>, <span class="float">1.5e3</span>, <span class="integer">?c</span>] }</pre></td>
+</tr></table></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_java">Java</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="java"><span class="keyword">package</span> <span class="namespace">org.example</span>;
+
+<span class="keyword">import</span> <span class="include">java.util.List</span>;
+
+<span class="comment">/** A greeting. */</span>
+<span class="directive">public</span> <span class="type">class</span> <span class="class">Main</span> {
+  <span class="directive">private</span> <span class="directive">static</span> <span class="directive">final</span> <span class="type">int</span> LIMIT = <span class="hex">0x1F</span>;
+
+  <span class="annotation">@Override</span>
+  <span class="directive">public</span> <span class="predefined-type">String</span> toString() {
+    <span class="keyword">return</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">Main</span><span class="delimiter">&quot;</span></span> + LIMIT + <span class="string"><span class="delimiter">'</span><span class="content">c</span><span class="delimiter">'</span></span>;
+  }
+
+  <span class="directive">public</span> <span class="directive">static</span> <span class="type">void</span> main(<span class="predefined-type">String</span><span class="type">[]</span> args) {
+    <span class="predefined-type">List</span>&lt;<span class="predefined-type">String</span>&gt; names = <span class="predefined-type">List</span>.of(<span class="string"><span class="delimiter">&quot;</span><span class="content">a</span><span class="delimiter">&quot;</span></span>, <span class="string"><span class="delimiter">&quot;</span><span class="content">b</span><span class="delimiter">&quot;</span></span>);
+    <span class="keyword">for</span> (<span class="predefined-type">String</span> n : names) { <span class="predefined-type">System</span>.out.println(n); } <span class="comment">// done</span>
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_javascript_and_json">JavaScript and JSON</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="javascript"><span class="keyword">function</span> <span class="function">add</span>(a, b) { <span class="keyword">return</span> a + b * <span class="integer">2</span>; } <span class="comment">// comment</span>
+<span class="keyword">var</span> re = <span class="regexp"><span class="delimiter">/</span><span class="content">ab+c</span><span class="delimiter">/</span><span class="modifier">gi</span></span>;
+let s = <span class="error">`</span>template <span class="predefined">$</span>{add(<span class="integer">1</span>, <span class="integer">2</span>)}<span class="error">`</span>;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="json">{<span class="key"><span class="delimiter">&quot;</span><span class="content">name</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">doc</span><span class="delimiter">&quot;</span></span>, <span class="key"><span class="delimiter">&quot;</span><span class="content">tags</span><span class="delimiter">&quot;</span></span>: [<span class="integer">1</span>, <span class="float">2.5</span>, <span class="value">true</span>, <span class="value">null</span>], <span class="key"><span class="delimiter">&quot;</span><span class="content">nested</span><span class="delimiter">&quot;</span></span>: {<span class="key"><span class="delimiter">&quot;</span><span class="content">k</span><span class="delimiter">&quot;</span></span>: <span class="string"><span class="delimiter">&quot;</span><span class="content">vA</span><span class="delimiter">&quot;</span></span>}}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_markup_and_styles">Markup and styles</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="html"><span class="doctype">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="attribute-name">lang</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">en</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;body</span> <span class="attribute-name">class</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">x</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="tag">&lt;p&gt;</span><span class="entity">&amp;amp;</span> text<span class="tag">&lt;/p&gt;</span><span class="tag">&lt;script&gt;</span><span class="inline"><span class="keyword">var</span> a = <span class="integer">1</span>;</span><span class="tag">&lt;/script&gt;</span><span class="tag">&lt;/body&gt;</span><span class="tag">&lt;/html&gt;</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="xml"><span class="preprocessor">&lt;?xml version=&quot;1.0&quot;?&gt;</span>
+<span class="tag">&lt;root</span> <span class="attribute-name">a</span>=<span class="string"><span class="delimiter">&quot;</span><span class="content">1</span><span class="delimiter">&quot;</span></span><span class="tag">&gt;</span><span class="comment">&lt;!-- comment --&gt;</span><span class="tag">&lt;b&gt;</span>text<span class="tag">&lt;/b&gt;</span><span class="inline-delimiter">&lt;![CDATA[</span>raw<span class="inline-delimiter">]]&gt;</span><span class="tag">&lt;/root&gt;</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="css"><span class="tag">body</span> &gt; <span class="tag">p</span><span class="class">.note</span><span class="pseudo-class">:hover</span> { <span class="key">color</span>: <span class="color">#fff</span>; <span class="key">margin</span>: <span class="float">0</span> <span class="value">auto</span> <span class="important">!important</span>; }
+<span class="directive">@media</span> <span class="type">screen</span> <span class="error">a</span><span class="error">n</span><span class="error">d</span> (<span class="error">m</span><span class="error">a</span><span class="error">x</span><span class="error">-</span><span class="error">w</span><span class="error">i</span><span class="error">d</span><span class="error">t</span><span class="error">h</span>: <span class="float">600px</span>) { <span class="class">.x</span> { <span class="key">display</span>: <span class="value">none</span> } }</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_other_languages">Other languages</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span class="decorator">@decorator</span>
+<span class="keyword">class</span> <span class="class">A</span>(B):
+    <span class="docstring"><span class="delimiter">&quot;&quot;&quot;</span><span class="content">Docstring.</span><span class="delimiter">&quot;&quot;&quot;</span></span>
+    <span class="keyword">def</span> <span class="function">f</span>(<span class="predefined-constant">self</span>, x):
+        <span class="keyword">return</span> [i ** <span class="integer">2</span> <span class="keyword">for</span> i <span class="keyword">in</span> <span class="predefined">range</span>(x)]  <span class="comment"># squares</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="go"><span class="keyword">package</span> main
+
+<span class="keyword">import</span> <span class="string"><span class="delimiter">&quot;</span><span class="content">fmt</span><span class="delimiter">&quot;</span></span>
+
+<span class="keyword">func</span> main() { x := <span class="float">1.5e3</span>; fmt.Println(<span class="shell"><span class="delimiter">`</span><span class="content">raw</span><span class="delimiter">`</span></span>, x) }</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="sql"><span class="class">SELECT</span> a, <span class="predefined">COUNT</span>(*) <span class="keyword">FROM</span> t <span class="keyword">WHERE</span> b = <span class="string"><span class="delimiter">'</span><span class="content">x</span><span class="delimiter">'</span></span> <span class="keyword">AND</span> c &gt; <span class="integer">3</span> <span class="keyword">GROUP</span> <span class="keyword">BY</span> a; <span class="comment">-- count</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="yaml"><span class="key">key</span>: <span class="string"><span class="content">1</span></span>
+<span class="key">list</span>:
+  - <span class="string"><span class="content">item</span></span>
+  - <span class="string"><span class="content">'quoted'</span></span>
+<span class="key">block</span>: <span class="string"><span class="delimiter">|</span><span class="content">
+  text</span></span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="c"><span class="preprocessor">#include</span> <span class="include">&lt;stdio.h&gt;</span>
+<span class="predefined-type">int</span> main(<span class="directive">void</span>) { <span class="predefined-type">char</span> c = <span class="char">'\n'</span>; <span class="keyword">return</span> <span class="hex">0x1f</span>; <span class="comment">/* done */</span> }</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="php"><span class="inline-delimiter">&lt;?php</span>
+<span class="keyword">function</span> <span class="function">f</span>(<span class="local-variable">$a</span>) { <span class="keyword">return</span> <span class="local-variable">$a</span> . <span class="string"><span class="delimiter">'</span><span class="content">x</span><span class="delimiter">'</span></span>; } <span class="comment">// comment</span>
+<span class="inline-delimiter">?&gt;</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="diff"><span class="line head"><span class="head">--- </span><span class="filename">a/file</span></span>
+<span class="line head"><span class="head">+++ </span><span class="filename">b/file</span></span>
+<span class="line change"><span class="change">@@</span> -1,2 +1,2 <span class="change">@@</span></span>
+<span class="line delete"><span class="delete">-</span><span class="eyecatcher">old</span> line</span>
+<span class="line insert"><span class="insert">+</span><span class="eyecatcher">new</span> line</span>
+ context</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="clojure">(<span class="keyword">defn</span> <span class="function">f</span> [x] (<span class="keyword">+</span> x <span class="integer">1</span>)) <span class="comment">; comment</span></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="groovy"><span class="keyword">def</span> x = [<span class="integer">1</span>, <span class="integer">2</span>].collect { <span class="local-variable">it</span> * <span class="integer">2</span> }
+println <span class="string"><span class="delimiter">&quot;</span><span class="inline"><span class="inline-delimiter">${</span>x<span class="inline-delimiter">}</span></span><span class="delimiter">&quot;</span></span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_line_numbers_as_inline_numbers">Line numbers as inline numbers</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="ruby"><span class="line-numbers">10</span>puts <span class="string"><span class="delimiter">'</span><span class="content">ten</span><span class="delimiter">'</span></span>
+<span class="line-numbers">11</span>puts <span class="string"><span class="delimiter">'</span><span class="content">eleven</span><span class="delimiter">'</span></span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_unknown_language">Unknown language</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="nosuchlanguage">plain text stays plain</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div id="footer">
+<div id="footer-text">
+Last updated 2020-01-01 00:00:00 +0000
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,171 @@
+= Source Highlighting with CodeRay
+:source-highlighter: coderay
+:coderay-css: class
+
+Listings in the languages CodeRay scans, with the options Asciidoctor passes
+to it.
+
+== Ruby with line numbers and highlighted lines
+
+[source,ruby,linenums,highlight=2..3]
+----
+module Greeter
+  # Greets someone by name.
+  def self.greet(name, punctuation: '!')
+    message = "Hello, #{name}#{punctuation}"
+    puts message.upcase if name =~ /^[A-Z]/
+    @count = (@count || 0) + 1
+    $stdout.flush
+    :done
+  end
+end
+
+data = <<~EOS
+  heredoc #{1 + 1}
+EOS
+%w(a b).each_with_index {|w, i| p [w, i, 0x1f, 1.5e3, ?c] }
+----
+
+== Java
+
+[source,java]
+----
+package org.example;
+
+import java.util.List;
+
+/** A greeting. */
+public class Main {
+  private static final int LIMIT = 0x1F;
+
+  @Override
+  public String toString() {
+    return "Main" + LIMIT + 'c';
+  }
+
+  public static void main(String[] args) {
+    List<String> names = List.of("a", "b");
+    for (String n : names) { System.out.println(n); } // done
+  }
+}
+----
+
+== JavaScript and JSON
+
+[source,javascript]
+----
+function add(a, b) { return a + b * 2; } // comment
+var re = /ab+c/gi;
+let s = `template ${add(1, 2)}`;
+----
+
+[source,json]
+----
+{"name": "doc", "tags": [1, 2.5, true, null], "nested": {"k": "vA"}}
+----
+
+== Markup and styles
+
+[source,html]
+----
+<!DOCTYPE html>
+<html lang="en"><body class="x"><p>&amp; text</p><script>var a = 1;</script></body></html>
+----
+
+[source,xml]
+----
+<?xml version="1.0"?>
+<root a="1"><!-- comment --><b>text</b><![CDATA[raw]]></root>
+----
+
+[source,css]
+----
+body > p.note:hover { color: #fff; margin: 0 auto !important; }
+@media screen and (max-width: 600px) { .x { display: none } }
+----
+
+== Other languages
+
+[source,python]
+----
+@decorator
+class A(B):
+    """Docstring."""
+    def f(self, x):
+        return [i ** 2 for i in range(x)]  # squares
+----
+
+[source,go]
+----
+package main
+
+import "fmt"
+
+func main() { x := 1.5e3; fmt.Println(`raw`, x) }
+----
+
+[source,sql]
+----
+SELECT a, COUNT(*) FROM t WHERE b = 'x' AND c > 3 GROUP BY a; -- count
+----
+
+[source,yaml]
+----
+key: 1
+list:
+  - item
+  - 'quoted'
+block: |
+  text
+----
+
+[source,c]
+----
+#include <stdio.h>
+int main(void) { char c = '\n'; return 0x1f; /* done */ }
+----
+
+[source,php]
+----
+<?php
+function f($a) { return $a . 'x'; } // comment
+?>
+----
+
+[source,diff]
+----
+--- a/file
++++ b/file
+@@ -1,2 +1,2 @@
+-old line
++new line
+ context
+----
+
+[source,clojure]
+----
+(defn f [x] (+ x 1)) ; comment
+----
+
+[source,groovy]
+----
+def x = [1, 2].collect { it * 2 }
+println "${x}"
+----
+
+== Line numbers as inline numbers
+
+:coderay-linenums-mode: inline
+
+[source,ruby,linenums,start=10]
+----
+puts 'ten'
+puts 'eleven'
+----
+
+== Unknown language
+
+[source,nosuchlanguage]
+----
+plain text stays plain
+----

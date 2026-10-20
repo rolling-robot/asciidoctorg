@@ -107,11 +107,68 @@ var sourcePatches = []sourcePatch{
 			"skips the enclosing module. FILE_WRITE_MODE resolves to Asciidoctor::FILE_WRITE_MODE " +
 			"on MRI; the patch names it in full. It is the only such reference in Asciidoctor.",
 	},
+	{
+		File:  "coderay/lib/coderay/scanners/java.rb",
+		Old:   `Regexp.new('[[[:alpha:]]_][[[:alnum:]]_]*')`,
+		New:   `Regexp.new('[[:alpha:]_][[:alnum:]_]*')`,
+		Count: 1,
+		Reason: "rbgo's regexp engine matches nothing with a nested character class ([a[bc]]). The " +
+			"class [[[:alpha:]]_] is the union of [[:alpha:]] and _, which [[:alpha:]_] states flat.",
+	},
+	coderayIdentPatch("coderay/lib/coderay/scanners/ruby/patterns.rb"),
+	coderayIdentPatch("coderay/lib/coderay/scanners/php.rb"),
+	{
+		File: "coderay/lib/coderay/tokens.rb",
+		Old: `        when String
+          if size && part_size + content.size > size  # token must be cut`,
+		New: `        when String
+          while true
+          if size && part_size + content.size > size  # token must be cut`,
+		Count: 1,
+		Reason: "rbgo does not support the redo keyword. Tokens#split_into_parts redoes the body of " +
+			"its for loop to cut the rest of a String token; this patch and the next wrap that branch in " +
+			"a while loop that next repeats, which is equivalent: content is still a String, so the " +
+			"redone body would take the same branch.",
+	},
+	{
+		File: "coderay/lib/coderay/tokens.rb",
+		Old: `            redo unless content.empty?
+          else
+            part << content << item
+            part_size += content.size
+          end
+          content = nil`,
+		New: `            next unless content.empty?
+          else
+            part << content << item
+            part_size += content.size
+          end
+          break
+          end
+          content = nil`,
+		Count:  1,
+		Reason: "See the previous patch.",
+	},
 	charLiteralPatch("asciidoctor/lib/asciidoctor/substitutors.rb", "CAN", `\u0018`),
 	charLiteralPatch("asciidoctor/lib/asciidoctor/substitutors.rb", "DEL", `\u007f`),
 	charLiteralPatch("asciidoctor/lib/asciidoctor/substitutors.rb", "PASS_START", `\u0096`),
 	charLiteralPatch("asciidoctor/lib/asciidoctor/substitutors.rb", "PASS_END", `\u0097`),
 	charLiteralPatch("asciidoctor/lib/asciidoctor/converter/manpage.rb", "ESC", `\u001b`),
+}
+
+// coderayIdentPatch rewrites CodeRay's identifier pattern, which allows
+// non-ASCII characters through a nested negated class, [[:alpha:]_[^\0-\177]].
+// rbgo's regexp engine matches nothing with a nested class, and rbgo's
+// StringScanner mis-reads octal escapes in a class; the alternation of the
+// flat class and the hex-escaped negated class matches the same characters.
+func coderayIdentPatch(file string) sourcePatch {
+	return sourcePatch{
+		File:   file,
+		Old:    `Regexp.new('[[:alpha:]_[^\0-\177]][[:alnum:]_[^\0-\177]]*')`,
+		New:    `Regexp.new('(?:[[:alpha:]_]|[^\x00-\x7f])(?:[[:alnum:]_]|[^\x00-\x7f])*')`,
+		Count:  1,
+		Reason: "rbgo cannot match nested character classes or octal escapes in a StringScanner class; see coderayIdentPatch.",
+	}
 }
 
 // charLiteralPatch rewrites the constant assignment `NAME = ?<escape>` to the
@@ -147,8 +204,10 @@ func applyPatches(file string, content []byte) ([]byte, error) {
 	return []byte(src), nil
 }
 
-// PatchTree applies the source patches to an Asciidoctor source tree on disk
-// (a directory with lib/), such as a copy of the asciidoctor submodule.
+// PatchTree applies the source patches for Asciidoctor to an Asciidoctor
+// source tree on disk (a directory with lib/), such as a copy of the
+// asciidoctor submodule. Patches to other embedded trees (CodeRay) do not
+// apply to it.
 func PatchTree(asciidoctorDir string) error {
 	done := map[string]bool{}
 	for _, p := range sourcePatches {
@@ -158,7 +217,7 @@ func PatchTree(asciidoctorDir string) error {
 		done[p.File] = true
 		rel, ok := strings.CutPrefix(p.File, "asciidoctor/")
 		if !ok {
-			return fmt.Errorf("asciidoctor-go: patch for %s is outside the asciidoctor tree", p.File)
+			continue
 		}
 		path := filepath.Join(asciidoctorDir, filepath.FromSlash(rel))
 		src, err := os.ReadFile(path)

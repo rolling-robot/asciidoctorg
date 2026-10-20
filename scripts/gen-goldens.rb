@@ -12,6 +12,8 @@ abort 'gen-goldens.rb must run on MRI (the oracle)' unless RUBY_ENGINE == 'ruby'
 
 repo = File.expand_path '..', __dir__
 $LOAD_PATH.unshift File.join repo, 'rubysrc/asciidoctor/lib'
+# the CodeRay version asciidoctor-go embeds, for the coderay source highlighter
+$LOAD_PATH.unshift File.join repo, 'rubysrc/coderay/lib'
 require 'asciidoctor'
 require 'fileutils'
 require File.join repo, 'testdata/corpus/convert.rb'

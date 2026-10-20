@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?asciidoc-toc?>
+<?asciidoc-numbered?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0" xml:lang="en">
+<info>
+<title>CodeRay with Inline Styles</title>
+<date>2020-01-01</date>
+</info>
+<programlisting language="ruby" linenumbering="numbered">def greet(name) = puts("Hello, #{name}!")
+greet 'world' # call</programlisting>
+<programlisting language="java" linenumbering="unnumbered">public class A { int x = 1; }</programlisting>
+</article>

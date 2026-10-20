@@ -122,5 +122,8 @@ func Materialize(parent string) (string, error) {
 func libDir(root string) string {
 	return filepath.Join(root, filepath.FromSlash(path.Join("asciidoctor", "lib")))
 }
+func coderayLibDir(root string) string {
+	return filepath.Join(root, filepath.FromSlash(path.Join("coderay", "lib")))
+}
 func shimDir(root string) string { return filepath.Join(root, "shims") }
 func glueDir(root string) string { return filepath.Join(root, "glue") }

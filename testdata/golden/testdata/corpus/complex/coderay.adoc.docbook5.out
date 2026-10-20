@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?asciidoc-toc?>
+<?asciidoc-numbered?>
+<article xmlns="http://docbook.org/ns/docbook" xmlns:xl="http://www.w3.org/1999/xlink" version="5.0" xml:lang="en">
+<info>
+<title>Source Highlighting with CodeRay</title>
+<date>2020-01-01</date>
+</info>
+<simpara>Listings in the languages CodeRay scans, with the options Asciidoctor passes
+to it.</simpara>
+<section xml:id="_ruby_with_line_numbers_and_highlighted_lines">
+<title>Ruby with line numbers and highlighted lines</title>
+<programlisting language="ruby" linenumbering="numbered">module Greeter
+  # Greets someone by name.
+  def self.greet(name, punctuation: '!')
+    message = "Hello, #{name}#{punctuation}"
+    puts message.upcase if name =~ /^[A-Z]/
+    @count = (@count || 0) + 1
+    $stdout.flush
+    :done
+  end
+end
+
+data = &lt;&lt;~EOS
+  heredoc #{1 + 1}
+EOS
+%w(a b).each_with_index {|w, i| p [w, i, 0x1f, 1.5e3, ?c] }</programlisting>
+</section>
+<section xml:id="_java">
+<title>Java</title>
+<programlisting language="java" linenumbering="unnumbered">package org.example;
+
+import java.util.List;
+
+/** A greeting. */
+public class Main {
+  private static final int LIMIT = 0x1F;
+
+  @Override
+  public String toString() {
+    return "Main" + LIMIT + 'c';
+  }
+
+  public static void main(String[] args) {
+    List&lt;String&gt; names = List.of("a", "b");
+    for (String n : names) { System.out.println(n); } // done
+  }
+}</programlisting>
+</section>
+<section xml:id="_javascript_and_json">
+<title>JavaScript and JSON</title>
+<programlisting language="javascript" linenumbering="unnumbered">function add(a, b) { return a + b * 2; } // comment
+var re = /ab+c/gi;
+let s = `template ${add(1, 2)}`;</programlisting>
+<programlisting language="json" linenumbering="unnumbered">{"name": "doc", "tags": [1, 2.5, true, null], "nested": {"k": "vA"}}</programlisting>
+</section>
+<section xml:id="_markup_and_styles">
+<title>Markup and styles</title>
+<programlisting language="html" linenumbering="unnumbered">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;&lt;body class="x"&gt;&lt;p&gt;&amp;amp; text&lt;/p&gt;&lt;script&gt;var a = 1;&lt;/script&gt;&lt;/body&gt;&lt;/html&gt;</programlisting>
+<programlisting language="xml" linenumbering="unnumbered">&lt;?xml version="1.0"?&gt;
+&lt;root a="1"&gt;&lt;!-- comment --&gt;&lt;b&gt;text&lt;/b&gt;&lt;![CDATA[raw]]&gt;&lt;/root&gt;</programlisting>
+<programlisting language="css" linenumbering="unnumbered">body &gt; p.note:hover { color: #fff; margin: 0 auto !important; }
+@media screen and (max-width: 600px) { .x { display: none } }</programlisting>
+</section>
+<section xml:id="_other_languages">
+<title>Other languages</title>
+<programlisting language="python" linenumbering="unnumbered">@decorator
+class A(B):
+    """Docstring."""
+    def f(self, x):
+        return [i ** 2 for i in range(x)]  # squares</programlisting>
+<programlisting language="go" linenumbering="unnumbered">package main
+
+import "fmt"
+
+func main() { x := 1.5e3; fmt.Println(`raw`, x) }</programlisting>
+<programlisting language="sql" linenumbering="unnumbered">SELECT a, COUNT(*) FROM t WHERE b = 'x' AND c &gt; 3 GROUP BY a; -- count</programlisting>
+<programlisting language="yaml" linenumbering="unnumbered">key: 1
+list:
+  - item
+  - 'quoted'
+block: |
+  text</programlisting>
+<programlisting language="c" linenumbering="unnumbered">#include &lt;stdio.h&gt;
+int main(void) { char c = '\n'; return 0x1f; /* done */ }</programlisting>
+<programlisting language="php" linenumbering="unnumbered">&lt;?php
+function f($a) { return $a . 'x'; } // comment
+?&gt;</programlisting>
+<programlisting language="diff" linenumbering="unnumbered">--- a/file
++++ b/file
+@@ -1,2 +1,2 @@
+-old line
++new line
+ context</programlisting>
+<programlisting language="clojure" linenumbering="unnumbered">(defn f [x] (+ x 1)) ; comment</programlisting>
+<programlisting language="groovy" linenumbering="unnumbered">def x = [1, 2].collect { it * 2 }
+println "${x}"</programlisting>
+</section>
+<section xml:id="_line_numbers_as_inline_numbers">
+<title>Line numbers as inline numbers</title>
+<programlisting language="ruby" linenumbering="numbered" startinglinenumber="10">puts 'ten'
+puts 'eleven'</programlisting>
+</section>
+<section xml:id="_unknown_language">
+<title>Unknown language</title>
+<programlisting language="nosuchlanguage" linenumbering="unnumbered">plain text stays plain</programlisting>
+</section>
+</article>

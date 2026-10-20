@@ -1,0 +1,14 @@
+= CodeRay with Inline Styles
+:source-highlighter: coderay
+:coderay-css: style
+
+[source,ruby,linenums]
+----
+def greet(name) = puts("Hello, #{name}!")
+greet 'world' # call
+----
+
+[source,java,highlight=1]
+----
+public class A { int x = 1; }
+----

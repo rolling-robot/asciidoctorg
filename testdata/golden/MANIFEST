@@ -165,6 +165,10 @@ testdata/corpus/complex/attributes-and-conditionals.adoc html5
 testdata/corpus/complex/attributes-and-conditionals.adoc docbook5
 testdata/corpus/complex/blocks.adoc html5
 testdata/corpus/complex/blocks.adoc docbook5
+testdata/corpus/complex/coderay-style.adoc html5
+testdata/corpus/complex/coderay-style.adoc docbook5
+testdata/corpus/complex/coderay.adoc html5
+testdata/corpus/complex/coderay.adoc docbook5
 testdata/corpus/complex/docinfo-and-header.adoc html5
 testdata/corpus/complex/docinfo-and-header.adoc docbook5
 testdata/corpus/complex/includes.adoc html5
