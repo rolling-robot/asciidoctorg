@@ -53,6 +53,15 @@ func (a *Asciidoctor) callValue(v ruby.Value, method string, args ...any) (ruby.
 	return r, err
 }
 
+// mustCall is callValue for calls that fail only on a broken invariant.
+func (a *Asciidoctor) mustCall(v ruby.Value, method string, args ...any) ruby.Value {
+	r, err := a.callValue(v, method, args...)
+	if err != nil {
+		panic(err)
+	}
+	return r
+}
+
 func (a *Asciidoctor) glueValue() (ruby.Value, error) {
 	var g ruby.Value
 	err := a.do(func() error {

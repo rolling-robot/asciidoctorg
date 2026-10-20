@@ -161,10 +161,16 @@ func (e elements) HasClass(class string) bool {
 	return false
 }
 
-// text is the text of a node with whitespace normalized, as Jsoup's text().
+// text is the text of a node as Jsoup's text() returns it: whitespace is
+// normalized, except within a pre element, and the result is trimmed.
 func text(n *nokogiri.Node) string {
 	if n == nil {
 		return ""
+	}
+	for p := n; p != nil; p = p.Parent() {
+		if p.IsElement() && p.NodeName() == "pre" {
+			return strings.TrimSpace(n.Text())
+		}
 	}
 	return strings.Join(strings.Fields(n.Text()), " ")
 }

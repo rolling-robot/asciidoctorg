@@ -1,6 +1,8 @@
 package asciidoctor
 
 import (
+	"fmt"
+
 	ruby "github.com/go-embedded-ruby/ruby"
 )
 
@@ -41,6 +43,14 @@ type StructuralNode interface {
 	HasBlocks() bool
 	// Append adds a child block and makes this node its parent.
 	Append(child StructuralNode)
+	// SetBlock replaces the child block at index and makes this node its
+	// parent. Like the methods below, it panics if index is out of range.
+	SetBlock(index int, child StructuralNode)
+	// InsertBlock inserts a child block before index (len(Blocks()) appends)
+	// and makes this node its parent.
+	InsertBlock(index int, child StructuralNode)
+	// RemoveBlock removes the child block at index and returns it.
+	RemoveBlock(index int) StructuralNode
 	// Sections are the child sections.
 	Sections() []*Section
 	HasSections() bool
@@ -163,6 +173,29 @@ func (n *structural) Blocks() []StructuralNode { return n.a.wrapStructurals(n.ca
 func (n *structural) HasBlocks() bool          { return rubyBool(n.call("blocks?")) }
 func (n *structural) Append(child StructuralNode) {
 	n.call("<<", child.Value())
+}
+
+func (n *structural) blockList(index, limit int) ruby.Value {
+	blocks := n.call("blocks")
+	if count := rubyInt(n.a.mustCall(blocks, "size")); index < 0 || index > count-1+limit {
+		panic(fmt.Sprintf("asciidoctor: block index %d out of range [0:%d]", index, count+limit))
+	}
+	return blocks
+}
+
+func (n *structural) SetBlock(index int, child StructuralNode) {
+	n.a.mustCall(n.blockList(index, 0), "[]=", index, child.Value())
+	child.base().call("parent=", n.v)
+}
+
+func (n *structural) InsertBlock(index int, child StructuralNode) {
+	n.a.mustCall(n.blockList(index, 1), "insert", index, child.Value())
+	child.base().call("parent=", n.v)
+}
+
+func (n *structural) RemoveBlock(index int) StructuralNode {
+	removed, _ := n.a.wrapNode(n.a.mustCall(n.blockList(index, 0), "delete_at", index)).(StructuralNode)
+	return removed
 }
 
 func (n *structural) Sections() []*Section {

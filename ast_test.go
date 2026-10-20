@@ -346,3 +346,37 @@ func TestLoadErrorsAndPackageLevel(t *testing.T) {
 	}
 	eq(t, "header only", []any{d.Doctitle(), len(d.Blocks())}, []any{"Main Title: The Subtitle", 0})
 }
+
+func TestBlockListMutation(t *testing.T) {
+	d, err := newInstance(t).Load("first\n\nsecond\n\nthird", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	texts := func() []string {
+		var out []string
+		for _, b := range d.Blocks() {
+			out = append(out, b.(*asciidoctor.Block).Source())
+		}
+		return out
+	}
+	removed := d.RemoveBlock(1)
+	eqv(t, "removed", removed.(*asciidoctor.Block).Source(), "second")
+	eqv(t, "after remove", texts(), []string{"first", "third"})
+	d.InsertBlock(2, removed)
+	eqv(t, "after insert at end", texts(), []string{"first", "third", "second"})
+	p, err := asciidoctor.CreateParagraph(d, "new", nil, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	d.SetBlock(0, p)
+	eqv(t, "after set", texts(), []string{"new", "third", "second"})
+	if p.Parent() == nil || p.Parent().Value() != d.Value() {
+		t.Error("parent not set")
+	}
+	defer func() {
+		if recover() == nil {
+			t.Error("out-of-range SetBlock did not panic")
+		}
+	}()
+	d.SetBlock(3, p)
+}

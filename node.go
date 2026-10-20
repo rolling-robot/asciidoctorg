@@ -95,6 +95,9 @@ type Node interface {
 	// returns "" (and logs a warning when warn is true) if it cannot be read.
 	ReadAsset(path string, warn bool) string
 
+	// Asciidoctor is the instance processing the node's document.
+	Asciidoctor() *Asciidoctor
+
 	// Value is the underlying Ruby object. Use it only inside a callback or
 	// with Asciidoctor.Do.
 	Value() ruby.Value
@@ -207,6 +210,8 @@ func (n *node) HasReftext() bool { return rubyBool(n.call("reftext?")) }
 
 func (n *node) IconURI(name string) string    { return rubyString(n.call("icon_uri", name)) }
 func (n *node) ImageURI(target string) string { return rubyString(n.call("image_uri", target)) }
+func (n *node) Asciidoctor() *Asciidoctor     { return n.a }
+
 func (n *node) ImageURIFrom(target, assetDirKey string) string {
 	return rubyString(n.call("image_uri", target, assetDirKey))
 }
