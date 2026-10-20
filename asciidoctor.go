@@ -26,6 +26,9 @@ type Asciidoctor struct {
 	extOnce sync.Once
 	ext     *ExtensionRegistry
 	logging logging
+	// converterHandles are the bridge handles of registered Go converters
+	// (accessed with the interpreter held).
+	converterHandles map[int64]bool
 }
 
 // An Option configures New.
@@ -34,6 +37,54 @@ type Option func(*config)
 type config struct {
 	runtime   runtime.Config
 	loadPaths []string
+	noSetups  bool
+}
+
+// A Setup configures a new instance, for example by registering extensions,
+// converters, syntax highlighters or log handlers with it.
+type Setup func(*Asciidoctor) error
+
+var (
+	setupsMu    sync.Mutex
+	setups      = map[int]Setup{}
+	setupOrder  []int
+	nextSetupID int
+)
+
+// RegisterSetup adds a setup that New runs on every instance it creates,
+// after the ones registered before it. It is the counterpart of
+// AsciidoctorJ's service-loaded extension and converter registries: a package
+// providing extensions can call it from an init function, so that importing
+// the package enables them. The returned function removes the setup.
+func RegisterSetup(s Setup) (remove func()) {
+	setupsMu.Lock()
+	defer setupsMu.Unlock()
+	nextSetupID++
+	id := nextSetupID
+	setups[id] = s
+	setupOrder = append(setupOrder, id)
+	return func() {
+		setupsMu.Lock()
+		defer setupsMu.Unlock()
+		delete(setups, id)
+	}
+}
+
+func registeredSetups() []Setup {
+	setupsMu.Lock()
+	defer setupsMu.Unlock()
+	out := make([]Setup, 0, len(setups))
+	for _, id := range setupOrder {
+		if s, ok := setups[id]; ok {
+			out = append(out, s)
+		}
+	}
+	return out
+}
+
+// WithoutRegisteredSetups makes New skip the setups added with RegisterSetup.
+func WithoutRegisteredSetups() Option {
+	return func(c *config) { c.noSetups = true }
 }
 
 // WithRuntimeDir sets the directory below which the embedded Ruby sources are
@@ -79,6 +130,14 @@ func New(opts ...Option) (*Asciidoctor, error) {
 		if err := a.addLoadPath(cfg.loadPaths); err != nil {
 			a.Close()
 			return nil, err
+		}
+	}
+	if !cfg.noSetups {
+		for _, s := range registeredSetups() {
+			if err := s(a); err != nil {
+				a.Close()
+				return nil, err
+			}
 		}
 	}
 	return a, nil

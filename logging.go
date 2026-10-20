@@ -113,6 +113,25 @@ func (a *Asciidoctor) removeLogHandler(id int) error {
 	return nil
 }
 
+// Log logs a message through Asciidoctor's logger, as Asciidoctor's own
+// messages are: to the registered log handlers, or else to standard error,
+// if record.Severity is at least the log level. Extensions and converters
+// use it to report problems.
+func (a *Asciidoctor) Log(record LogRecord) error {
+	var cursor any
+	if c := record.Cursor; c != nil {
+		cursor = []any{nilIfEmpty(c.File), nilIfEmpty(c.Dir), nilIfEmpty(c.Path), c.LineNumber}
+	}
+	return a.do(func() error {
+		g, err := a.glue()
+		if err != nil {
+			return err
+		}
+		_, err = g.Call("log", int(record.Severity), record.Message, cursor)
+		return err
+	})
+}
+
 // SetLogLevel sets the lowest severity delivered to log handlers and, while
 // none is registered, written to standard error. The default is SeverityWarn.
 func (a *Asciidoctor) SetLogLevel(level Severity) error {

@@ -262,6 +262,23 @@ module AsciidoctorGo
     converter
   end
 
+  # [[backend, handle], ...] for the backends with a Go converter; the
+  # catch-all converter is listed as backend '*'.
+  def self.go_converters
+    registered = ::Asciidoctor::Converter.converters.to_a
+    if (catch_all = ::Asciidoctor::Converter.send :catch_all)
+      registered << ['*', catch_all]
+    end
+    registered.select {|_, klass| ::Class === klass && klass < Converter }.map {|backend, klass| [backend, klass.go_handle] }
+  end
+
+  # Unregisters all converters (Asciidoctor keeps those registered for its
+  # built-in backends) and returns the handles of the Go converters left.
+  def self.unregister_all_converters
+    ::Asciidoctor::Converter.unregister_all
+    go_converters.map {|_, handle| handle }
+  end
+
   BUILTIN_CONVERTERS = { 'html5' => :Html5Converter, 'docbook5' => :DocBook5Converter, 'manpage' => :ManPageConverter }
 
   # Returns a new instance of Asciidoctor's own converter for backend (even if
@@ -321,6 +338,14 @@ module AsciidoctorGo
 
   # Logger that forwards messages to Go log handlers (through handle) while
   # tracking the maximum severity like Asciidoctor::Logger.
+  # Logs text through Asciidoctor's logger; cursor is nil or
+  # [file, dir, path, lineno].
+  def self.log severity, text, cursor
+    message = cursor ? ({ text: text, source_location: (::Asciidoctor::Reader::Cursor.new(*cursor)) }.extend ::Asciidoctor::Logger::AutoFormattingMessage) : text
+    ::Asciidoctor::LoggerManager.logger.add severity, message
+    nil
+  end
+
   class Logger < ::Asciidoctor::Logger
     def initialize handle, level
       super nil, level: level

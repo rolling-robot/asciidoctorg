@@ -269,3 +269,24 @@ func TestLogHandlers(t *testing.T) {
 	eq(t, "stderr restored", stderr.String(), "asciidoctor: WARNING: <stdin>: line 5: id assigned to section already in use: a\n")
 	eq(t, "severity names", []string{asciidoctor.SeverityDebug.String(), asciidoctor.SeverityFatal.String(), asciidoctor.Severity(9).String()}, []string{"DEBUG", "FATAL", "UNKNOWN"})
 }
+
+func TestLogThroughAsciidoctor(t *testing.T) {
+	a := newInstance(t)
+	var got []asciidoctor.LogRecord
+	unregister, err := a.RegisterLogHandler(asciidoctor.LogHandlerFunc(func(r asciidoctor.LogRecord) { got = append(got, r) }))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer unregister()
+	cursor := &asciidoctor.Cursor{LineNumber: 7, File: "/docs/a.adoc", Dir: "/docs", Path: "a.adoc"}
+	if err := a.Log(asciidoctor.LogRecord{Severity: asciidoctor.SeverityError, Message: "broken", Cursor: cursor}); err != nil {
+		t.Fatal(err)
+	}
+	if err := a.Log(asciidoctor.LogRecord{Severity: asciidoctor.SeverityInfo, Message: "below the level"}); err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 1 {
+		t.Fatalf("records = %+v", got)
+	}
+	eqv(t, "record", got[0], asciidoctor.LogRecord{Severity: asciidoctor.SeverityError, Message: "broken", Cursor: cursor})
+}

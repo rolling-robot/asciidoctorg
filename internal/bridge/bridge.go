@@ -162,7 +162,8 @@ func (b *Bridge) Unregister(id int64) {
 	delete(b.handles, id)
 }
 
-func (b *Bridge) handler(id int64) (Handler, bool) {
+// Handler returns the handler registered under a handle.
+func (b *Bridge) Handler(id int64) (Handler, bool) {
 	b.handlesMu.Lock()
 	defer b.handlesMu.Unlock()
 	h, ok := b.handles[id]
@@ -178,7 +179,7 @@ func (b *Bridge) dispatch(c *ruby.Call) (any, error) {
 	if !ok {
 		return nil, ruby.NewError("TypeError", "dispatch handle must be an Integer")
 	}
-	h, ok := b.handler(id)
+	h, ok := b.Handler(id)
 	if !ok {
 		return nil, ruby.NewError("RuntimeError", fmt.Sprintf("asciidoctor-go: no Go object for handle %d", id))
 	}

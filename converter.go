@@ -98,8 +98,95 @@ func (a *Asciidoctor) RegisterConverter(c Converter, traits *BackendTraits, back
 			a.b.Unregister(id)
 			return err
 		}
+		if a.converterHandles == nil {
+			a.converterHandles = map[int64]bool{}
+		}
+		a.converterHandles[id] = true
 		return nil
 	})
+}
+
+// Converters returns the Go converters registered with RegisterConverter, by
+// backend; the catch-all converter is listed under "*".
+func (a *Asciidoctor) Converters() (map[string]Converter, error) {
+	out := map[string]Converter{}
+	err := a.do(func() error {
+		g, err := a.glue()
+		if err != nil {
+			return err
+		}
+		v, err := g.Call("go_converters")
+		if err != nil {
+			return err
+		}
+		pairs, _ := v.Go().([]any)
+		for _, p := range pairs {
+			pair, _ := p.([]any)
+			if len(pair) != 2 {
+				continue
+			}
+			backend, _ := pair[0].(string)
+			if h, ok := a.converterFor(pair[1]); ok {
+				out[backend] = h.c
+			}
+		}
+		return nil
+	})
+	return out, err
+}
+
+// UnregisterAllConverters unregisters every converter registered with
+// RegisterConverter, as Asciidoctor's Converter.unregister_all does: a
+// converter registered for one of the built-in backends (html5, docbook5,
+// manpage) stays registered for it.
+func (a *Asciidoctor) UnregisterAllConverters() error {
+	return a.do(func() error {
+		g, err := a.glue()
+		if err != nil {
+			return err
+		}
+		v, err := g.Call("unregister_all_converters")
+		if err != nil {
+			return err
+		}
+		kept := map[int64]bool{}
+		handles, _ := v.Go().([]any)
+		for _, h := range handles {
+			if id, ok := toInt64(h); ok {
+				kept[id] = true
+			}
+		}
+		for id := range a.converterHandles {
+			if !kept[id] {
+				a.b.Unregister(id)
+				delete(a.converterHandles, id)
+			}
+		}
+		return nil
+	})
+}
+
+func (a *Asciidoctor) converterFor(handle any) (*converterHandler, bool) {
+	id, ok := toInt64(handle)
+	if !ok {
+		return nil, false
+	}
+	h, ok := a.b.Handler(id)
+	if !ok {
+		return nil, false
+	}
+	ch, ok := h.(*converterHandler)
+	return ch, ok
+}
+
+func toInt64(v any) (int64, bool) {
+	switch n := v.(type) {
+	case int64:
+		return n, true
+	case int:
+		return int64(n), true
+	}
+	return 0, false
 }
 
 type converterHandler struct {
