@@ -71,6 +71,17 @@ func parseHTMLFile(t *testing.T, path string) *htmlDoc {
 	return parseHTML(t, readFile(t, path))
 }
 
+// parseXML parses well-formed markup, such as the embeddable HTML of a
+// document with a single top-level element (AsciidoctorJ parses those as XML).
+func parseXML(t *testing.T, src string) *htmlDoc {
+	t.Helper()
+	d, err := nokogiri.XML(src)
+	if err != nil {
+		t.Fatalf("parsing XML: %v", err)
+	}
+	return &htmlDoc{t, d}
+}
+
 // Select returns the elements matching a CSS selector.
 func (h *htmlDoc) Select(selector string) elements {
 	h.t.Helper()

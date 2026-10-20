@@ -1,6 +1,7 @@
 package asciidoctor
 
 import (
+	"errors"
 	"io"
 	"os"
 	"sync"
@@ -124,6 +125,28 @@ func (a *Asciidoctor) convert(method, input string, options *Options) (string, e
 		err = writer.Err
 	}
 	return out, err
+}
+
+// ConvertReader converts the AsciiDoc source read from r and writes the result
+// to w (overriding options.Output).
+func (a *Asciidoctor) ConvertReader(r io.Reader, w io.Writer, options *Options) error {
+	if r == nil {
+		return errors.New("asciidoctor: ConvertReader: nil reader")
+	}
+	if w == nil {
+		return errors.New("asciidoctor: ConvertReader: nil writer")
+	}
+	src, err := io.ReadAll(r)
+	if err != nil {
+		return err
+	}
+	o := Options{}
+	if options != nil {
+		o = *options
+	}
+	o.Output = w
+	_, err = a.Convert(string(src), &o)
+	return err
 }
 
 // ConvertFiles converts each file as ConvertFile does, and returns the
