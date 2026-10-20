@@ -200,6 +200,57 @@ func (a *Asciidoctor) convert(method, input string, options *Options) (string, e
 	return out, err
 }
 
+// ConvertDocument converts as Convert does and also returns the converted
+// document, for example to read the catalog of the assets it references
+// (with Options.CatalogAssets). output is "" when it was written to a file or
+// stream.
+func (a *Asciidoctor) ConvertDocument(source string, options *Options) (doc *Document, output string, err error) {
+	return a.convertDocument("convert", source, options)
+}
+
+// ConvertFileDocument converts as ConvertFile does and also returns the
+// converted document; see ConvertDocument.
+func (a *Asciidoctor) ConvertFileDocument(path string, options *Options) (doc *Document, output string, err error) {
+	return a.convertDocument("convert_file", path, options)
+}
+
+func (a *Asciidoctor) convertDocument(method, input string, options *Options) (*Document, string, error) {
+	var writer *bridge.Writer
+	if options != nil && options.Output != nil {
+		writer = &bridge.Writer{W: options.Output}
+	}
+	var docValue ruby.Value
+	var out string
+	err := a.do(func() error {
+		g, err := a.glue()
+		if err != nil {
+			return err
+		}
+		v, err := g.Call("convert_document", ruby.Symbol(method), input, options.rubyOptions(writer))
+		if err != nil {
+			return err
+		}
+		if docValue, err = v.Call("[]", 0); err != nil {
+			return err
+		}
+		o, err := v.Call("[]", 1)
+		if err != nil {
+			return err
+		}
+		if !o.IsNil() {
+			out = o.String()
+		}
+		return nil
+	})
+	if err == nil && writer != nil && writer.Err != nil {
+		err = writer.Err
+	}
+	if err != nil {
+		return nil, "", err
+	}
+	return a.wrapDocument(docValue), out, nil
+}
+
 // ConvertReader converts the AsciiDoc source read from r and writes the result
 // to w (overriding options.Output).
 func (a *Asciidoctor) ConvertReader(r io.Reader, w io.Writer, options *Options) error {

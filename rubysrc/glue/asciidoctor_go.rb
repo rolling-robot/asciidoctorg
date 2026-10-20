@@ -26,6 +26,28 @@ module AsciidoctorGo
     ::Asciidoctor::Document === result ? nil : result
   end
 
+  # Converts as convert (method :convert) or convert_file (:convert_file) do,
+  # and returns [document, output], output being nil when it was written to a
+  # file or stream. The document is captured by a tree processor that runs
+  # after all others, so it is the one that was converted.
+  def self.convert_document method, input, options
+    captured = nil
+    unless options[:extension_registry]
+      user_block = options[:extensions]
+      options = options.merge extensions: (proc do
+        instance_exec(&user_block) if user_block
+        tree_processor do
+          process do |doc|
+            captured = doc
+            nil
+          end
+        end
+      end)
+    end
+    result = ::Asciidoctor.send method, input, options
+    ::Asciidoctor::Document === result ? [result, nil] : [captured, result]
+  end
+
   # Returns a Symbol naming the Go node type that wraps node, or nil.
   def self.node_kind node
     case node
