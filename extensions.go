@@ -1,6 +1,7 @@
 package asciidoctor
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 	"sync"
@@ -265,6 +266,7 @@ type ExtensionGroup struct {
 	r          *ExtensionRegistry
 	name       string
 	specs      []extensionSpec
+	errs       []error
 	registered bool
 }
 
@@ -292,45 +294,60 @@ func (r *ExtensionRegistry) Group(name string) *ExtensionGroup {
 // Name is the group name.
 func (g *ExtensionGroup) Name() string { return g.name }
 
-func (g *ExtensionGroup) add(kind, class, name string, h extensionHandler, config map[ruby.Symbol]any) *ExtensionGroup {
+func (g *ExtensionGroup) add(nilProcessor bool, kind, class, name string, h extensionHandler, config map[ruby.Symbol]any) *ExtensionGroup {
+	if nilProcessor {
+		g.errs = append(g.errs, fmt.Errorf("asciidoctor: nil %s added to extension group %s", kind, g.name))
+	}
 	g.specs = append(g.specs, extensionSpec{kind: kind, class: class, name: name, handler: h, config: config})
 	return g
 }
 
+// validate reports the errors found while extensions were added, and Go
+// block and macro processors without a name.
+func (g *ExtensionGroup) validate() error {
+	errs := append([]error(nil), g.errs...)
+	for _, s := range g.specs {
+		if s.rubyClass == "" && s.name == "" && (s.kind == "block" || s.kind == "block_macro" || s.kind == "inline_macro") {
+			errs = append(errs, fmt.Errorf("asciidoctor: %s processor added to extension group %s without a name", s.kind, g.name))
+		}
+	}
+	return errors.Join(errs...)
+}
+
 // Preprocessor adds a preprocessor; opts may be nil.
 func (g *ExtensionGroup) Preprocessor(p Preprocessor, opts *DocumentProcessorOptions) *ExtensionGroup {
-	return g.add("preprocessor", "Preprocessor", "", &preprocessorHandler{p: p}, opts.config())
+	return g.add(p == nil, "preprocessor", "Preprocessor", "", &preprocessorHandler{p: p}, opts.config())
 }
 
 // IncludeProcessor adds an include processor; opts may be nil.
 func (g *ExtensionGroup) IncludeProcessor(p IncludeProcessor, opts *DocumentProcessorOptions) *ExtensionGroup {
-	return g.add("include_processor", "IncludeProcessor", "", &includeProcessorHandler{p: p}, opts.config())
+	return g.add(p == nil, "include_processor", "IncludeProcessor", "", &includeProcessorHandler{p: p}, opts.config())
 }
 
 // Treeprocessor adds a tree processor; opts may be nil.
 func (g *ExtensionGroup) Treeprocessor(p Treeprocessor, opts *DocumentProcessorOptions) *ExtensionGroup {
-	return g.add("tree_processor", "TreeProcessor", "", &treeprocessorHandler{p: p}, opts.config())
+	return g.add(p == nil, "tree_processor", "TreeProcessor", "", &treeprocessorHandler{p: p}, opts.config())
 }
 
 // Postprocessor adds a postprocessor; opts may be nil.
 func (g *ExtensionGroup) Postprocessor(p Postprocessor, opts *DocumentProcessorOptions) *ExtensionGroup {
-	return g.add("postprocessor", "Postprocessor", "", &postprocessorHandler{p: p}, opts.config())
+	return g.add(p == nil, "postprocessor", "Postprocessor", "", &postprocessorHandler{p: p}, opts.config())
 }
 
 // DocinfoProcessor adds a docinfo processor; opts may be nil.
 func (g *ExtensionGroup) DocinfoProcessor(p DocinfoProcessor, opts *DocumentProcessorOptions) *ExtensionGroup {
-	return g.add("docinfo_processor", "DocinfoProcessor", "", &docinfoProcessorHandler{p: p}, opts.config())
+	return g.add(p == nil, "docinfo_processor", "DocinfoProcessor", "", &docinfoProcessorHandler{p: p}, opts.config())
 }
 
 // Block adds a block processor for blocks styled [name]; opts may be nil.
 func (g *ExtensionGroup) Block(name string, p BlockProcessor, opts *BlockOptions) *ExtensionGroup {
-	return g.add("block", "BlockProcessor", name, &blockProcessorHandler{p: p}, opts.config())
+	return g.add(p == nil, "block", "BlockProcessor", name, &blockProcessorHandler{p: p}, opts.config())
 }
 
 // BlockMacro adds a processor for the block macro name::target[]; opts may
 // be nil.
 func (g *ExtensionGroup) BlockMacro(name string, p BlockMacroProcessor, opts *MacroOptions) *ExtensionGroup {
-	return g.add("block_macro", "BlockMacroProcessor", name, &blockMacroProcessorHandler{p: p}, opts.config())
+	return g.add(p == nil, "block_macro", "BlockMacroProcessor", name, &blockMacroProcessorHandler{p: p}, opts.config())
 }
 
 // InlineMacro adds a processor for the inline macro name:target[]; opts may
@@ -340,7 +357,7 @@ func (g *ExtensionGroup) InlineMacro(name string, p InlineMacroProcessor, opts *
 	if opts != nil && opts.Regexp != "" {
 		h.regexp = opts.Regexp
 	}
-	return g.add("inline_macro", "InlineMacroProcessor", name, h, opts.config())
+	return g.add(p == nil, "inline_macro", "InlineMacroProcessor", name, h, opts.config())
 }
 
 // ExtensionKind names a kind of processor.
@@ -381,6 +398,9 @@ func (r *ExtensionRegistry) RubyProcessor(kind ExtensionKind, className, name st
 func (g *ExtensionGroup) Register() error {
 	r := g.r
 	a := r.a
+	if err := g.validate(); err != nil {
+		return err
+	}
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	if old, ok := r.groups[g.name]; ok && old != g {
