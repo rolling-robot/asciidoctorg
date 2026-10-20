@@ -48,6 +48,16 @@ module AsciidoctorGo
     ::Asciidoctor::Document === result ? [result, nil] : [captured, result]
   end
 
+  # Runs Asciidoctor's command line with argv, as bin/asciidoctor does, and
+  # returns the exit code. Standard input, when the command reads it (input
+  # file -), is fetched from the Go handler.
+  def self.cli handle, argv
+    require 'asciidoctor/cli'
+    invoker = ::Asciidoctor::Cli::Invoker.new argv
+    invoker.invoke! { Bridge.dispatch handle, :stdin }
+    invoker.code
+  end
+
   # Returns a Symbol naming the Go node type that wraps node, or nil.
   def self.node_kind node
     case node
