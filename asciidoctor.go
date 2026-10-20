@@ -32,7 +32,8 @@ type Asciidoctor struct {
 type Option func(*config)
 
 type config struct {
-	runtime runtime.Config
+	runtime   runtime.Config
+	loadPaths []string
 }
 
 // WithRuntimeDir sets the directory below which the embedded Ruby sources are
@@ -55,6 +56,13 @@ func WithStderr(w io.Writer) Option {
 	return func(c *config) { c.runtime.Stderr = w }
 }
 
+// WithLoadPath adds directories to the front of the Ruby load path, where
+// RequireLibrary and Ruby's require look for libraries (AsciidoctorJ's
+// load path argument of Asciidoctor.Factory.create).
+func WithLoadPath(dirs ...string) Option {
+	return func(c *config) { c.loadPaths = append(c.loadPaths, dirs...) }
+}
+
 // New starts an Asciidoctor instance. Release it with Close.
 func New(opts ...Option) (*Asciidoctor, error) {
 	cfg := config{runtime: runtime.Config{Stderr: os.Stderr}}
@@ -67,6 +75,12 @@ func New(opts ...Option) (*Asciidoctor, error) {
 	}
 	a := &Asciidoctor{b: b}
 	a.logging.level = SeverityWarn
+	if len(cfg.loadPaths) > 0 {
+		if err := a.addLoadPath(cfg.loadPaths); err != nil {
+			a.Close()
+			return nil, err
+		}
+	}
 	return a, nil
 }
 
