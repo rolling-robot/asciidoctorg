@@ -7,9 +7,77 @@
 # y = $2`) reads the callee's match instead. This wraps every method that
 # Asciidoctor defines so the caller's $~ is restored when it returns, which
 # gives Asciidoctor's code the frame-local semantics it is written for.
-# Attribute accessors (no source location) do no matching and are not wrapped.
+#
+# Only a method that can itself set $~ needs the wrapper: one that does not
+# leaves its caller's $~ alone, and its callees restore theirs. So a method is
+# wrapped unless its source is found and has none of the operations that set
+# $~ (matching, substitution, splitting, indexing, case/when, regexp
+# literals and Rx constants). Attribute accessors (no source location) do no
+# matching and are not wrapped.
 module AsciidoctorGoFrameLocalMatch
   WRAPPED = {}
+  WRAPPED_LOCATIONS = []
+
+  # Source text that may set $~; deliberately broad (a false positive only
+  # costs a wrapper).
+  MATCHING_RX = ::Regexp.new '=~|!~|\bmatch\??\b|\b(?:g?sub|scan|split|slice|r?partition|r?index|start_with\?|end_with\?)\b|' \
+    '===|\$~|\$[1-9`\'&+]|last_match|Rx\b|%r\{|(?:^|[\s(,=\[!])/(?![\s=])|\bwhen\b|\bcase\b'
+  ONE_LINE_END_RX = ::Regexp.new '\bend\s*$'
+  ENDLESS_DEF_RX = ::Regexp.new '\bdef\s+[\w.?!]+(?:\([^)]*\))?\s*=[^=~>]'
+  IDENT_CHAR_RX = ::Regexp.new '[\w?!]'
+
+  SOURCE_LINES = ::Hash.new {|cache, file| cache[file] = (::File.readlines file rescue []) }
+
+  # The source of method, found by its definition line and the end at the
+  # same indentation (Asciidoctor's layout), or nil if it cannot be found.
+  def self.method_source method
+    file, line = method.source_location
+    lines = SOURCE_LINES[file]
+    return unless (first = lines[line - 1]) && (first.include? 'def ')
+    return first if (first.match? ONE_LINE_END_RX) || (first.match? ENDLESS_DEF_RX)
+    indent = first[/\A */]
+    body = [first]
+    lines[line..].each do |l|
+      body << l
+      return body.join if l.start_with?(%(#{indent}end)) && !(l[indent.length + 3]&.match? IDENT_CHAR_RX)
+    end
+    nil
+  end
+
+  def self.needs_wrapper? method
+    file, line = method.source_location
+    if @needed && (file.start_with? @lib_prefix)
+      return @needed.include? %(#{file.delete_prefix @lib_prefix}:#{line})
+    end
+    !(source = method_source method) || (source.match? MATCHING_RX)
+  end
+
+  # Scanning the sources takes most of a second in rbgo, so the locations of
+  # the methods that need a wrapper are cached in a file next to this one,
+  # keyed by the size and modification time of each Asciidoctor source file.
+  # Without a usable cache the sources are scanned.
+  CACHE_FILE = ::File.join __dir__, '.asciidoctor_go_frame_local_cache'
+
+  def self.load_cache lib_dir
+    @lib_prefix = %(#{lib_dir}/)
+    @cache_key = (::Dir.glob '**/*.rb', base: lib_dir).sort.map do |rel|
+      path = ::File.join lib_dir, rel
+      %(#{rel} #{::File.size path} #{(::File.mtime path).to_i})
+    end.join ' '
+    lines = ::File.readlines CACHE_FILE, chomp: true
+    @needed = lines.drop(1).to_h {|loc| [loc, true] } if lines[0] == @cache_key
+  rescue ::SystemCallError, ::IOError
+    nil
+  end
+
+  def self.save_cache wrapped
+    return if @needed
+    tmp = %(#{CACHE_FILE}.#{::Process.pid}.#{rand 1_000_000})
+    ::File.write tmp, ([@cache_key] + wrapped).join("\n")
+    ::File.rename tmp, CACHE_FILE
+  rescue ::SystemCallError, ::IOError
+    nil
+  end
 
   def self.needed?
     probe = ::Module.new
@@ -71,6 +139,9 @@ module AsciidoctorGoFrameLocalMatch
       # super from a subclass calls this class's method, not the subclass's.
       # a plain identifier, so the wrapper can call it without send (rbgo's
       # send binds a trailing positional Hash as keywords)
+      next unless needs_wrapper? method
+      file, line = method.source_location
+      WRAPPED_LOCATIONS << %(#{file.delete_prefix @lib_prefix.to_s}:#{line}) if @lib_prefix && (file.start_with? @lib_prefix)
       original = :"#{prefix}m#{count += 1}"
       target.send :alias_method, original, name
       target.module_eval (wrapper_source name, original, method.parameters), __FILE__, __LINE__
@@ -135,5 +206,7 @@ end
 
 if AsciidoctorGoFrameLocalMatch.needed?
   AsciidoctorGoFrameLocalMatch.load_asciidoctor ::Asciidoctor::LIB_DIR
+  AsciidoctorGoFrameLocalMatch.load_cache ::Asciidoctor::LIB_DIR
   AsciidoctorGoFrameLocalMatch.wrap_namespace ::Asciidoctor
+  AsciidoctorGoFrameLocalMatch.save_cache AsciidoctorGoFrameLocalMatch::WRAPPED_LOCATIONS
 end

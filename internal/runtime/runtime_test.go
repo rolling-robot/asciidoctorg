@@ -407,3 +407,29 @@ doc = Asciidoctor.load "= {cmdname}(1)\n:doctype: manpage\n\n== NAME\n\n{cmdname
 		t.Fatalf("got %s, want %s", got, want)
 	}
 }
+
+// Only methods that can set $~ are wrapped, and which ones is cached in the
+// runtime directory; a boot that reads the cache wraps the same methods as
+// the one that scanned the sources.
+func TestFrameLocalCache(t *testing.T) {
+	dir := t.TempDir()
+	const query = `[AsciidoctorGoFrameLocalMatch::WRAPPED_LOCATIONS.sort, AsciidoctorGoFrameLocalMatch.instance_variable_get(:@needed).nil?]`
+	var results []string
+	for range 2 {
+		rt, err := Boot(Config{Dir: dir})
+		if err != nil {
+			t.Fatal(err)
+		}
+		results = append(results, eval(t, rt, query))
+	}
+	scanned, cached := strings.TrimSuffix(results[0], ", true]"), strings.TrimSuffix(results[1], ", false]")
+	if scanned == results[0] || cached == results[1] {
+		t.Fatalf("first boot should scan and second read the cache:\n%.200s\n%.200s", results[0], results[1])
+	}
+	if scanned != cached {
+		t.Error("cached boot wraps different methods")
+	}
+	if !strings.Contains(scanned, `"asciidoctor/substitutors.rb:`) || strings.Count(scanned, ",") < 100 {
+		t.Errorf("unexpected wrapped methods: %.300s", scanned)
+	}
+}
