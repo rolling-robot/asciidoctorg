@@ -33,9 +33,12 @@ go get github.com/asciidoctor-go/asciidoctor
 go install github.com/asciidoctor-go/asciidoctor/cmd/asciidoctor@latest
 ```
 
-> The embedded Ruby sources come from git submodules, which `go get` does not
-> download yet. Until a release that includes them is published, build from a
-> clone: `git clone --recursive`, then `go build ./...`.
+Use a release version (`@latest` or a tag such as `@v0.1.0`). The embedded
+Ruby sources come from git submodules, which Go module downloads do not
+include, so each release tag points to a commit that holds the submodule
+contents as ordinary files. A commit of `main` (a pseudo-version such as
+`@main`) does not build; to work on `main`, clone it with
+`git clone --recursive`.
 
 ## Examples
 
@@ -107,6 +110,7 @@ go test ./...
 | `internal/asciidoctorj` | AsciidoctorJ's tests, ported |
 | `internal/testutil` | helpers shared by those tests |
 | `cmd/asciidoctor` | the command line |
+| `scripts` | goldens generator (`gen-goldens.rb`, needs MRI) and release script |
 | `internal/runtime` | boots rbgo with Asciidoctor; source patches; Go-backed Ruby libraries |
 | `internal/bridge` | calls between Go and Ruby |
 | `rubysrc/asciidoctor` | Asciidoctor (git submodule, unmodified) |
@@ -120,6 +124,20 @@ Where rbgo differs from MRI, the fix is a Ruby shim, or else an exact-match
 source patch applied when the sources are materialized (it fails loudly if the
 upstream source changes); each has a regression test. See
 [docs/rbgo-gaps.md](docs/rbgo-gaps.md) and [PLAN.md](PLAN.md).
+
+## Releasing
+
+```sh
+scripts/release.sh v0.1.0
+git push origin v0.1.0
+```
+
+`scripts/release.sh` needs a clean work tree with the submodules checked out
+(`git submodule update --init`). It makes a commit outside `main` whose parent
+is `HEAD` and whose tree is `HEAD`'s with each submodule replaced by its files,
+and tags that commit; `-n` makes the commit only and prints its hash. A release
+holds everything the tests need, so `go test
+github.com/asciidoctor-go/asciidoctor/...` passes in a module that requires it.
 
 ## License
 

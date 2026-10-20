@@ -15,8 +15,8 @@ Upstream sources:
 | rbgo v0.8.0 | Go module dependency | the Ruby interpreter |
 
 Clone with `git clone --recursive` (or run `git submodule update --init`).
-Note: Go module downloads do not include submodule contents, so consumers using
-`go get` need the Asciidoctor sources made available another way; see step 9.
+Go module downloads do not include submodule contents, so releases are tags
+on commits that hold them as ordinary files (`scripts/release.sh`, step 9).
 
 ## Ground rules
 
@@ -124,7 +124,9 @@ Each step ends with a commit, all tests green.
    same fixtures.
 9. **CLI, docs and distribution.** `cmd/asciidoctor` mirroring the Ruby CLI
    options, package docs with runnable examples, README, and a solution for
-   `go get` consumers (who do not receive submodule contents).
+   `go get` consumers (who do not receive submodule contents): release tags
+   point to commits outside `main` whose trees hold the submodules' files
+   (`scripts/release.sh`); `main` keeps the submodules.
 10. **Directory structure.** Option A was chosen: the public API stays in
     the root package (one import, like AsciidoctorJ's single entry point),
     and its tests moved out of the root — the API tests to `internal/apitest`,
@@ -138,7 +140,10 @@ Each step ends with a commit, all tests green.
 
 ## Status
 
-Steps 1–8 are complete. Step 9 is in progress: the `asciidoctor` command (`RunCLI`), package documentation, runnable examples and the README are done; the `go get` distribution remains. Step 10 (directory structure): the tests are moved out of the root; grouping the API files remains.
+Steps 1–9 are complete. Step 9's release tags were checked end to end: a
+module that requires a tag made by `scripts/release.sh`, fetched with `go get`
+from a git repository holding only that tag, builds, runs a Go macro
+extension, and passes the library's own tests from the module cache. Step 10 (directory structure): the tests are moved out of the root; grouping the API files remains.
 
 - Corpus (step 2): 324 conversions byte-identical with MRI (output and log),
   including CodeRay-highlighted listings in 20 languages.

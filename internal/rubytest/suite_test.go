@@ -70,7 +70,9 @@ func copyTree(src, dest string) error {
 		if err != nil {
 			return err
 		}
-		return os.WriteFile(target, data, info.Mode().Perm())
+		// Writable even when the source is not (as in the module cache), since
+		// the suite patches and writes into the copy.
+		return os.WriteFile(target, data, info.Mode().Perm()|0o200)
 	})
 }
 
