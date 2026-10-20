@@ -84,6 +84,9 @@ type Node interface {
 	IconURI(name string) string
 	// ImageURI resolves the URI of an image, against the imagesdir attribute.
 	ImageURI(target string) string
+	// ImageURIFrom resolves the URI of an image against the directory named
+	// by the assetDirKey attribute (such as "iconsdir").
+	ImageURIFrom(target, assetDirKey string) string
 	// MediaURI resolves the URI of an audio or video file, against imagesdir.
 	MediaURI(target string) string
 	// NormalizeWebPath normalizes a web path, resolving it against start.
@@ -204,6 +207,9 @@ func (n *node) HasReftext() bool { return rubyBool(n.call("reftext?")) }
 
 func (n *node) IconURI(name string) string    { return rubyString(n.call("icon_uri", name)) }
 func (n *node) ImageURI(target string) string { return rubyString(n.call("image_uri", target)) }
+func (n *node) ImageURIFrom(target, assetDirKey string) string {
+	return rubyString(n.call("image_uri", target, assetDirKey))
+}
 func (n *node) MediaURI(target string) string { return rubyString(n.call("media_uri", target)) }
 
 func (n *node) NormalizeWebPath(target, start string, preserveURITarget bool) string {
