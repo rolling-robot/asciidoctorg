@@ -10,6 +10,7 @@ Upstream sources:
 | Path | Kind | Role |
 |---|---|---|
 | `rubysrc/asciidoctor` | git submodule (asciidoctor/asciidoctor) | Asciidoctor 2.1.0.alpha.0, run unmodified; Ruby test suite; corpus documents |
+| `rubysrc/coderay` | git submodule (rubychan/coderay) | CodeRay 1.1.3 for the `coderay` source highlighter |
 | `third_party/asciidoctorj` | git submodule (asciidoctor/asciidoctorj) | API design reference; Java tests to port; corpus documents |
 | rbgo v0.8.0 | Go module dependency | the Ruby interpreter |
 
@@ -127,4 +128,18 @@ Each step ends with a commit, all tests green.
 
 ## Status
 
-Tracked in the commit log; this file is updated as steps complete.
+Steps 1–8 are complete; step 9 is next.
+
+- Corpus (step 2): 324 conversions byte-identical with MRI (output and log),
+  including CodeRay-highlighted listings in 20 languages.
+- Asciidoctor's Ruby suite (step 7): 2864 tests pass; 13 are skipped, each with
+  its reason in `internal/rubytest/exclusions_test.go` (spawning the `ruby`
+  executable, the open-uri-cached gem, Rouge's monokai theme, a FIFO).
+- AsciidoctorJ (step 8): the document-processing test classes of
+  `asciidoctorj-core` are ported in `asciidoctorj_*_test.go`, on AsciidoctorJ's
+  own fixtures. Java-specific variants (registration by class or class name,
+  annotations, class loaders, GEM_PATH) map to the Go equivalents (registration
+  by value, `RegisterSetup` for service loading) or are noted as having none.
+  One case is skipped: Rouge on Java source, as go-rouge v0.3.0 has no Java
+  lexer.
+- rbgo gaps found and worked around are listed in `docs/rbgo-gaps.md`.
