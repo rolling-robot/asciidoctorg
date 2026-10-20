@@ -2,6 +2,7 @@ package asciidoctor
 
 import (
 	"fmt"
+	"strconv"
 
 	ruby "github.com/go-embedded-ruby/ruby"
 )
@@ -87,6 +88,19 @@ type Cursor struct {
 	Dir string
 	// Path is the path of the file as given, or "<stdin>".
 	Path string
+}
+
+// String formats the cursor as Asciidoctor does in log messages:
+// "path: line N".
+func (c *Cursor) String() string {
+	if c == nil {
+		return ""
+	}
+	path := c.Path
+	if path == "" {
+		path = c.File
+	}
+	return path + ": line " + strconv.Itoa(c.LineNumber)
 }
 
 // FilterResult is the verdict of a Selector filter.
