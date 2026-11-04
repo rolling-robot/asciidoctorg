@@ -119,6 +119,7 @@ go test ./...
 | `third_party/asciidoctorj` | AsciidoctorJ (git submodule): API reference and test fixtures |
 | `docs/compatibility.md` | what works, what differs from Asciidoctor and AsciidoctorJ, test results |
 | `docs/rbgo-gaps.md` | every rbgo divergence from MRI found, with its workaround |
+| `AGENTS.md` | project state, architecture, design decisions and gaps, for contributors and agents |
 
 Where rbgo differs from MRI, the fix is a Ruby shim, or else an exact-match
 source patch applied when the sources are materialized (it fails loudly if the

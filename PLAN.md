@@ -24,7 +24,7 @@ on commits that hold them as ordinary files (`scripts/release.sh`, step 9).
   supported returns an explicit error naming the limitation.
 - **Green commits.** `go vet ./... && go test ./...` passes on every commit.
 - **Asciidoctor source stays pristine.** It comes from the submodule, unmodified. Gaps in rbgo
-  are closed by (in order of preference): a Ruby shim in `ruby/shims`, a
+  are closed by (in order of preference): a Ruby shim in `rubysrc/shims`, a
   documented load-time source patch (exact-match, fails loudly on drift), or a Go
   binding. Every shim and patch carries the reason and a regression test.
 - **MRI is the oracle.** Output is compared byte-for-byte with Asciidoctor on MRI.
@@ -40,7 +40,7 @@ on commits that hold them as ordinary files (`scripts/release.sh`, step 9).
           │                             │  node wrappers, live hash views
           └──────────────┬──────────────┘
                  rbgo *ruby.Interp
-       shims (ruby/shims) + vendored Asciidoctor (ruby/asciidoctor)
+       shims (rubysrc/shims) + Asciidoctor submodule (rubysrc/asciidoctor)
 ```
 
 - **Runtime bootstrap.** The Ruby tree (Asciidoctor `lib` + `data` from the submodule,
