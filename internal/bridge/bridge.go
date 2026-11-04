@@ -7,9 +7,9 @@ import (
 	"errors"
 	"fmt"
 	goruntime "runtime"
+	"runtime/debug"
 	"strings"
 	"sync"
-	"sync/atomic"
 
 	ruby "github.com/go-embedded-ruby/ruby"
 
@@ -31,16 +31,21 @@ type Handler interface {
 // An interpreter is not safe for concurrent use, so every entry point runs
 // under mu. Ruby calls back into Go (extension processors, converters) while
 // mu is held; code running in such a callback is already inside the critical
-// section and must not lock again. callbacks counts the callbacks in progress,
-// and Do runs its function directly while it is non-zero. This relies on the
-// rule, documented on the public API, that objects passed to a callback are
-// used only by the goroutine running it.
+// section and must not lock again. The goroutines inside the critical section
+// are recorded in owners: the one that locked mu, and any goroutine running a
+// callback (a Ruby thread runs on a goroutine of its own). Do runs its function
+// directly on those goroutines and locks mu on any other, so another goroutine
+// waits even while a callback is in progress. This relies on the rule,
+// documented on the public API, that objects passed to a callback are used only
+// by the goroutine running it.
 type Bridge struct {
-	rt        *runtime.Runtime
-	in        *ruby.Interp
-	mu        sync.Mutex
-	callbacks atomic.Int32
-	closed    bool
+	rt     *runtime.Runtime
+	in     *ruby.Interp
+	mu     sync.Mutex
+	closed bool
+
+	ownersMu sync.Mutex
+	owners   map[uint64]int // goroutine ID -> nesting depth
 
 	handlesMu sync.Mutex
 	handles   map[int64]Handler
@@ -60,7 +65,7 @@ func New(cfg runtime.Config) (*Bridge, error) {
 	if err != nil {
 		return nil, err
 	}
-	b := &Bridge{rt: rt, in: rt.Interp, handles: map[int64]Handler{}, consts: map[string]ruby.Value{}}
+	b := &Bridge{rt: rt, in: rt.Interp, handles: map[int64]Handler{}, consts: map[string]ruby.Value{}, owners: map[uint64]int{}}
 	mod, err := b.in.DefineModule("AsciidoctorGo::Bridge")
 	if err != nil {
 		return nil, err
@@ -91,7 +96,8 @@ func (b *Bridge) Asciidoctor() ruby.Value { return b.asciidoctor }
 // fails because a Go callback returned an error, the result is a
 // *CallbackError holding both that error and the Ruby exception.
 func (b *Bridge) Do(fn func() error) error {
-	if b.callbacks.Load() > 0 {
+	g := goroutineID()
+	if b.owns(g) {
 		return fn()
 	}
 	b.mu.Lock()
@@ -99,6 +105,8 @@ func (b *Bridge) Do(fn func() error) error {
 	if b.closed {
 		return ErrClosed
 	}
+	b.enterOwner(g)
+	defer b.leaveOwner(g)
 	b.goErr = nil
 	err := fn()
 	if goErr := b.goErr; err != nil && goErr != nil {
@@ -111,15 +119,46 @@ func (b *Bridge) Do(fn func() error) error {
 	return err
 }
 
-// Enter runs fn as Do does, and lets code inside fn use the bridge again on
-// the same goroutine (the critical section is re-entrant while fn runs, as
-// during a callback).
-func (b *Bridge) Enter(fn func() error) error {
-	return b.Do(func() error {
-		b.callbacks.Add(1)
-		defer b.callbacks.Add(-1)
-		return fn()
-	})
+// Enter runs fn as Do does. Code inside fn may use the bridge again on the
+// same goroutine: the critical section is re-entrant for its owner.
+func (b *Bridge) Enter(fn func() error) error { return b.Do(fn) }
+
+// owns reports whether goroutine g is inside the critical section.
+func (b *Bridge) owns(g uint64) bool {
+	b.ownersMu.Lock()
+	defer b.ownersMu.Unlock()
+	return b.owners[g] > 0
+}
+
+func (b *Bridge) enterOwner(g uint64) {
+	b.ownersMu.Lock()
+	b.owners[g]++
+	b.ownersMu.Unlock()
+}
+
+func (b *Bridge) leaveOwner(g uint64) {
+	b.ownersMu.Lock()
+	if b.owners[g]--; b.owners[g] <= 0 {
+		delete(b.owners, g)
+	}
+	b.ownersMu.Unlock()
+}
+
+// goroutineID returns the ID of the calling goroutine, read from the header
+// of its stack trace ("goroutine 123 [running]:"). Go does not expose the ID
+// otherwise; it identifies the owners of the critical section.
+func goroutineID() uint64 {
+	var buf [64]byte
+	s := buf[:goruntime.Stack(buf[:], false)]
+	s = s[len("goroutine "):]
+	var id uint64
+	for _, c := range s {
+		if c < '0' || c > '9' {
+			break
+		}
+		id = id*10 + uint64(c-'0')
+	}
+	return id
 }
 
 // CallbackError is a Ruby exception caused by an error a Go callback
@@ -184,8 +223,11 @@ func (b *Bridge) dispatch(c *ruby.Call) (any, error) {
 		return nil, ruby.NewError("RuntimeError", fmt.Sprintf("asciidoctor-go: no Go object for handle %d", id))
 	}
 	method := c.Args[1].String()
-	b.callbacks.Add(1)
-	defer b.callbacks.Add(-1)
+	// Ruby is running, so the critical section is held (by the goroutine that
+	// called into Ruby); the goroutine of this callback joins its owners.
+	g := goroutineID()
+	b.enterOwner(g)
+	defer b.leaveOwner(g)
 	res, err := safeDispatch(h, c, method, c.Args[2:])
 	if err != nil {
 		var re *ruby.Error
@@ -210,14 +252,20 @@ func safeDispatch(h Handler, c *ruby.Call, method string, args []ruby.Value) (re
 					return
 				}
 			}
-			err = &PanicError{Value: r}
+			err = &PanicError{Value: r, Stack: debug.Stack()}
 		}
 	}()
 	return h.Dispatch(c, method, args)
 }
 
 // PanicError reports a panic in Go code called from Ruby.
-type PanicError struct{ Value any }
+type PanicError struct {
+	// Value is the value passed to panic.
+	Value any
+	// Stack is the stack trace of the goroutine that panicked, taken where
+	// the panic was recovered (runtime/debug.Stack).
+	Stack []byte
+}
 
 func (e *PanicError) Error() string { return fmt.Sprintf("panic in Go callback: %v", e.Value) }
 

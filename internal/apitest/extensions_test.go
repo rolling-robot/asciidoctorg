@@ -304,6 +304,13 @@ func TestExtensionPanicBecomesError(t *testing.T) {
 	if err == nil || !strings.Contains(err.Error(), "panic in Go callback: postprocessor exploded") {
 		t.Fatalf("got %v", err)
 	}
+	// The cause carries the stack of the panic, down to the panicking function.
+	var pe *asciidoctor.PanicError
+	if !errors.As(err, &pe) {
+		t.Fatalf("no PanicError in %#v", err)
+	}
+	eq(t, "panic value", pe.Value, any("postprocessor exploded"))
+	mustContain(t, string(pe.Stack), "TestExtensionPanicBecomesError")
 }
 
 func TestGroupsAndUnregister(t *testing.T) {

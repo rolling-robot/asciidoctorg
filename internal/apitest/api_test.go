@@ -9,6 +9,9 @@ import (
 	"strings"
 	"sync"
 	"testing"
+	"time"
+
+	ruby "github.com/go-embedded-ruby/ruby"
 
 	"github.com/rolling-robot/asciidoctorg"
 	"github.com/rolling-robot/asciidoctorg/internal/testutil"
@@ -320,6 +323,68 @@ func TestConcurrentUse(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
+	}
+}
+
+// While a Go callback runs on one goroutine, another goroutine using the same
+// instance waits for the call in progress instead of entering the interpreter.
+func TestConcurrentUseDuringCallback(t *testing.T) {
+	a := newInstance(t)
+	inCallback, release := make(chan struct{}), make(chan struct{})
+	_, err := a.Extensions().InlineMacro("hold", asciidoctor.InlineMacroProcessorFunc(
+		func(parent asciidoctor.Node, target string, attrs map[string]any) (*asciidoctor.PhraseNode, error) {
+			close(inCallback)
+			<-release
+			return asciidoctor.CreatePhraseNode(parent, "quoted", "held", nil, nil)
+		}), nil)
+	check(t, err)
+	first := make(chan string, 1)
+	go func() { out, _ := a.Convert("hold:x[]", nil); first <- out }()
+	<-inCallback
+	second := make(chan string, 1)
+	go func() { out, _ := a.Convert("*second*", nil); second <- out }()
+	select {
+	case out := <-second:
+		close(release)
+		t.Fatalf("a second conversion ran while a callback held the interpreter: %q", out)
+	case <-time.After(500 * time.Millisecond):
+	}
+	close(release)
+	mustContain(t, <-first, "held")
+	mustContain(t, <-second, "<strong>second</strong>")
+}
+
+// A callback that runs on a Ruby thread, and so on a goroutine of its own, may
+// use the instance while the call that started the thread waits for it.
+func TestCallbackOnRubyThread(t *testing.T) {
+	// Not newInstance: after a deadlock, closing the instance would hang too.
+	a, err := asciidoctor.New(asciidoctor.WithRuntimeDir(testutil.RuntimeDir()))
+	check(t, err)
+	var versions []string
+	_, err = a.RegisterLogHandler(asciidoctor.LogHandlerFunc(func(asciidoctor.LogRecord) {
+		v, err := a.AsciidoctorVersion()
+		check(t, err)
+		versions = append(versions, v)
+	}))
+	check(t, err)
+	_, err = a.Extensions().Postprocessor(asciidoctor.PostprocessorFunc(func(_ *asciidoctor.Document, out string) (string, error) {
+		return out, a.Do(func(in *ruby.Interp) error {
+			_, err := in.Eval("Thread.new { Asciidoctor::LoggerManager.logger.warn 'from a thread' }.join", "(test)", 1)
+			return err
+		})
+	}), nil)
+	check(t, err)
+	done := make(chan error, 1)
+	go func() { _, err := a.Convert("text", nil); done <- err }()
+	select {
+	case err := <-done:
+		check(t, err)
+		check(t, a.Close())
+	case <-time.After(30 * time.Second):
+		t.Fatal("the conversion deadlocked")
+	}
+	if len(versions) != 1 || versions[0] == "" {
+		t.Fatalf("log handler saw versions %q", versions)
 	}
 }
 

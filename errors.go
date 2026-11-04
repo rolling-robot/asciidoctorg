@@ -12,6 +12,11 @@ import (
 // ErrClosed is returned by the methods of a closed Asciidoctor instance.
 var ErrClosed = bridge.ErrClosed
 
+// PanicError is the Cause of an *Error when Go code called from Ruby (an
+// extension, converter, syntax highlighter or log handler) panicked. Its
+// Stack is the stack trace of the panic.
+type PanicError = bridge.PanicError
+
 // Error is an exception raised by Asciidoctor (or by Ruby code it runs).
 type Error struct {
 	// Class is the Ruby exception class, such as "ArgumentError" or "IOError".

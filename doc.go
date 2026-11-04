@@ -12,8 +12,10 @@
 //
 // An Asciidoctor (created with New) holds one interpreter, with Asciidoctor
 // loaded and the extensions, converters and log handlers registered on it.
-// Release it with Close. Calls on an instance are serialized; create several
-// instances, or a Pool, to convert in parallel. The package-level Convert,
+// Release it with Close. Calls on an instance are serialized, also while a
+// callback of a conversion in progress runs: another goroutine waits for the
+// call to finish. Create several instances, or a Pool, to convert in
+// parallel. The package-level Convert,
 // ConvertFile and Load use a shared default instance.
 //
 // The embedded Ruby sources are written once to a cache directory (the user
