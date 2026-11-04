@@ -1,0 +1,78 @@
+= Examples
+
+Here you will find simple but complete examples of how to convert documents using the different configuration options available.
+The examples cover the main scenarios, but you can mix and match usage of instances, builders and maps freely to suite your needs.
+
+== Setting attributes and options as instances
+
+WARNING: This is the supported method for its ease of use and type validation.
+Other way found below have been deprecated since v2.4.4 and may not be available in future releases.
+
+[source,java]
+----
+Asciidoctor asciidoctor = Asciidoctor.Factory.create(); // <.>
+
+Attributes attributes = Attributes.builder()
+                          .backend("docbook")
+                          .icons("font")
+                          .build(); // <.>
+
+Options options = Options.builder()
+                    .inPlace(true)
+                    .attributes(attributes)
+                    .build(); // <.>
+
+String outfile = asciidoctor.convertFile(new File("sample.adoc"), options); // <.>
+----
+<.> Create `Asciidoctor` instance.
+<.> Defines the attributes as an `Attributes` class.
+<.> Defines the options as an `Options` class.
+<.> Converts the document passing previously created `Options` instance.
+
+WARNING: The `icons` attribute requires a `String` to set the value used to "draw" icons.
+At this time, you can use two constants `org.asciidoctor.Attributes.IMAGE_ICONS` for using the same approach as AsciiDoc, that is using `img` tags, or `org.asciidoctor.Attributes.FONT_ICONS` for using icons from {url-font-awesome}[Font Awesome^].
+
+
+== Setting attributes and options as Map collections
+
+[source,java]
+----
+Asciidoctor asciidoctor = Asciidoctor.Factory.create(); // <.>
+
+Map<String, Object> attributes = Attributes.builder()
+                                   .backend("docbook")
+                                   .icons("font")
+                                   .asMap();  // <.>
+
+Map<String, Object> options = Options.builder()
+                                .inPlace(true)
+                                .attributes(attributes) // <.>
+                                .asMap(); // <.>
+
+String outfile = asciidoctor.convertFile(new File("sample.adoc"), options); // <.>
+----
+<.> Create `Asciidoctor` instance.
+<.> Defines attributes using builder fluent API and retrieves them as `Map`.
+<.> Registers the attributes map as `attributes`.
+<.> Converts options to `java.util.Map` instance.
+
+== Setting attributes and options as builders
+
+[source,java]
+----
+Asciidoctor asciidoctor = Asciidoctor.Factory.create(); // <.>
+
+AttributesBuilder attributes = Attributes.builder()
+                                 .backend("docbook")
+                                 .icons("font"); // <.>
+
+OptionsBuilder options = Options.builder()
+                           .inPlace(true)
+                           .attributes(attributes); // <.>
+
+String outfile = asciidoctor.convertFile(new File("sample.adoc"), options); // <.>
+----
+<.> Create `Asciidoctor` instance.
+<.> Defines the attributes as an `AttributesBuilder` by not using `build()`, `get()` or `asMap().
+<.> Defines the options as an `OptionsBuilder` by not using `build()`, `get()` or `asMap().
+<.> Converts the document passing `OptionsBuilder` instance.

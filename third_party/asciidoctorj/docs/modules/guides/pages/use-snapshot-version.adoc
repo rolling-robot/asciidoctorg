@@ -1,0 +1,34 @@
+= Using a Snapshot Version
+
+Snapshot versions will be published to https://oss.jfrog.org.
+To use a snapshot version of the the AsciidoctorJ library add this repository to your project:
+
+[source,xml]
+----
+<repositories>
+    <repository>
+        <id>snapshots</id>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+        <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </repository>
+</repositories>
+----
+
+If you build your project using {url-gradle}[Gradle] add the repository like this to your build:
+
+[source,groovy]
+----
+repositories {
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
+}
+----
+
+
+You can also download a snapshot version of the distribution from here: https://oss.sonatype.org/service/local/repositories/snapshots/content/org/asciidoctor/asciidoctorj/2.4.3-SNAPSHOT/.
