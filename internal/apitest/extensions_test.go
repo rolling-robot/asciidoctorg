@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/asciidoctor-go/asciidoctor"
+	"github.com/rolling-robot/asciidoctorg"
 )
 
 func mustContain(t *testing.T, out string, wants ...string) {

@@ -12,7 +12,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/asciidoctor-go/asciidoctor/internal/runtime"
+	"github.com/rolling-robot/asciidoctorg/internal/runtime"
 )
 
 type entry struct{ path, backend string }

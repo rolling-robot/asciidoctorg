@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/asciidoctor-go/asciidoctor"
+	"github.com/rolling-robot/asciidoctorg"
 )
 
 func eq(t *testing.T, what string, got, want any) {

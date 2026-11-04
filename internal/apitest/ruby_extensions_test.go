@@ -7,7 +7,7 @@ import (
 
 	ruby "github.com/go-embedded-ruby/ruby"
 
-	"github.com/asciidoctor-go/asciidoctor"
+	"github.com/rolling-robot/asciidoctorg"
 )
 
 func TestRubyProcessorByClassName(t *testing.T) {

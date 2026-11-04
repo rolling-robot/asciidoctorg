@@ -8,7 +8,7 @@ import (
 
 	ruby "github.com/go-embedded-ruby/ruby"
 
-	"github.com/asciidoctor-go/asciidoctor/internal/bridge"
+	"github.com/rolling-robot/asciidoctorg/internal/bridge"
 )
 
 // SafeMode restricts what a document may access. The zero value selects

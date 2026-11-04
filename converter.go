@@ -7,7 +7,7 @@ import (
 
 	ruby "github.com/go-embedded-ruby/ruby"
 
-	"github.com/asciidoctor-go/asciidoctor/internal/bridge"
+	"github.com/rolling-robot/asciidoctorg/internal/bridge"
 )
 
 // Converter converts document nodes to an output format. Asciidoctor calls

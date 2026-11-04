@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/asciidoctor-go/asciidoctor"
-	"github.com/asciidoctor-go/asciidoctor/internal/testutil"
+	"github.com/rolling-robot/asciidoctorg"
+	"github.com/rolling-robot/asciidoctorg/internal/testutil"
 )
 
 // Ported from AsciidoctorJ's WhenCustomTemplatesAreUsed,

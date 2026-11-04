@@ -6,7 +6,7 @@ import (
 
 	ruby "github.com/go-embedded-ruby/ruby"
 
-	"github.com/asciidoctor-go/asciidoctor/internal/bridge"
+	"github.com/rolling-robot/asciidoctorg/internal/bridge"
 )
 
 // ErrClosed is returned by the methods of a closed Asciidoctor instance.

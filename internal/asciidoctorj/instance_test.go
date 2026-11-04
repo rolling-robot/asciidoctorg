@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/asciidoctor-go/asciidoctor"
+	"github.com/rolling-robot/asciidoctorg"
 )
 
 // Ported from AsciidoctorJ's WhenAnAsciidoctorClassIsInstantiated.

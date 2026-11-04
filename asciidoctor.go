@@ -8,8 +8,8 @@ import (
 
 	ruby "github.com/go-embedded-ruby/ruby"
 
-	"github.com/asciidoctor-go/asciidoctor/internal/bridge"
-	"github.com/asciidoctor-go/asciidoctor/internal/runtime"
+	"github.com/rolling-robot/asciidoctorg/internal/bridge"
+	"github.com/rolling-robot/asciidoctorg/internal/runtime"
 )
 
 // Asciidoctor is an Asciidoctor processor: one embedded Ruby interpreter with

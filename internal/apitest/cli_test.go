@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/asciidoctor-go/asciidoctor"
+	"github.com/rolling-robot/asciidoctorg"
 )
 
 // runCLI runs the command line on a fresh instance and returns the exit code,

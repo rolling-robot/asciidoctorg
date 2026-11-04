@@ -1,4 +1,4 @@
-module github.com/asciidoctor-go/asciidoctor
+module github.com/rolling-robot/asciidoctorg
 
 go 1.27.2
 

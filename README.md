@@ -29,16 +29,16 @@ html, err := asciidoctor.Convert("= Hello\n\nA *bold* paragraph.", nil)
 ## Install
 
 ```sh
-go get github.com/asciidoctor-go/asciidoctor
-go install github.com/asciidoctor-go/asciidoctor/cmd/asciidoctor@latest
+go get github.com/rolling-robot/asciidoctorg
+go install github.com/rolling-robot/asciidoctorg/cmd/asciidoctor@latest
 ```
 
 Use a release version (`@latest` or a tag such as `@v0.1.0`). The embedded
 Ruby sources come from git submodules, which Go module downloads do not
 include, so each release tag points to a commit that holds the submodule
-contents as ordinary files. A commit of `main` (a pseudo-version such as
-`@main`) does not build; to work on `main`, clone it with
-`git clone --recursive`.
+contents as ordinary files. A commit of `master` (a pseudo-version such as
+`@master`) does not build; to work on `master`, clone it with
+`git clone --recursive https://github.com/rolling-robot/asciidoctorg.git`.
 
 ## Examples
 
@@ -78,7 +78,7 @@ for _, s := range sections {
 ```
 
 More, runnable, in [example_test.go](example_test.go) and the package
-documentation (`go doc github.com/asciidoctor-go/asciidoctor`).
+documentation (`go doc github.com/rolling-robot/asciidoctorg`).
 
 See [docs/compatibility.md](docs/compatibility.md) for what is not available
 (Pygments, `open-uri-cached`, most Rouge languages and themes) and how the API
@@ -133,11 +133,11 @@ git push origin v0.1.0
 ```
 
 `scripts/release.sh` needs a clean work tree with the submodules checked out
-(`git submodule update --init`). It makes a commit outside `main` whose parent
+(`git submodule update --init`). It makes a commit outside `master` whose parent
 is `HEAD` and whose tree is `HEAD`'s with each submodule replaced by its files,
 and tags that commit; `-n` makes the commit only and prints its hash. A release
 holds everything the tests need, so `go test
-github.com/asciidoctor-go/asciidoctor/...` passes in a module that requires it.
+github.com/rolling-robot/asciidoctorg/...` passes in a module that requires it.
 
 ## License
 

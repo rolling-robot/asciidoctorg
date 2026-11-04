@@ -125,8 +125,8 @@ Each step ends with a commit, all tests green.
 9. **CLI, docs and distribution.** `cmd/asciidoctor` mirroring the Ruby CLI
    options, package docs with runnable examples, README, and a solution for
    `go get` consumers (who do not receive submodule contents): release tags
-   point to commits outside `main` whose trees hold the submodules' files
-   (`scripts/release.sh`); `main` keeps the submodules.
+   point to commits outside `master` whose trees hold the submodules' files
+   (`scripts/release.sh`); `master` keeps the submodules.
 10. **Directory structure.** Option A was chosen: the public API stays in
     the root package (one import, like AsciidoctorJ's single entry point),
     and its tests moved out of the root — the API tests to `internal/apitest`,

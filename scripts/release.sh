@@ -2,9 +2,9 @@
 # Creates a release tag whose tree holds the contents of the git submodules.
 #
 # Go module downloads (go get, go install, the module proxy) do not include
-# submodule contents, so a module version built from a commit of main lacks the
+# submodule contents, so a module version built from a commit of master lacks the
 # Ruby sources that package rubysrc embeds. A release is therefore a commit
-# made outside main, whose parent is the HEAD of main and whose tree is HEAD's
+# made outside master, whose parent is the HEAD of master and whose tree is HEAD's
 # with every submodule replaced by the files of its checked-out commit and
 # .gitmodules removed. Go module zips leave out symbolic links, so a symbolic
 # link in a submodule to one of its files becomes a copy of that file.

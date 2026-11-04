@@ -7,7 +7,7 @@ import (
 
 	ruby "github.com/go-embedded-ruby/ruby"
 
-	"github.com/asciidoctor-go/asciidoctor/internal/runtime"
+	"github.com/rolling-robot/asciidoctorg/internal/runtime"
 )
 
 type handlerFunc func(c *ruby.Call, method string, args []ruby.Value) (any, error)

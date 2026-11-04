@@ -13,7 +13,7 @@ import (
 
 	ruby "github.com/go-embedded-ruby/ruby"
 
-	"github.com/asciidoctor-go/asciidoctor/internal/runtime"
+	"github.com/rolling-robot/asciidoctorg/internal/runtime"
 )
 
 // ErrClosed is returned by every operation on a closed Bridge.

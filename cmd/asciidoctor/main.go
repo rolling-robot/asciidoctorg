@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/asciidoctor-go/asciidoctor"
+	"github.com/rolling-robot/asciidoctorg"
 )
 
 func main() {

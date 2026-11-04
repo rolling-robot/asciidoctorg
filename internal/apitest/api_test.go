@@ -10,8 +10,8 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/asciidoctor-go/asciidoctor"
-	"github.com/asciidoctor-go/asciidoctor/internal/testutil"
+	"github.com/rolling-robot/asciidoctorg"
+	"github.com/rolling-robot/asciidoctorg/internal/testutil"
 )
 
 // Expected values in this file were produced by Asciidoctor on MRI Ruby.

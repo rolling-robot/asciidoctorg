@@ -11,8 +11,8 @@ import (
 
 	nokogiri "github.com/go-nokogiri/nokogiri"
 
-	"github.com/asciidoctor-go/asciidoctor"
-	"github.com/asciidoctor-go/asciidoctor/internal/testutil"
+	"github.com/rolling-robot/asciidoctorg"
+	"github.com/rolling-robot/asciidoctorg/internal/testutil"
 )
 
 // Helpers for the tests ported from AsciidoctorJ.

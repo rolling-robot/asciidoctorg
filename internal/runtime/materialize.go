@@ -12,7 +12,7 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/asciidoctor-go/asciidoctor/rubysrc"
+	"github.com/rolling-robot/asciidoctorg/rubysrc"
 )
 
 // completeMarker is written last; its presence means the tree is usable.
