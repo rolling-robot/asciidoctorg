@@ -176,6 +176,11 @@ Where the Go API behaves differently from AsciidoctorJ:
   when registering.
 - **Log handlers cannot fail a conversion by returning an error**; one that
   panics aborts it, and the conversion returns the panic as its error.
+- **Panics in Go callbacks** (extensions, converters, syntax highlighters, log
+  handlers) do not crash the program: the call returns an `*Error` whose
+  `Cause` is a `*PanicError` holding the panic value and its stack trace.
+- **`Close` stops Ruby threads** that Ruby code started on the instance, as
+  MRI does at exit, after running the `at_exit` handlers.
 - **`CompatModeDefault`** removes the `compat-mode` attribute (Asciidoctor
   enables compatibility mode whenever the attribute is present).
 - **Standard input of the command line** is the `io.Reader` given to `RunCLI`.

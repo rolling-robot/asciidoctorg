@@ -115,14 +115,25 @@ ruby scripts/gen-goldens.rb          # regenerate the MRI goldens (needs MRI Rub
 - A `Bridge` owns one interpreter. Every entry point holds `mu`, because an
   interpreter is not goroutine-safe.
 - Ruby calls back into Go (extensions, converters, log handlers) while `mu`
-  is held. A `callbacks` counter lets `Do` run directly inside a callback
-  instead of deadlocking.
+  is held. The bridge records the goroutines inside the critical section:
+  the one that locked `mu`, plus each goroutine running a callback. A Ruby
+  thread runs on a goroutine of its own, so its callbacks count too. Their
+  goroutine IDs come from parsing `runtime.Stack`.
+  - On those goroutines, `Do` runs directly instead of deadlocking.
+  - Any other goroutine waits for `mu`, even while a callback is in progress.
   - Rule, documented on the public API: objects passed to a callback are used
     only by the goroutine running it.
 - Each Go object is registered under a handle. The Ruby proxies call
   `AsciidoctorGo::Bridge.dispatch(handle, method, *args)`, which routes to
   the Go `Handler`.
 - `AsciidoctorGo::Writer` adapts an `io.Writer` for `:to_file`.
+- A panic in Go code called from Ruby is recovered and becomes the `Cause`
+  of the returned `*Error`, as a `*PanicError` holding the panic's stack.
+- `Close` runs the interpreter's `at_exit` handlers. The glue's own handler,
+  registered first so it runs last, kills the Ruby threads still running, so
+  their goroutines do not outlive the instance. A thread blocked in
+  `TCPServer#accept` cannot be interrupted (rbgo gap 22); `Close` waits at
+  most a second for such threads, then leaves them.
 
 ### Go API (repository root, package `asciidoctor`)
 

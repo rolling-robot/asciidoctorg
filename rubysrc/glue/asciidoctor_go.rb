@@ -11,6 +11,19 @@ require 'asciidoctor/converter/html5'
 require 'asciidoctor/converter/docbook5'
 require 'asciidoctor/converter/manpage'
 
+# Closing an instance runs its at_exit handlers. Ruby threads still running
+# then would outlive the instance (each runs on a goroutine of its own, which
+# keeps the interpreter alive), so they are killed, as MRI does at exit. This
+# handler is registered before any of the user's, so it runs after them. A
+# thread that cannot be interrupted (one blocked in TCPServer#accept) is left
+# after a bounded wait.
+at_exit do
+  threads = ::Thread.list - [::Thread.current]
+  threads.each(&:kill)
+  deadline = ::Time.now + 1
+  threads.each {|t| t.join [deadline - ::Time.now, 0].max }
+end
+
 module AsciidoctorGo
   # Converts input as Asciidoctor.convert does, and returns the converted
   # String, or nil when the output was written to a file or stream.

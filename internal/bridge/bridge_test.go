@@ -2,8 +2,10 @@ package bridge
 
 import (
 	"errors"
+	goruntime "runtime"
 	"strings"
 	"testing"
+	"time"
 
 	ruby "github.com/go-embedded-ruby/ruby"
 
@@ -148,5 +150,26 @@ func TestEnterIsReentrant(t *testing.T) {
 	go func() { done <- b.Do(func() error { return nil }) }()
 	if err := <-done; err != nil {
 		t.Fatal(err)
+	}
+}
+
+// Closing a bridge kills the Ruby threads still running, so that their
+// goroutines end with it.
+func TestCloseKillsRubyThreads(t *testing.T) {
+	b := newBridge(t)
+	settle := func() int {
+		time.Sleep(200 * time.Millisecond)
+		return goruntime.NumGoroutine()
+	}
+	before := settle()
+	eval(t, b, `$threads = [Thread.new { sleep }, Thread.new { loop { Thread.pass } }, Thread.new { Queue.new.pop }]; nil`)
+	if n := settle(); n <= before {
+		t.Fatalf("Ruby threads started no goroutines (%d before, %d after)", before, n)
+	}
+	if err := b.Close(); err != nil {
+		t.Fatal(err)
+	}
+	if n := settle(); n > before {
+		t.Fatalf("%d goroutines after Close, %d before the threads started", n, before)
 	}
 }
