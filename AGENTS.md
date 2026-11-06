@@ -430,24 +430,16 @@ Each leaked interpreter can leave Ruby threads and goroutines running.
 *Fix:* `defer func(){ if err != nil { in.Close() } }()` with a named error
 result.
 
-**D6. Missing argument checks in Go-defined Ruby methods.** In
-`internal/runtime/rouge.go`, `guess`, `format_html`, `format_html_inline` and
-`theme_styles` index `c.Args[0]` and `c.Args[1]` without a length check. The
-same is true of `converterHandler.Dispatch` (`"handles"` and `"write"`,
-`converter.go:209-215`), `lineHandler.Dispatch` (`reader.go:159`), and the
-`AsciidoctorGo::Writer` methods. Those methods also type-assert
-`c.Self.Go().(*Writer)` unchecked, so `AsciidoctorGo::Writer.new.write("x")`
-from user Ruby dereferences a nil `io.Writer`.
-- Handlers that go through `bridge.dispatch` are protected by `safeDispatch`,
-  which turns the panic into a `PanicError`.
-- The rouge and Writer methods are registered directly with
-  `DefineSingletonMethod` and `DefineMethod`. Their panics are not recovered
-  in this module, and `define.go` in rbgo has no `recover()`. Whether rbgo
-  recovers them deeper down has not been verified.
-
-*Fix:* add the length checks and comma-ok assertions, and raise
-`ArgumentError` or `TypeError`. A small helper such as
-`args(c, n) error` keeps this uniform.
+**D6. Missing argument checks in Go-defined Ruby methods. Checked: not a
+crash.** Several native methods index `c.Args` without a length check: the
+rouge bridge (`guess`, `format_html`, `format_html_inline`, `theme_styles`),
+`converterHandler.Dispatch` (`"handles"`, `"write"`), `lineHandler.Dispatch`,
+and the `AsciidoctorGo::Writer` methods. Testing showed that rbgo recovers a
+panic in a native method and raises it as a Ruby `ArgumentError`, for example
+`guess: runtime error: index out of range [0] with length 0`. The bridge
+handlers additionally go through `safeDispatch`. The only cost is a poor error
+message. `TestNativeMethodsCheckArguments` (runtime) and
+`TestWriterCreatedFromRubyRaises` (bridge) guard this behaviour.
 
 **D7. A failure in `Default()` is cached forever.** `sync.Once` stores the
 first error, so a transient failure (cache directory not writable yet, disk
@@ -644,7 +636,7 @@ rule 2).
 | A4 | P0 | Fix D5: close the interpreter on `Boot`/`bridge.New` error paths | behaviour | S |
 | A5 | P0 | Add LICENSE (owner decision; the embedded code is MIT) | housekeeping | XS |
 | A6 | P0 | Add CI (vet, gofmt, test, race subset, govulncheck, golangci-lint), submodules recursive | tooling | S |
-| A7 | P1 | Fix D6: argument and type checks in all Go-defined Ruby methods; helper for arity | behaviour | S |
+| A7 | P3 | D6 (checked, rbgo raises `ArgumentError`): optional clearer arity messages | cleanup | XS |
 | A8 | P1 | Fix D7 (`Default()` retry) and D8 (re-register leak) | behaviour | XS |
 | A9 | P1 | R1 step 1: make `require 'optparse'` lazy; try booting under `-tags rbgo_core`; list remaining `LoadError`s | behaviour | M |
 | A10 | P1 | R6: cache dir `0o700` and owner check, prune stale trees, build-time tree hash | behaviour | M |

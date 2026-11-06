@@ -42,3 +42,13 @@ func TestNewClosesInterpreterOnError(t *testing.T) {
 		t.Fatalf("the interpreter was not closed after New failed: %v", err)
 	}
 }
+
+// D6: AsciidoctorGo::Writer's methods assume a Go writer behind the object.
+// One created from Ruby has none; using it must raise, not crash.
+func TestWriterCreatedFromRubyRaises(t *testing.T) {
+	b := newBridge(t)
+	got := eval(t, b, "begin; AsciidoctorGo::Writer.new.write('x'); 'no error'; rescue ::StandardError => e; e.class.name; end")
+	if got == `"no error"` {
+		t.Fatalf("writing to a Writer without a Go writer did not raise")
+	}
+}
