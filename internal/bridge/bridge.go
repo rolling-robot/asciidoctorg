@@ -124,11 +124,28 @@ func (b *Bridge) Do(fn func() error) error {
 	if goErr := b.goErr; err != nil && goErr != nil {
 		b.goErr = nil
 		var re *ruby.Error
-		if errors.As(err, &re) && strings.Contains(re.Message, goErr.Error()) {
+		if errors.As(err, &re) && raisedFrom(re, goErr) {
 			return &CallbackError{Ruby: err, Go: goErr}
 		}
 	}
 	return err
+}
+
+// raisedFrom reports whether the Ruby exception re plausibly is the one
+// toRubyError raised for the Go error goErr. The exception object cannot carry
+// a marker back to Go, so this goes by class and message: it is a
+// RuntimeError (the class toRubyError raises), and its message contains the
+// Go error's (Asciidoctor may prefix it); an empty Go message matches only an
+// empty Ruby one. A Go error that Ruby rescued is thus not blamed for a later
+// exception of another class or message.
+func raisedFrom(re *ruby.Error, goErr error) bool {
+	if re.Class != "RuntimeError" {
+		return false
+	}
+	if msg := goErr.Error(); msg != "" {
+		return strings.Contains(re.Message, msg)
+	}
+	return re.Message == ""
 }
 
 // Enter runs fn as Do does. Code inside fn may use the bridge again on the

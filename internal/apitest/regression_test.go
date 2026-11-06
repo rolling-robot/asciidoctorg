@@ -168,3 +168,37 @@ func TestLogHandlerRegisteredWhileLastOneIsRemoved(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+// D9: an error a Go callback returned was attached (as Error.Cause) to
+// whatever exception ended the call if its message contained the Go error's
+// text, so an empty message, or a callback error that Ruby had rescued,
+// was blamed for an unrelated exception.
+func TestCallbackErrorNotBlamedForUnrelatedException(t *testing.T) {
+	for _, msg := range []string{"", "boom"} {
+		t.Run("message "+msg, func(t *testing.T) {
+			a := newInstance(t)
+			goErr := errors.New(msg)
+			if _, err := a.Extensions().InlineMacro("fail", asciidoctor.InlineMacroProcessorFunc(func(asciidoctor.Node, string, map[string]any) (*asciidoctor.PhraseNode, error) {
+				return nil, goErr
+			}), nil); err != nil {
+				t.Fatal(err)
+			}
+			err := a.Do(func(in *ruby.Interp) error {
+				_, err := in.Eval(`
+begin
+  Asciidoctor.convert 'fail:x[]'
+rescue
+end
+raise ArgumentError, 'unrelated boom'`, "d9.rb", 1)
+				return err
+			})
+			var e *asciidoctor.Error
+			if !errors.As(err, &e) || e.Class != "ArgumentError" {
+				t.Fatalf("got %v, want the ArgumentError", err)
+			}
+			if e.Cause != nil || errors.Is(err, goErr) {
+				t.Fatalf("the rescued Go error %q was blamed for the ArgumentError", msg)
+			}
+		})
+	}
+}
