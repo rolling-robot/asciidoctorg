@@ -1,6 +1,7 @@
 package asciidoctor
 
 import (
+	"errors"
 	"sync"
 
 	ruby "github.com/go-embedded-ruby/ruby"
@@ -70,22 +71,40 @@ type logging struct {
 // least one handler is registered, messages go to the handlers instead of
 // standard error. The returned function unregisters the handler.
 func (a *Asciidoctor) RegisterLogHandler(h LogHandler) (unregister func() error, err error) {
-	l := &a.logging
-	l.mu.Lock()
-	l.nextID++
-	id := l.nextID
-	if l.handlers == nil {
-		l.handlers = map[int]LogHandler{}
+	if h == nil {
+		return nil, errors.New("asciidoctor: RegisterLogHandler: nil handler")
 	}
-	l.handlers[id] = h
-	l.order = append(l.order, id)
-	needInstall := !l.installed
-	l.mu.Unlock()
-	if needInstall {
-		if err := a.installLogger(); err != nil {
-			a.removeLogHandler(id)
-			return nil, err
+	var id int
+	// Adding the handler and installing the Go logger happen together with
+	// the interpreter held, as does removing the last handler and
+	// uninstalling the logger, so the two sequences cannot interleave. The
+	// interpreter is always taken before logging.mu, which is never held
+	// while Ruby runs (Ruby calls the log handlers, which take it).
+	err = a.do(func() error {
+		l := &a.logging
+		l.mu.Lock()
+		l.nextID++
+		id = l.nextID
+		if l.handlers == nil {
+			l.handlers = map[int]LogHandler{}
 		}
+		l.handlers[id] = h
+		l.order = append(l.order, id)
+		installed, level := l.installed, l.level
+		l.mu.Unlock()
+		if installed {
+			return nil
+		}
+		if err := a.installLogger(level); err != nil {
+			l.mu.Lock()
+			l.removeHandler(id)
+			l.mu.Unlock()
+			return err
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
 	}
 	var once sync.Once
 	return func() error {
@@ -95,9 +114,8 @@ func (a *Asciidoctor) RegisterLogHandler(h LogHandler) (unregister func() error,
 	}, nil
 }
 
-func (a *Asciidoctor) removeLogHandler(id int) error {
-	l := &a.logging
-	l.mu.Lock()
+// removeHandler forgets handler id. The caller holds l.mu.
+func (l *logging) removeHandler(id int) {
 	delete(l.handlers, id)
 	for i, x := range l.order {
 		if x == id {
@@ -105,12 +123,20 @@ func (a *Asciidoctor) removeLogHandler(id int) error {
 			break
 		}
 	}
-	uninstall := len(l.handlers) == 0 && l.installed
-	l.mu.Unlock()
-	if uninstall {
-		return a.uninstallLogger()
-	}
-	return nil
+}
+
+func (a *Asciidoctor) removeLogHandler(id int) error {
+	return a.do(func() error { // see RegisterLogHandler for the locking
+		l := &a.logging
+		l.mu.Lock()
+		l.removeHandler(id)
+		uninstall := len(l.handlers) == 0 && l.installed
+		l.mu.Unlock()
+		if uninstall {
+			return a.uninstallLogger()
+		}
+		return nil
+	})
 }
 
 // Log logs a message through Asciidoctor's logger, as Asciidoctor's own
@@ -135,78 +161,75 @@ func (a *Asciidoctor) Log(record LogRecord) error {
 // SetLogLevel sets the lowest severity delivered to log handlers and, while
 // none is registered, written to standard error. The default is SeverityWarn.
 func (a *Asciidoctor) SetLogLevel(level Severity) error {
+	return a.do(func() error {
+		l := &a.logging
+		l.mu.Lock()
+		l.level = level
+		l.mu.Unlock()
+		return a.setRubyLogLevel(level)
+	})
+}
+
+// setRubyLogLevel sets the level of Asciidoctor's current logger. The caller
+// holds the interpreter.
+func (a *Asciidoctor) setRubyLogLevel(level Severity) error {
+	mgr, err := a.b.Const("Asciidoctor::LoggerManager")
+	if err != nil {
+		return err
+	}
+	logger, err := mgr.Call("logger")
+	if err != nil {
+		return err
+	}
+	_, err = logger.Call("level=", int(level))
+	return err
+}
+
+// installLogger makes a Go-backed logger Asciidoctor's logger. The caller
+// holds the interpreter, not l.mu.
+func (a *Asciidoctor) installLogger(level Severity) error {
+	id := a.b.Register(&logHandler{a: a})
+	cls, err := a.b.Const("AsciidoctorGo::Logger")
+	if err == nil {
+		var logger ruby.Value
+		if logger, err = cls.Call("new", id, int(level)); err == nil {
+			var mgr ruby.Value
+			if mgr, err = a.b.Const("Asciidoctor::LoggerManager"); err == nil {
+				_, err = mgr.Call("logger=", logger)
+			}
+		}
+	}
+	if err != nil {
+		a.b.Unregister(id)
+		return err
+	}
 	l := &a.logging
 	l.mu.Lock()
-	l.level = level
+	l.installed = true
+	l.loggerID = id
 	l.mu.Unlock()
-	return a.do(func() error {
-		mgr, err := a.b.Const("Asciidoctor::LoggerManager")
-		if err != nil {
-			return err
-		}
-		logger, err := mgr.Call("logger")
-		if err != nil {
-			return err
-		}
-		_, err = logger.Call("level=", int(level))
-		return err
-	})
+	return nil
 }
 
-func (a *Asciidoctor) installLogger() error {
-	l := &a.logging
-	return a.do(func() error {
-		l.mu.Lock()
-		level := l.level
-		l.mu.Unlock()
-		id := a.b.Register(&logHandler{a: a})
-		cls, err := a.b.Const("AsciidoctorGo::Logger")
-		if err != nil {
-			return err
-		}
-		logger, err := cls.Call("new", id, int(level))
-		if err != nil {
-			a.b.Unregister(id)
-			return err
-		}
-		mgr, err := a.b.Const("Asciidoctor::LoggerManager")
-		if err != nil {
-			return err
-		}
-		if _, err := mgr.Call("logger=", logger); err != nil {
-			return err
-		}
-		l.mu.Lock()
-		l.installed = true
-		l.loggerID = id
-		l.mu.Unlock()
-		return nil
-	})
-}
-
+// uninstallLogger restores Asciidoctor's default logger (on $stderr). The
+// caller holds the interpreter, not l.mu.
 func (a *Asciidoctor) uninstallLogger() error {
-	l := &a.logging
-	return a.do(func() error {
-		mgr, err := a.b.Const("Asciidoctor::LoggerManager")
-		if err != nil {
-			return err
-		}
-		// Assigning nil installs a default logger on $stderr.
-		if _, err := mgr.Call("logger=", nil); err != nil {
-			return err
-		}
-		l.mu.Lock()
-		level, id := l.level, l.loggerID
-		l.installed = false
-		l.mu.Unlock()
-		a.b.Unregister(id)
-		logger, err := mgr.Call("logger")
-		if err != nil {
-			return err
-		}
-		_, err = logger.Call("level=", int(level))
+	mgr, err := a.b.Const("Asciidoctor::LoggerManager")
+	if err != nil {
 		return err
-	})
+	}
+	// Assigning nil installs a default logger on $stderr.
+	if _, err := mgr.Call("logger=", nil); err != nil {
+		return err
+	}
+	l := &a.logging
+	l.mu.Lock()
+	level, id := l.level, l.loggerID
+	l.installed = false
+	l.loggerID = 0
+	l.mu.Unlock()
+	a.b.Unregister(id)
+	return a.setRubyLogLevel(level)
 }
 
 type logHandler struct {

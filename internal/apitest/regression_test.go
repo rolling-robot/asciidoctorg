@@ -2,8 +2,12 @@ package apitest
 
 import (
 	"errors"
+	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
+
+	ruby "github.com/go-embedded-ruby/ruby"
 
 	"github.com/rolling-robot/asciidoctorg"
 )
@@ -112,5 +116,55 @@ func TestRegisterFromCallbackWhileAnotherGoroutineRegisters(t *testing.T) {
 	within(t, 10*time.Second, func() { <-concurrentDone })
 	if inner != nil {
 		t.Fatalf("register from callback: %v", inner)
+	}
+}
+
+// D4: RegisterLogHandler and the removal of the last handler decided whether
+// to install or uninstall the Go logger under one lock and acted on it under
+// another. A handler registered while the last one was being removed could
+// end up registered with no Go logger installed, so its messages were lost.
+func TestLogHandlerRegisteredWhileLastOneIsRemoved(t *testing.T) {
+	a := newInstance(t)
+	remove1, err := a.RegisterLogHandler(asciidoctor.LogHandlerFunc(func(asciidoctor.LogRecord) {}))
+	if err != nil {
+		t.Fatal(err)
+	}
+	// Hold the interpreter so that the removal and the registration below
+	// both have to wait for it, in this order.
+	release, held := make(chan struct{}), make(chan struct{})
+	go a.Do(func(*ruby.Interp) error { close(held); <-release; return nil })
+	<-held
+	var wg sync.WaitGroup
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		if err := remove1(); err != nil {
+			t.Error(err)
+		}
+	}()
+	time.Sleep(100 * time.Millisecond) // let the removal reach the interpreter lock
+	var got atomic.Int32
+	var remove2 func() error
+	go func() {
+		defer wg.Done()
+		var err error
+		if remove2, err = a.RegisterLogHandler(asciidoctor.LogHandlerFunc(func(asciidoctor.LogRecord) { got.Add(1) })); err != nil {
+			t.Error(err)
+		}
+	}()
+	time.Sleep(100 * time.Millisecond)
+	close(release)
+	within(t, 10*time.Second, wg.Wait)
+	if t.Failed() {
+		return
+	}
+	if err := a.Log(asciidoctor.LogRecord{Severity: asciidoctor.SeverityWarn, Message: "probe"}); err != nil {
+		t.Fatal(err)
+	}
+	if n := got.Load(); n != 1 {
+		t.Fatalf("the registered handler received %d messages, want 1", n)
+	}
+	if err := remove2(); err != nil {
+		t.Fatal(err)
 	}
 }
