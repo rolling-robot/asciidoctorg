@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"sync"
+	"sync/atomic"
 
 	ruby "github.com/go-embedded-ruby/ruby"
 
@@ -307,16 +308,28 @@ func (a *Asciidoctor) AsciidoctorVersion() (string, error) {
 }
 
 var (
-	defaultOnce     sync.Once
-	defaultInstance *Asciidoctor
-	defaultErr      error
+	defaultMu       sync.Mutex
+	defaultInstance atomic.Pointer[Asciidoctor]
 )
 
 // Default returns the shared instance used by the package-level functions,
-// starting it on first use. Do not Close it.
+// starting it on first use. If starting it fails, the error is returned and
+// the next call tries again. Do not Close it.
 func Default() (*Asciidoctor, error) {
-	defaultOnce.Do(func() { defaultInstance, defaultErr = New() })
-	return defaultInstance, defaultErr
+	if a := defaultInstance.Load(); a != nil {
+		return a, nil
+	}
+	defaultMu.Lock()
+	defer defaultMu.Unlock()
+	if a := defaultInstance.Load(); a != nil {
+		return a, nil
+	}
+	a, err := New()
+	if err != nil {
+		return nil, err
+	}
+	defaultInstance.Store(a)
+	return a, nil
 }
 
 // Convert converts AsciiDoc source with the default instance; see
