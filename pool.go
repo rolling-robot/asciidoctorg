@@ -1,6 +1,7 @@
 package asciidoctor
 
 import (
+	"context"
 	"errors"
 	"sync"
 )
@@ -43,15 +44,36 @@ func NewPool(size int, setup func(*Asciidoctor) error, opts ...Option) (*Pool, e
 
 // Do runs fn with an instance borrowed from the pool.
 func (p *Pool) Do(fn func(*Asciidoctor) error) error {
-	a := <-p.idle
+	return p.DoContext(context.Background(), fn)
+}
+
+// DoContext runs fn with an instance borrowed from the pool. While all
+// instances are busy it waits until one is idle or ctx is done, and then
+// returns ctx.Err().
+func (p *Pool) DoContext(ctx context.Context, fn func(*Asciidoctor) error) error {
+	if err := ctx.Err(); err != nil {
+		return err
+	}
+	var a *Asciidoctor
+	select {
+	case a = <-p.idle:
+	case <-ctx.Done():
+		return ctx.Err()
+	}
 	defer func() { p.idle <- a }()
 	return fn(a)
 }
 
 // Convert converts source with a pooled instance; see Asciidoctor.Convert.
-func (p *Pool) Convert(source string, options *Options) (out string, err error) {
-	err = p.Do(func(a *Asciidoctor) error {
-		out, err = a.Convert(source, options)
+func (p *Pool) Convert(source string, options *Options) (string, error) {
+	return p.ConvertContext(context.Background(), source, options)
+}
+
+// ConvertContext converts source with a pooled instance; see
+// Asciidoctor.ConvertContext. ctx also bounds the wait for an idle instance.
+func (p *Pool) ConvertContext(ctx context.Context, source string, options *Options) (out string, err error) {
+	err = p.DoContext(ctx, func(a *Asciidoctor) error {
+		out, err = a.ConvertContext(ctx, source, options)
 		return err
 	})
 	return out, err
@@ -59,9 +81,16 @@ func (p *Pool) Convert(source string, options *Options) (out string, err error) 
 
 // ConvertFile converts a file with a pooled instance; see
 // Asciidoctor.ConvertFile.
-func (p *Pool) ConvertFile(path string, options *Options) (out string, err error) {
-	err = p.Do(func(a *Asciidoctor) error {
-		out, err = a.ConvertFile(path, options)
+func (p *Pool) ConvertFile(path string, options *Options) (string, error) {
+	return p.ConvertFileContext(context.Background(), path, options)
+}
+
+// ConvertFileContext converts a file with a pooled instance; see
+// Asciidoctor.ConvertFileContext. ctx also bounds the wait for an idle
+// instance.
+func (p *Pool) ConvertFileContext(ctx context.Context, path string, options *Options) (out string, err error) {
+	err = p.DoContext(ctx, func(a *Asciidoctor) error {
+		out, err = a.ConvertFileContext(ctx, path, options)
 		return err
 	})
 	return out, err

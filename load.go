@@ -1,21 +1,37 @@
 package asciidoctor
 
-import ruby "github.com/go-embedded-ruby/ruby"
+import (
+	"context"
+
+	ruby "github.com/go-embedded-ruby/ruby"
+)
 
 // Load parses AsciiDoc source into a Document without converting it. Output
 // options (ToFile, ToDir, Output) do not apply.
 func (a *Asciidoctor) Load(source string, options *Options) (*Document, error) {
-	return a.load("load", source, options)
+	return a.load(context.Background(), "load", source, options)
+}
+
+// LoadContext is Load with a context that can cancel the parsing; see
+// ConvertContext.
+func (a *Asciidoctor) LoadContext(ctx context.Context, source string, options *Options) (*Document, error) {
+	return a.load(ctx, "load", source, options)
 }
 
 // LoadFile parses the AsciiDoc file at path into a Document.
 func (a *Asciidoctor) LoadFile(path string, options *Options) (*Document, error) {
-	return a.load("load_file", path, options)
+	return a.load(context.Background(), "load_file", path, options)
 }
 
-func (a *Asciidoctor) load(method, input string, options *Options) (*Document, error) {
+// LoadFileContext is LoadFile with a context that can cancel the parsing;
+// see ConvertContext.
+func (a *Asciidoctor) LoadFileContext(ctx context.Context, path string, options *Options) (*Document, error) {
+	return a.load(ctx, "load_file", path, options)
+}
+
+func (a *Asciidoctor) load(ctx context.Context, method, input string, options *Options) (*Document, error) {
 	var v ruby.Value
-	err := a.do(func() error {
+	err := a.doContext(ctx, func() error {
 		opts := options.rubyOptions(nil)
 		delete(opts, "to_file")
 		delete(opts, "to_dir")

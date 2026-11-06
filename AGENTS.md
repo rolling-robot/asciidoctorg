@@ -79,7 +79,7 @@ ruby scripts/gen-goldens.rb          # regenerate the MRI goldens (needs MRI Rub
 ```
             Go API (package asciidoctor, repository root)
   Convert / Load / Options / Attributes / AST / Extensions / Converters / Logging / CLI
-                         │  one mutex per instance
+                         │  one lock per instance (cancellable)
           ┌──────────────┴──────────────┐
           │  internal/bridge            │  Go ⇄ Ruby values, proxy dispatch,
           │                             │  writer adapter, callback re-entry
@@ -116,15 +116,28 @@ ruby scripts/gen-goldens.rb          # regenerate the MRI goldens (needs MRI Rub
 
 ### Bridge (`internal/bridge`, `rubysrc/glue`)
 
-- A `Bridge` owns one interpreter. Every entry point holds `mu`, because an
-  interpreter is not goroutine-safe.
-- Ruby calls back into Go (extensions, converters, log handlers) while `mu`
-  is held. The bridge records the goroutines inside the critical section:
-  the one that locked `mu`, plus each goroutine running a callback. A Ruby
-  thread runs on a goroutine of its own, so its callbacks count too. Their
-  goroutine IDs come from parsing `runtime.Stack`.
-  - On those goroutines, `Do` runs directly instead of deadlocking.
-  - Any other goroutine waits for `mu`, even while a callback is in progress.
+- A `Bridge` owns one interpreter. Every entry point holds its lock (a
+  one-slot channel, so a wait can be cancelled), because an interpreter is
+  not goroutine-safe.
+- Ruby calls back into Go (extensions, converters, log handlers) while the
+  lock is held. The bridge records the goroutines inside the critical
+  section: the one that took the lock, plus each goroutine running a
+  callback. A Ruby thread runs on a goroutine of its own, so its callbacks
+  count too. Their goroutine IDs come from parsing `runtime.Stack`.
+  - On those goroutines, `Do` runs directly instead of deadlocking, and
+    `Close` returns `ErrCloseInCallback`.
+  - Any other goroutine waits for the lock, even while a callback is in
+    progress.
+  - **Lock order:** the bridge lock first, then any Go-side mutex
+    (`ExtensionRegistry.mu`, `logging.mu`). No Go-side mutex is held while
+    Ruby runs. Breaking this rule caused defects D3 and D4.
+- Cancellation is cooperative, since rbgo cannot interrupt running Ruby code.
+  `DoContext` records the call's context, and
+  `AsciidoctorGo::Bridge.checkpoint` raises `AsciidoctorGo::Canceled` (an
+  `Exception`, so bare rescues let it through) once the context is done. The
+  glue (`rubysrc/glue/asciidoctor_go_cancel.rb`) calls it in
+  `Parser.next_block` and `AbstractBlock#convert`, and every dispatch to Go
+  checks it as well. This costs about 4% on a small conversion.
   - Rule, documented on the public API: objects passed to a callback are used
     only by the goroutine running it.
 - Each Go object is registered under a handle. The Ruby proxies call
@@ -144,7 +157,7 @@ ruby scripts/gen-goldens.rb          # regenerate the MRI goldens (needs MRI Rub
 | File | Area |
 |---|---|
 | `asciidoctor.go`, `options.go`, `attributes.go`, `errors.go`, `pool.go`, `wrap.go` | instance (`New`, `Close`, `With*` options), `Options` struct, `Attributes` with chainable setters, typed errors with the Ruby backtrace, `Pool`, `Do` |
-| `converter.go`, `load.go`, `walker.go` | `Convert*`, `Load*`, directory walkers (`AsciiDocDirectoryWalker`, `GlobDirectoryWalker`) |
+| `converter.go`, `load.go`, `walker.go` | `Convert*`, `Load*` (each with a `*Context` variant), directory walkers (`AsciiDocDirectoryWalker`, `GlobDirectoryWalker`) |
 | `document.go`, `node.go`, `structural_node.go`, `blocks.go`, `table.go`, `create.go`, `reader.go` | AST wrappers that hold the live `ruby.Value` and forward to it (like AsciidoctorJ's `*Impl`), with a per-document cache that keeps wrapper identity stable; `Create*` node constructors; `Reader` |
 | `extensions.go`, `extension_handlers.go`, `ruby_extensions.go` | Go processors of all eight kinds; each becomes a Ruby subclass of the matching `Asciidoctor::Extensions::*Processor` whose `process` calls Go. Registration metadata comes from a Go struct (the analogue of AsciidoctorJ's annotations). Groups; `RegisterSetup` (service-loader analogue, called from `init`); Ruby extensions via `LoadRubySource`/`RequireLibrary` |
 | `syntax_highlighter.go`, `logging.go` | Go syntax highlighters and log handlers, same proxy pattern |

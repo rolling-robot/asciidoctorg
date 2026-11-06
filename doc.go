@@ -40,6 +40,17 @@
 // ConvertDocument and ConvertFileDocument also return the converted Document,
 // for example to read its catalog of referenced images and links.
 //
+// # Cancellation
+//
+// ConvertContext, LoadContext and the other *Context methods take a
+// context.Context. It bounds the wait for an instance that another call is
+// using, and it stops a conversion at the next checkpoint: before each block is
+// parsed, before each block is converted, and at every Go callback. The
+// embedded interpreter cannot be interrupted in between, so the work on one
+// block runs to its end. A cancelled call returns an error for which
+// errors.Is(err, ctx.Err()) holds, and the instance remains usable. Use a
+// deadline when converting documents from untrusted sources.
+//
 // The built-in backends are html5, docbook5 and manpage. Source highlighting
 // works with Rouge (backed by go-rouge), CodeRay (embedded), highlight.js and
 // prettify; RegisterSyntaxHighlighter adds a highlighter written in Go.

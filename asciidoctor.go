@@ -1,6 +1,7 @@
 package asciidoctor
 
 import (
+	"context"
 	"errors"
 	"io"
 	"os"
@@ -157,6 +158,11 @@ func (a *Asciidoctor) do(fn func() error) error {
 	return wrapError(a.b.Do(fn))
 }
 
+// doContext is do for a call that ctx can cancel; see ConvertContext.
+func (a *Asciidoctor) doContext(ctx context.Context, fn func() error) error {
+	return wrapError(a.b.DoContext(ctx, fn))
+}
+
 // glue returns the AsciidoctorGo glue module.
 func (a *Asciidoctor) glue() (ruby.Value, error) {
 	return a.b.Const("AsciidoctorGo")
@@ -166,7 +172,21 @@ func (a *Asciidoctor) glue() (ruby.Value, error) {
 // direct the output to a file (ToFile, ToDir) or a stream (Output), the
 // result is written there and Convert returns "".
 func (a *Asciidoctor) Convert(source string, options *Options) (string, error) {
-	return a.convert("convert", source, options)
+	return a.convert(context.Background(), "convert", source, options)
+}
+
+// ConvertContext is Convert with a context that can cancel the conversion.
+//
+// The context is honoured while the call waits for the instance (another call
+// may be in progress) and at checkpoints during the conversion: before each
+// block is parsed, before each block is converted, and at every call of a Go
+// extension, converter or other callback. The embedded interpreter cannot be
+// interrupted between checkpoints, so the work on one block (the
+// substitutions of a long paragraph, for example) runs to its end. A cancelled
+// call returns an error for which errors.Is(err, ctx.Err()) holds, and the
+// instance remains usable.
+func (a *Asciidoctor) ConvertContext(ctx context.Context, source string, options *Options) (string, error) {
+	return a.convert(ctx, "convert", source, options)
 }
 
 // ConvertFile converts the AsciiDoc file at path. Like Asciidoctor's
@@ -175,16 +195,22 @@ func (a *Asciidoctor) Convert(source string, options *Options) (string, error) {
 // otherwise, and returns "". Set NoOutputFile to get the result as a string
 // instead, or Output to write it to a stream.
 func (a *Asciidoctor) ConvertFile(path string, options *Options) (string, error) {
-	return a.convert("convert_file", path, options)
+	return a.convert(context.Background(), "convert_file", path, options)
 }
 
-func (a *Asciidoctor) convert(method, input string, options *Options) (string, error) {
+// ConvertFileContext is ConvertFile with a context that can cancel the
+// conversion; see ConvertContext.
+func (a *Asciidoctor) ConvertFileContext(ctx context.Context, path string, options *Options) (string, error) {
+	return a.convert(ctx, "convert_file", path, options)
+}
+
+func (a *Asciidoctor) convert(ctx context.Context, method, input string, options *Options) (string, error) {
 	var writer *bridge.Writer
 	if options != nil && options.Output != nil {
 		writer = &bridge.Writer{W: options.Output}
 	}
 	var out string
-	err := a.do(func() error {
+	err := a.doContext(ctx, func() error {
 		g, err := a.glue()
 		if err != nil {
 			return err
@@ -209,23 +235,35 @@ func (a *Asciidoctor) convert(method, input string, options *Options) (string, e
 // (with Options.CatalogAssets). output is "" when it was written to a file or
 // stream.
 func (a *Asciidoctor) ConvertDocument(source string, options *Options) (doc *Document, output string, err error) {
-	return a.convertDocument("convert", source, options)
+	return a.convertDocument(context.Background(), "convert", source, options)
+}
+
+// ConvertDocumentContext is ConvertDocument with a context that can cancel
+// the conversion; see ConvertContext.
+func (a *Asciidoctor) ConvertDocumentContext(ctx context.Context, source string, options *Options) (doc *Document, output string, err error) {
+	return a.convertDocument(ctx, "convert", source, options)
 }
 
 // ConvertFileDocument converts as ConvertFile does and also returns the
 // converted document; see ConvertDocument.
 func (a *Asciidoctor) ConvertFileDocument(path string, options *Options) (doc *Document, output string, err error) {
-	return a.convertDocument("convert_file", path, options)
+	return a.convertDocument(context.Background(), "convert_file", path, options)
 }
 
-func (a *Asciidoctor) convertDocument(method, input string, options *Options) (*Document, string, error) {
+// ConvertFileDocumentContext is ConvertFileDocument with a context that can
+// cancel the conversion; see ConvertContext.
+func (a *Asciidoctor) ConvertFileDocumentContext(ctx context.Context, path string, options *Options) (doc *Document, output string, err error) {
+	return a.convertDocument(ctx, "convert_file", path, options)
+}
+
+func (a *Asciidoctor) convertDocument(ctx context.Context, method, input string, options *Options) (*Document, string, error) {
 	var writer *bridge.Writer
 	if options != nil && options.Output != nil {
 		writer = &bridge.Writer{W: options.Output}
 	}
 	var docValue ruby.Value
 	var out string
-	err := a.do(func() error {
+	err := a.doContext(ctx, func() error {
 		g, err := a.glue()
 		if err != nil {
 			return err
@@ -258,6 +296,12 @@ func (a *Asciidoctor) convertDocument(method, input string, options *Options) (*
 // ConvertReader converts the AsciiDoc source read from r and writes the result
 // to w (overriding options.Output).
 func (a *Asciidoctor) ConvertReader(r io.Reader, w io.Writer, options *Options) error {
+	return a.ConvertReaderContext(context.Background(), r, w, options)
+}
+
+// ConvertReaderContext is ConvertReader with a context that can cancel the
+// conversion; see ConvertContext.
+func (a *Asciidoctor) ConvertReaderContext(ctx context.Context, r io.Reader, w io.Writer, options *Options) error {
 	if r == nil {
 		return errors.New("asciidoctor: ConvertReader: nil reader")
 	}
@@ -273,7 +317,7 @@ func (a *Asciidoctor) ConvertReader(r io.Reader, w io.Writer, options *Options) 
 		o = *options
 	}
 	o.Output = w
-	_, err = a.Convert(string(src), &o)
+	_, err = a.ConvertContext(ctx, string(src), &o)
 	return err
 }
 
@@ -281,9 +325,15 @@ func (a *Asciidoctor) ConvertReader(r io.Reader, w io.Writer, options *Options) 
 // results in the same order. It stops at the first error, returning the
 // results so far.
 func (a *Asciidoctor) ConvertFiles(paths []string, options *Options) ([]string, error) {
+	return a.ConvertFilesContext(context.Background(), paths, options)
+}
+
+// ConvertFilesContext is ConvertFiles with a context that can cancel the
+// conversions; see ConvertContext.
+func (a *Asciidoctor) ConvertFilesContext(ctx context.Context, paths []string, options *Options) ([]string, error) {
 	results := make([]string, 0, len(paths))
 	for _, p := range paths {
-		r, err := a.ConvertFile(p, options)
+		r, err := a.ConvertFileContext(ctx, p, options)
 		if err != nil {
 			return results, err
 		}

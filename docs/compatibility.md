@@ -139,6 +139,7 @@ in Ruby cannot be added to it.
 | `convert`, `convertFile`, `convertFiles`, `convertDirectory` | `Convert`, `ConvertFile`, `ConvertFiles`, `ConvertDirectory` |
 | `convert(Reader, Writer, Options)` | `ConvertReader` |
 | `convert(..., Document.class)` | `ConvertDocument`, `ConvertFileDocument` |
+| (none) | `ConvertContext`, `ConvertFileContext`, `ConvertDocumentContext`, `ConvertFileDocumentContext`, `ConvertReaderContext`, `ConvertFilesContext`, `LoadContext`, `LoadFileContext`, `Pool.DoContext`/`ConvertContext`/`ConvertFileContext`: cancellation and deadlines |
 | `load`, `loadFile` | `Load`, `LoadFile` |
 | `Options` / `OptionsBuilder` | `Options` struct; `Options.Extra` for any other option |
 | `Attributes` / `AttributesBuilder` | `Attributes` map with chainable setters (`TableOfContents`, `SectionNumbers`, `Icons`, `LinkCSS`, …) |
@@ -184,6 +185,13 @@ Where the Go API behaves differently from AsciidoctorJ:
 - **`CompatModeDefault`** removes the `compat-mode` attribute (Asciidoctor
   enables compatibility mode whenever the attribute is present).
 - **Standard input of the command line** is the `io.Reader` given to `RunCLI`.
+- **Cancellation.** The `*Context` methods stop waiting for a busy instance
+  when the context is done, and stop a conversion at its next checkpoint:
+  before each block is parsed or converted, and at each Go callback. The
+  embedded interpreter cannot be interrupted between checkpoints, so the work
+  on a single block runs to its end. AsciidoctorJ has no counterpart.
+- **`Close` from a callback** returns `ErrCloseInCallback` and leaves the
+  instance open.
 
 ## Performance
 
