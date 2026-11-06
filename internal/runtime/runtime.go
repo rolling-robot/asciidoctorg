@@ -32,10 +32,10 @@ type Runtime struct {
 }
 
 // Boot materializes the Ruby tree and loads Asciidoctor into a new interpreter.
-func Boot(cfg Config) (*Runtime, error) {
+// If loading fails, the interpreter is closed before the error is returned.
+func Boot(cfg Config) (_ *Runtime, err error) {
 	parent := cfg.Dir
 	if parent == "" {
-		var err error
 		if parent, err = DefaultCacheDir(); err != nil {
 			return nil, err
 		}
@@ -52,6 +52,11 @@ func Boot(cfg Config) (*Runtime, error) {
 		stderr = io.Discard
 	}
 	in := ruby.New(ruby.WithStdout(stdout), ruby.WithStderr(stderr))
+	defer func() {
+		if err != nil {
+			in.Close()
+		}
+	}()
 	if err := in.Set("__agox_shim_dir", shimDir(root)); err != nil {
 		return nil, err
 	}

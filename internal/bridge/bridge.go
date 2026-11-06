@@ -65,12 +65,18 @@ type Bridge struct {
 	consts      map[string]ruby.Value
 }
 
-// New boots an interpreter and loads the Go glue.
-func New(cfg runtime.Config) (*Bridge, error) {
+// New boots an interpreter and loads the Go glue. If loading the glue fails,
+// the interpreter is closed before the error is returned.
+func New(cfg runtime.Config) (_ *Bridge, err error) {
 	rt, err := runtime.Boot(cfg)
 	if err != nil {
 		return nil, err
 	}
+	defer func() {
+		if err != nil {
+			rt.Interp.Close()
+		}
+	}()
 	b := &Bridge{rt: rt, in: rt.Interp, handles: map[int64]Handler{}, consts: map[string]ruby.Value{}, owners: map[uint64]int{}}
 	mod, err := b.in.DefineModule("AsciidoctorGo::Bridge")
 	if err != nil {
