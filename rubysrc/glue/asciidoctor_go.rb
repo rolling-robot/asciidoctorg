@@ -10,6 +10,7 @@
 require 'asciidoctor/converter/html5'
 require 'asciidoctor/converter/docbook5'
 require 'asciidoctor/converter/manpage'
+require 'asciidoctor_go_cancel'
 
 # Closing an instance runs its at_exit handlers. Ruby threads still running
 # then would outlive the instance (each runs on a goroutine of its own, which

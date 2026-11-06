@@ -4,12 +4,14 @@
 package bridge
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	goruntime "runtime"
 	"runtime/debug"
 	"strings"
 	"sync"
+	"sync/atomic"
 
 	ruby "github.com/go-embedded-ruby/ruby"
 
@@ -35,20 +37,29 @@ type Handler interface {
 // Bridge owns one interpreter with Asciidoctor loaded.
 //
 // An interpreter is not safe for concurrent use, so every entry point runs
-// under mu. Ruby calls back into Go (extension processors, converters) while
-// mu is held; code running in such a callback is already inside the critical
-// section and must not lock again. The goroutines inside the critical section
-// are recorded in owners: the one that locked mu, and any goroutine running a
-// callback (a Ruby thread runs on a goroutine of its own). Do runs its function
-// directly on those goroutines and locks mu on any other, so another goroutine
-// waits even while a callback is in progress. This relies on the rule,
-// documented on the public API, that objects passed to a callback are used only
-// by the goroutine running it.
+// with the lock held: a one-slot channel, so that waiting for it can be
+// cancelled. Ruby calls back into Go (extension processors, converters) while
+// the lock is held; code running in such a callback is already inside the
+// critical section and must not lock again. The goroutines inside the critical
+// section are recorded in owners: the one that took the lock, and any
+// goroutine running a callback (a Ruby thread runs on a goroutine of its own).
+// Do runs its function directly on those goroutines and takes the lock on any
+// other, so another goroutine waits even while a callback is in progress. This
+// relies on the rule, documented on the public API, that objects passed to a
+// callback are used only by the goroutine running it.
+//
+// Lock order: the bridge lock comes before any Go-side mutex of the public
+// package (extension registry, logging), and no such mutex is held while Ruby
+// runs.
 type Bridge struct {
 	rt     *runtime.Runtime
 	in     *ruby.Interp
-	mu     sync.Mutex
+	lock   chan struct{} // holds a token while a goroutine owns the interpreter
 	closed bool
+
+	// ctx is the context of the top-level call in progress (nil between
+	// calls). Ruby reads it through AsciidoctorGo::Bridge.checkpoint.
+	ctx atomic.Pointer[context.Context]
 
 	ownersMu sync.Mutex
 	owners   map[uint64]int // goroutine ID -> nesting depth
@@ -77,12 +88,13 @@ func New(cfg runtime.Config) (_ *Bridge, err error) {
 			rt.Interp.Close()
 		}
 	}()
-	b := &Bridge{rt: rt, in: rt.Interp, handles: map[int64]Handler{}, consts: map[string]ruby.Value{}, owners: map[uint64]int{}}
+	b := &Bridge{rt: rt, in: rt.Interp, lock: make(chan struct{}, 1), handles: map[int64]Handler{}, consts: map[string]ruby.Value{}, owners: map[uint64]int{}}
 	mod, err := b.in.DefineModule("AsciidoctorGo::Bridge")
 	if err != nil {
 		return nil, err
 	}
 	mod.DefineSingletonMethod("dispatch", b.dispatch)
+	mod.DefineSingletonMethod("checkpoint", b.checkpoint)
 	if err := defineWriter(b.in); err != nil {
 		return nil, err
 	}
@@ -104,32 +116,91 @@ func (b *Bridge) Root() string { return b.rt.Root }
 // Asciidoctor is the Asciidoctor module. Use it only inside Do.
 func (b *Bridge) Asciidoctor() ruby.Value { return b.asciidoctor }
 
-// Do runs fn with exclusive access to the interpreter. When a top-level call
-// fails because a Go callback returned an error, the result is a
-// *CallbackError holding both that error and the Ruby exception.
-func (b *Bridge) Do(fn func() error) error {
+// Do runs fn with exclusive access to the interpreter; it is DoContext with
+// context.Background().
+func (b *Bridge) Do(fn func() error) error { return b.DoContext(context.Background(), fn) }
+
+// DoContext runs fn with exclusive access to the interpreter. It waits for
+// the interpreter until ctx is done, and while fn runs, Ruby code that reaches
+// a checkpoint (see Checkpoint) after ctx is done raises
+// AsciidoctorGo::Canceled. A call cancelled that way, or while waiting,
+// returns an error that wraps ctx.Err().
+//
+// When a top-level call fails because a Go callback returned an error, the
+// result is a *CallbackError holding both that error and the Ruby exception.
+//
+// Inside the critical section (a callback, or fn of an outer call) fn runs
+// directly, under the context of the outermost call.
+func (b *Bridge) DoContext(ctx context.Context, fn func() error) error {
+	if err := ctx.Err(); err != nil {
+		return err
+	}
 	g := goroutineID()
 	if b.owns(g) {
 		return fn()
 	}
-	b.mu.Lock()
-	defer b.mu.Unlock()
+	select {
+	case b.lock <- struct{}{}:
+	case <-ctx.Done():
+		return ctx.Err()
+	}
+	defer func() { <-b.lock }()
 	if b.closed {
 		return ErrClosed
 	}
 	b.enterOwner(g)
 	defer b.leaveOwner(g)
+	b.ctx.Store(&ctx)
+	defer b.ctx.Store(nil)
 	b.goErr = nil
 	err := fn()
-	if goErr := b.goErr; err != nil && goErr != nil {
+	if err == nil {
+		return nil
+	}
+	var re *ruby.Error
+	if errors.As(err, &re) && re.Class == CanceledClass && ctx.Err() != nil {
 		b.goErr = nil
-		var re *ruby.Error
-		if errors.As(err, &re) && raisedFrom(re, goErr) {
+		return &CallbackError{Ruby: err, Go: ctx.Err()}
+	}
+	if goErr := b.goErr; goErr != nil {
+		b.goErr = nil
+		if re != nil && raisedFrom(re, goErr) {
 			return &CallbackError{Ruby: err, Go: goErr}
 		}
 	}
 	return err
 }
+
+// CanceledClass is the Ruby exception a checkpoint raises when the context of
+// the call in progress is done. It descends from Exception, not
+// StandardError, so a bare rescue in Asciidoctor or an extension does not
+// swallow it.
+const CanceledClass = "AsciidoctorGo::Canceled"
+
+// Context returns the context of the call in progress, or
+// context.Background() between calls. Callbacks use it to pass the caller's
+// context on (to log handlers, for example).
+func (b *Bridge) Context() context.Context {
+	if p := b.ctx.Load(); p != nil {
+		return *p
+	}
+	return context.Background()
+}
+
+// Checkpoint returns an error that raises AsciidoctorGo::Canceled if the
+// context of the call in progress is done, and nil otherwise.
+func (b *Bridge) Checkpoint() error {
+	if p := b.ctx.Load(); p != nil {
+		if err := (*p).Err(); err != nil {
+			return ruby.NewError(CanceledClass, err.Error())
+		}
+	}
+	return nil
+}
+
+// checkpoint implements AsciidoctorGo::Bridge.checkpoint, which the glue calls
+// at block and node boundaries while Asciidoctor parses and converts.
+func (b *Bridge) checkpoint(*ruby.Call) (any, error) { return nil, b.Checkpoint() }
 
 // raisedFrom reports whether the Ruby exception re plausibly is the one
 // toRubyError raised for the Go error goErr. The exception object cannot carry
@@ -207,8 +278,8 @@ func (b *Bridge) Close() error {
 	if b.owns(goroutineID()) {
 		return ErrCloseInCallback
 	}
-	b.mu.Lock()
-	defer b.mu.Unlock()
+	b.lock <- struct{}{}
+	defer func() { <-b.lock }()
 	if b.closed {
 		return nil
 	}
@@ -264,6 +335,11 @@ func (b *Bridge) dispatch(c *ruby.Call) (any, error) {
 		return nil, ruby.NewError("RuntimeError", fmt.Sprintf("asciidoctor-go: no Go object for handle %d", id))
 	}
 	method := c.Args[1].String()
+	// A Go callback is a checkpoint too: once the call is cancelled, no more
+	// Go code runs for it.
+	if err := b.Checkpoint(); err != nil {
+		return nil, err
+	}
 	// Ruby is running, so the critical section is held (by the goroutine that
 	// called into Ruby); the goroutine of this callback joins its owners.
 	g := goroutineID()
