@@ -1,0 +1,456 @@
+= AsciidoctorJ: Java bindings for Asciidoctor
+Alex Soto <https://github.com/lordofthejars[@lordofthejars]>; Dan Allen <https://github.com/mojavelinux[@mojavelinux]>; Robert Panzer <https://github.com/robertpanzer[@robertpanzer]>
+// Settings:
+:compat-mode!:
+:page-layout: base
+:toc: macro
+:toclevels: 2
+ifdef::awestruct[:toclevels: 1]
+:experimental:
+//:table-caption!:
+:source-language: java
+:language: {source-language}
+ifndef::env-github[:icons: font]
+ifdef::env-github[]
+:badges:
+:!toc-title:
+:caution-caption: :fire:
+:important-caption: :exclamation:
+:note-caption: :paperclip:
+:tip-caption: :bulb:
+:warning-caption: :warning:
+endif::[]
+// Aliases:
+:dagger: &#8224;
+// URIs:
+ifdef::awestruct[:uri-docs: link:/docs]
+ifndef::awestruct[:uri-docs: https://asciidoctor.org/docs]
+:uri-asciidoctor: {uri-docs}/what-is-asciidoctor
+:uri-repo: https://github.com/asciidoctor/asciidoctorj
+:uri-issues: {uri-repo}/issues
+:uri-zulip: https://asciidoctor.zulipchat.com/
+:artifact-version: 2.5.7
+:asciidoctorj-epub3-version: 1.5.1
+:asciidoctorj-pdf-version: 1.6.2
+:uri-maven-artifact-query: http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.asciidoctor%22%20AND%20a%3A%22asciidoctorj%22%20AND%20v%3A%22{artifact-version}%22
+:uri-maven-artifact-detail: http://search.maven.org/#artifactdetails%7Corg.asciidoctor%7Casciidoctorj%7C{artifact-version}%7Cjar
+:uri-maven-artifact-file: http://search.maven.org/remotecontent?filepath=org/asciidoctor/asciidoctorj/{artifact-version}/asciidoctorj-{artifact-version}
+:uri-maven-artifact-api-query: http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.asciidoctor%22%20AND%20a%3A%22asciidoctorj-api%22%20AND%20v%3A%22{artifact-version}%22
+:uri-maven-artifact-api-detail: http://search.maven.org/#artifactdetails%7Corg.asciidoctor%7Casciidoctorj-api%7C{artifact-version}%7Cjar
+:uri-maven-artifact-api-file: http://search.maven.org/remotecontent?filepath=org/asciidoctor/asciidoctorj-api/{artifact-version}/asciidoctorj-api-{artifact-version}
+:uri-maven-guide: {uri-docs}/install-and-use-asciidoctor-maven-plugin
+:uri-gradle-guide: {uri-docs}/install-and-use-asciidoctor-gradle-plugin
+:uri-tilt: https://github.com/rtomayko/tilt
+:uri-font-awesome: http://fortawesome.github.io/Font-Awesome
+:uri-gradle: https://gradle.org
+:uri-chocolatey: https://chocolatey.org
+
+{uri-repo}[AsciidoctorJ] is the official library for running {uri-asciidoctor}[Asciidoctor] on the JVM.
+Using AsciidoctorJ, you can convert AsciiDoc content or analyze the structure of a parsed AsciiDoc document from Java and other JVM languages.
+
+You can find the documentation for integrating Asciidoctor in your JVM based language of choice at the https://docs.asciidoctor.org/asciidoctorj/latest/[Asciidoctor Docs site].
+
+ifdef::badges[]
+image:https://github.com/asciidoctor/asciidoctorj/workflows/Build%20Main/badge.svg?event=push[Build Status (Github Actions)]
+image:https://img.shields.io/badge/zulip-join_chat-brightgreen.svg[project chat,link=https://asciidoctor.zulipchat.com/]
+endif::[]
+
+ifdef::awestruct,env-browser[]
+toc::[]
+endif::[]
+
+== Distribution
+
+AsciidoctorJ is published to Maven Central.
+The artifact information can be found in the tables below.
+
+[cols="2,2,^2,4"]
+.Artifact information for AsciidoctorJ in Maven Central
+|===
+|Group Id |Artifact Id |Version |Download
+
+|org.asciidoctor
+|{uri-maven-artifact-query}[asciidoctorj]
+|{uri-maven-artifact-detail}[{artifact-version}]
+|{uri-maven-artifact-file}.pom[pom] {uri-maven-artifact-file}.jar[jar] {uri-maven-artifact-file}-javadoc.jar[javadoc (jar)] {uri-maven-artifact-file}-sources.jar[sources (jar)] distribution ({uri-maven-artifact-file}-bin.zip[zip] {uri-maven-artifact-file}-bin.tar[tar])
+
+|org.asciidoctor
+|{uri-maven-artifact-api-query}[asciidoctorj-api]
+|{uri-maven-artifact-api-detail}[{artifact-version}]
+|{uri-maven-artifact-api-file}.pom[pom] {uri-maven-artifact-api-file}.jar[jar] {uri-maven-artifact-api-file}-javadoc.jar[javadoc (jar)] {uri-maven-artifact-api-file}-sources.jar[sources (jar)]
+
+|org.asciidoctor
+|asciidoctorj-epub3
+|{asciidoctorj-epub3-version}
+|{empty}
+
+|org.asciidoctor
+|asciidoctorj-pdf
+|{asciidoctorj-pdf-version}
+|{empty}
+|===
+
+CAUTION: The artifactId changed to `asciidoctorj` starting in 1.5.0.
+
+== Quick win: using the command line interface
+
+If you download from a distribution link above (zip or tar), you can get started straight away from the command line.
+
+First, expand the downloaded file. That puts everything in directory `asciidoctorj-{artifact-version}`.
+Within that directory are `bin` and `lib` directories.  `bin` contains the executables -- `asciidoctorj` for
+Linux and macOS, and `asciidoctorj.bat` for Windows.  `lib` contains the supporting libraries.
+
+Verify the application runs by specifying the appropriate executable with no parameters;
+it should display the various run options available (i.e., help).
+
+[source]
+[subs="specialcharacters,attributes,callouts"]
+----
+Linux: asciidoctorj-{artifact-version}/bin/asciidoctorj
+Windows: asciidoctorj-{artifact-version}\bin\asciidoctorj.bat
+----
+
+Next, say you want to convert an ASCIIDOC (.adoc) file -- such as this README -- to a pdf.
+
+[source]
+[subs="specialcharacters,attributes,callouts"]
+----
+Linux: asciidoctorj-{artifact-version}/bin/asciidoctorj -b pdf README.adoc
+Windows: asciidoctorj-{artifact-version}\bin\asciidoctorj.bat -b pdf README.adoc
+----
+
+Boom! That should convert the README to a PDF named README.pdf.
+To create a PDF with a different name -- say, READTHIS.pdf -- just add the -o switch:
+
+[source]
+[subs="specialcharacters,attributes,callouts"]
+----
+Linux: asciidoctorj-{artifact-version}/bin/asciidoctorj -b pdf -o READTHIS.pdf README.adoc
+Windows: asciidoctorj-{artifact-version}\bin\asciidoctorj.bat -b pdf -o READTHIS.pdf README.adoc
+----
+
+The rest of the document addresses the asciidoctorj API, for doing more complex conversions
+from within a JVM-based application.
+
+== Installation
+
+To start using AsciidoctorJ, you need to add the required dependency to the dependency management system of your choice, Maven, Gradle or Apache Ivy.
+If you don't use a Dependency Management system please check the dependency graph and add all jars in it to your classpath.
+
+// SW: Need functional tests for a java maven project and a java gradle project
+
+[source,xml]
+[subs="specialcharacters,attributes,callouts"]
+.Declaring the dependency in a Maven build file (i.e., pom.xml)
+----
+<dependencies>
+  <dependency>
+    <groupId>org.asciidoctor</groupId>
+    <artifactId>asciidoctorj</artifactId>
+    <version>{artifact-version}</version> <!--1-->
+  </dependency>
+</dependencies>
+----
+
+[source,groovy]
+[subs="specialcharacters,attributes,callouts"]
+.Declaring the dependency in a Gradle build file (e.g., build.gradle)
+----
+dependencies {
+  compile 'org.asciidoctor:asciidoctorj:{artifact-version}'
+}
+----
+
+[source,scala]
+[subs="specialcharacters,attributes,callouts"]
+.Declaring the dependency in an SBT build file (e.g., build.sbt)
+----
+libraryDependencies += "org.asciidoctor" % "asciidoctorj" % "{artifact-version}" // <1>
+----
+
+<1> Specifying the version of AsciidoctorJ implicitly selects the version of Asciidoctor
+
+[source,clojure]
+[subs="specialcharacters,attributes,callouts"]
+.Declaring the dependency in a Leiningen build file (e.g., project.clj)
+----
+:dependencies [[org.asciidoctor/asciidoctorj "{artifact-version}"]]
+----
+
+// DA: Should we mention how to download if you just want to use the asciidoctorj command?
+
+[TIP]
+====
+In addition to using AsciidoctorJ directly, you can invoke it as part of your build using the Maven or Gradle plugin.
+
+- {uri-maven-guide}[How to Install and Use the Asciidoctor Maven Plugin]
+- {uri-gradle-guide}[How to Install and Use the Asciidoctor Gradle Plugin]
+====
+
+[NOTE]
+The versions of Asciidoctor and AsciidoctorJ no longer align since version 1.6.0 of AsciidoctorJ.
+Please check the corresponding release notes to find out which version of Asciidoctor is packaged if you are embedding the library.
+If you use the distribution you can call `asciidoctorj --version` to get the version of Asciidoctor that is embedded in AsciidoctorJ.
+
+
+=== Windows Installation
+
+A {uri-chocolatey}[Chocolatey] package is available which installs the
+asciidoctorj-{artifact-version}-bin.zip Maven artifact along with a
+binary shim in %ChocolateyInstall%\bin which lets you run AsciidoctorJ
+from the command line.
+
+----
+C:\> choco install asciidoctorj
+C:\> where asciidoctorj
+C:\ProgramData\chocolatey\bin\asciidoctorj.exe
+C:\> asciidoctorj -b pdf README.adoc
+----
+
+== Using a pre-release version
+
+Pre-release versions of `AsciidoctorJ` are published to oss.sonatype.org.
+The exact location of the repository will be announced.
+Final releases are released to both Maven Central.
+
+Here's how to use a pre-release version in Maven:
+
+[source, xml]
+----
+    <repositories>
+        <repository>
+            <id>staging</id>
+            <url>https://oss.sonatype.org/content/repositories/orgasciidoctor-1234</url> <!--1-->
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+----
+<1> The exact URL differs for every build
+
+== Using a snapshot version
+
+Snapshot versions will be published to https://oss.jfrog.org.
+To use a snapshot version of the the AsciidoctorJ library add this repository to your project:
+
+[source,xml]
+----
+<repositories>
+    <repository>
+        <id>snapshots</id>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+        <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </repository>
+</repositories>
+----
+
+If you build your project using {uri-gradle}[Gradle] add the repository like this to your build:
+
+[source,groovy]
+----
+repositories {
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
+}
+----
+
+
+== Development
+
+AsciidoctorJ is built using {uri-gradle}[Gradle].
+The project is structured as a multi-module build.
+
+=== Project layout
+
+The root folder is the root project and there are several subproject folders, each prefixed with _asciidoctorj-_.
+Each subproject produces a primary artifact (e.g., jar or zip) and its supporting artifacts (e.g., javadoc, sources, etc).
+
+The subprojects are as follows:
+
+asciidoctorj-api::
+  The common API for AsciidoctorJ.
+  Other implementations for different platforms than JRuby may reuse and implement this API.
+  Produces the asciidoctorj-api.jar
+
+asciidoctorj::
+  The main Java bindings for the Asciidoctor RubyGem (asciidoctor) running on JRuby.
+  Also bundles optional RubyGems needed at runtime, such as coderay, tilt, haml and slim.
+  Produces the asciidoctorj jar.
+
+asciidoctorj-cli::
+  `asciidoctorj` command Java components.
+  Produces the asciidoctorj-cli.
+
+asciidoctorj-distribution::
+  Produces the distribution zip that provides the standalone `asciidoctorj` command including Java components,
+  launch scripts and required libraries.
+
+asciidoctorj-arquillian-extension::
+  Bundles an Arquillian extension that allows to inject an Asciidoctor instance or other instances commonly used by Asciidoctor tests into a test case.
+
+asciidoctorj-test-support::
+  Contains some common test classes that are used by multiple other subprojects and the Arquillian extension.
+
+The Gradle build is partitioned into the following files:
+
+....
+build.gradle
+gradle.properties
+settings.gradle
+gradle/
+  wrapper/
+    ...
+  eclipse.gradle
+  providedConfiguration.gradle
+  publish.gradle
+  sign.gradle
+asciidoctorj-arquillian-extension/
+  build.gradle
+asciidoctorj-api/
+  build.gradle
+asciidoctorj-cli/
+  build.gradle
+asciidoctorj-core/
+  build.gradle
+asciidoctorj-distribution/
+  build.gradle
+asciidoctorj-test-support/
+  build.gradle
+....
+
+=== Build the project
+
+You invoke Gradle on this project using the `gradlew` command (i.e., the Gradle Wrapper).
+
+TIP: We strongly recommend that you use Gradle via the https://www.timroes.de/2013/09/12/speed-up-gradle[Gradle daemon].
+
+To clone the project, compile the source and build the artifacts (i.e., jars) locally, run:
+
+ $ git clone https://github.com/asciidoctor/asciidoctorj
+   cd asciidoctorj
+   ./gradlew assemble
+
+You can find the built artifacts in the [path]_asciidoctorj-*/build/libs_ folders.
+
+To execute tests when running the build, use:
+
+ $ ./gradlew build
+
+To only execute the tests, run:
+
+ $ ./gradlew check
+
+You can also run tests for a single module:
+
+ $ cd asciidoctorj-core
+   ../gradlew check
+
+To run a single test in the asciidoctorj-core subproject, use:
+
+ $ ../gradlew -Dsingle.test=NameOfTestClass test
+
+To create the distribution, run:
+
+ $ ./gradlew distZip
+
+You can find the distribution in the [path]_asciidoctorj-distribution/build/distributions_ folder.
+
+=== Develop in an IDE
+
+==== IntelliJ IDEA
+
+To import the project into IntelliJ IDEA 14, simply import the project using the import wizard.
+For more information, see the https://www.jetbrains.com/idea/help/gradle.html[Gradle page] in the IntelliJ IDEA Web Help.
+
+==== Eclipse
+
+To open the project in Eclipse, first generate the Eclipse project files:
+
+ $ cd asciidoctorj-core
+   ./gradlew eclipse
+
+Then, import the project into Eclipse using menu:File[Import,General,Existing Project into Workspace].
+
+=== Continuous integration
+
+Continuous integration for the AsciidoctorJ project is performed by GitHub Actions.
+You can find recent build results, including the build status of pull requests, on the https://github.com/asciidoctor/asciidoctorj/actions[asciidoctor/asciidoctorj] page.
+
+=== Release and publish the artifacts
+
+To build and publish a release the following properties have to be set, for example in the file ~/.gradle/gradle.properties:
+
+.~/.gradle/gradle.properties
+[source,properties]
+----
+signing.keyId=...              # <1>
+signing.password=...
+signing.secretKeyRingFile=/home/YOUR_USERNAME/.gnupg/secring.gpg
+
+sdkman_consumer_key=...        # <2>
+sdkman_consumer_token=...
+
+sonatypeUsername=...           # <3>
+sonatypePassword=...
+----
+<1> Settings for signing the artifacts
+<2> Credentials for publishing a new release to sdkman
+<3> Credentials for publishing artifacts to oss.sonatype.org
+
+The following steps are necessary to build a new release:
+
+. Update the version in gradle.properties to a release version, i.e. from `2.4.4-SNAPSHOT` to `2.4.4`.
+. Build the release with
++
+----
+# ./gradlew clean build
+----
+. After testing publish all artifacts to a local repository under `build/repos` with
++
+----
+# ./gradlew publishAllPublicationsToLocalRepository -i
+----
+. When everything is fine publish the artifacts to a staging repository on https://oss.sonatype.org and close the repository:
++
+----
+# ./gradlew publishAllPublicationsToSonatypeRepository -i
+# ./gradlew closeRepository -i
+----
+. Visit https://oss.sonatype.org/#stagingRepositories[] and check the staging repository.
+The artifacts are not published yet.
+The repository URL shown there can be used for testing this version before publishing to Maven central.
+. When everything is fine publish the artifacts in the staging repository by clicking the "Release" button.
+Alternatively you can release it with
++
+----
+# ./gradlew releaseRepository
+----
+. Publish the new version to sdkman with
++
+----
+# ./gradlew asciidoctorj-distribution:sdkMajorRelease
+----
+. Commit everything and assign a tag:
++
+----
+# git commit -m "Release v2.x.y"
+# git tag v2.x.y
+----
+. Upgrade the version to the next version by changing the version property in gradle.properties to `version=2.x.y+1-SNAPSHOT` and commit:
++
+----
+git commit -m "Prepare next release"
+----
+
+== Resources
+
+The source code for AsciidoctorJ, including the latest developments and issues, can be found in the project's {uri-repo}[repository] on GitHub.
+If you identify an issue while using AsciidoctorJ, please don't hesitate to {uri-issues}[file a bug report].
+Also, don't forget to join the {uri-zulip}[Asciidoctor Zulip community], where you can ask questions and leave comments.

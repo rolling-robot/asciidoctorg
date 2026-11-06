@@ -1,0 +1,25 @@
+= AsciidoctorJ v3.0.x migration guide
+:navtitle: v3.0.x migration guide
+
+AsciidoctorJ v3.0.0 introduces breaking changes.
+This guide will provide the steps required to update a project currently using 2.5.x version.
+
+include::partial$update-preprocessor-api.adoc[]
+
+include::partial$update-macro-api.adoc[]
+
+include::partial$removal-of-deprecated-methods-in-options.adoc[]
+
+include::partial$removal-of-deprecated-methods-in-attributes.adoc[]
+
+include::partial$removal-of-deprecated-asMap-from-builders.adoc[]
+
+include::partial$removal-of-deprecated-methods-in-asciidoctor.adoc[]
+
+include::partial$removal-of-deprecated-methods-in-document.adoc[]
+
+include::partial$removal-of-deprecated-constants-in-BlockProcessor.adoc[]
+
+include::partial$removal-of-deprecated-methods-in-extension-package.adoc[]
+
+include::partial$removal-of-deprecated-methods-in-ast-package.adoc[]
