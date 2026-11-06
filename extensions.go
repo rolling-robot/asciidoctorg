@@ -411,6 +411,10 @@ func (g *ExtensionGroup) Register() error {
 				return err
 			}
 		}
+		// Registering g again rebinds its handlers: release the handles of
+		// the previous registration first. Asciidoctor replaces the group of
+		// the same name.
+		g.releaseHandles()
 		if err := g.registerLocked(); err != nil {
 			g.releaseHandles()
 			return err

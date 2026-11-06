@@ -218,6 +218,13 @@ func (b *Bridge) Unregister(id int64) {
 	delete(b.handles, id)
 }
 
+// HandleCount reports how many handles are registered (for leak tests).
+func (b *Bridge) HandleCount() int {
+	b.handlesMu.Lock()
+	defer b.handlesMu.Unlock()
+	return len(b.handles)
+}
+
 // Handler returns the handler registered under a handle.
 func (b *Bridge) Handler(id int64) (Handler, bool) {
 	b.handlesMu.Lock()
