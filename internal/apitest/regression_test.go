@@ -53,3 +53,26 @@ func TestCloseInCallback(t *testing.T) {
 		}
 	})
 }
+
+// D2: node accessors panic once the instance is closed. The panic is part of
+// the documented contract; its value must be ErrClosed so that a recover can
+// tell it apart from a bug.
+func TestNodeAccessorAfterClosePanicsWithErrClosed(t *testing.T) {
+	a := newInstance(t)
+	doc, err := a.Load("= Title\n\nparagraph", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := a.Close(); err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		r := recover()
+		err, _ := r.(error)
+		if !errors.Is(err, asciidoctor.ErrClosed) {
+			t.Fatalf("recovered %v, want a panic with ErrClosed", r)
+		}
+	}()
+	_ = doc.Doctitle()
+	t.Fatal("Doctitle on a closed instance did not panic")
+}

@@ -53,6 +53,12 @@
 // substitutions, child blocks, FindBy queries, conversion) and can be
 // changed. The nodes are live views of Asciidoctor's objects.
 //
+// Node accessors do not return errors: they panic with an *Error if the
+// interpreter fails, which happens only when the instance has been closed (the
+// panic value is then ErrClosed) or Asciidoctor raises unexpectedly. Methods
+// that do real processing, such as Convert, return the error instead. Do not
+// use a Document after closing the instance that produced it.
+//
 // # Extensions
 //
 // Extensions() returns the instance's ExtensionRegistry, where Go values
