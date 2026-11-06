@@ -26,6 +26,9 @@ written in Go. No Ruby installation and no cgo are needed.
   `asciidoctor`, so callers write `asciidoctor.Convert(...)`.
 - Current release: `v0.1.0`, which proxy.golang.org and sum.golang.org serve.
   The tag exists, but there is no entry on the GitHub Releases page.
+- Next release: `v0.2.0`. `Version` in `doc.go` already says `0.2.0`; the tag
+  is not made yet (`scripts/release.sh v0.2.0`). Changes for callers are in
+  [docs/upgrading.md](docs/upgrading.md).
 - Go version: `go 1.27.2` (go.mod).
 
 ## Working rules
@@ -600,9 +603,9 @@ Prometheus or OTel. What fits:
   today, but surprising if a caller ever passes `xs...`. Copy the slice first.
 - `Attributes.toRuby` has a dead `case int` (the `default` case's
   `fmt.Sprint` covers it).
-- `doc.go` has `const Version = "0.1.0-dev"`, while the published tag is
-  `v0.1.0`. Have `scripts/release.sh` stamp it, or derive it from
-  `debug.ReadBuildInfo()`.
+- `Version` in `doc.go` is set by hand. It said `0.1.0-dev` while the
+  published tag was `v0.1.0`; it now says `0.2.0`, ahead of that tag. Have
+  `scripts/release.sh` stamp it, or check it against the tag.
 - `rougeLexerTags` (15 tags) duplicates what go-rouge registers, and AGENTS.md
   says 16 lexers. Ask go-rouge for a `Lexers()` function, or add a test that
   checks the list against `rouge.FindLexer`.

@@ -1,9 +1,8 @@
-# Upgrading from v0.1.0
+# Upgrading from v0.1.0 to v0.2.0
 
-This guide covers the changes since `v0.1.0` (branch `review-fixes`, which
-fixes the defects found in the code review of 2026-11-07 and adds
-cancellation and `log/slog` support). The next release should be a **minor**
-version (for example `v0.2.0`): the API grows, nothing is removed.
+This guide covers the changes in `v0.2.0`. That release fixes the defects
+found in the code review of 2026-11-07, and adds cancellation and `log/slog`
+support. It is a **minor** release: the API grows, and nothing is removed.
 
 ## Summary
 
@@ -13,8 +12,8 @@ version (for example `v0.2.0`): the API grows, nothing is removed.
 | `go.mod` | Unchanged. No new dependencies; `log/slog` is in the standard library | none |
 | Behaviour | Seven changes, listed below. Most turn a hang or a leak into an error | review the ones that apply |
 
-The API comparison was made with `go doc -all` on `master` and on the
-branch. The one signature difference in that output is cosmetic:
+The API comparison was made with `go doc -all` on `v0.1.0` and on
+`v0.2.0`. The one signature difference in that output is cosmetic:
 `Pool.Convert` and `Pool.ConvertFile` no longer name their results
 (`(out string, err error)` became `(string, error)`). Named results do not
 affect callers.
