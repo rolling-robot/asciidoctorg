@@ -12,6 +12,12 @@ import (
 // ErrClosed is returned by the methods of a closed Asciidoctor instance.
 var ErrClosed = bridge.ErrClosed
 
+// ErrCloseInCallback is returned by Close when it is called from a callback
+// (an extension, converter, syntax highlighter or log handler) of the same
+// instance, or from inside Do. The instance stays open; close it after the
+// call in progress returns.
+var ErrCloseInCallback = bridge.ErrCloseInCallback
+
 // PanicError is the Cause of an *Error when Go code called from Ruby (an
 // extension, converter, syntax highlighter or log handler) panicked. Its
 // Stack is the stack trace of the panic.

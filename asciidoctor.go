@@ -145,6 +145,8 @@ func New(opts ...Option) (*Asciidoctor, error) {
 
 // Close releases the instance: it runs the interpreter's at_exit handlers and
 // stops the Ruby threads still running. Later calls fail with ErrClosed.
+// Called from a callback of the instance, it returns ErrCloseInCallback and
+// leaves the instance open.
 func (a *Asciidoctor) Close() error {
 	return wrapError(a.b.Close())
 }

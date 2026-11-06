@@ -19,6 +19,12 @@ import (
 // ErrClosed is returned by every operation on a closed Bridge.
 var ErrClosed = errors.New("asciidoctor: instance is closed")
 
+// ErrCloseInCallback is returned by Close when it is called from inside the
+// critical section (from an extension, converter or log handler callback, or
+// inside Do): closing there would pull the interpreter out from under the call
+// in progress.
+var ErrCloseInCallback = errors.New("asciidoctor: Close called from a callback of the same instance")
+
 // A Handler receives the calls a Ruby proxy forwards to Go.
 type Handler interface {
 	// Dispatch handles the proxy method name. The result is converted to Ruby;
@@ -171,8 +177,13 @@ type CallbackError struct {
 func (e *CallbackError) Error() string   { return e.Ruby.Error() }
 func (e *CallbackError) Unwrap() []error { return []error{e.Ruby, e.Go} }
 
-// Close runs the interpreter's at_exit handlers and releases it.
+// Close runs the interpreter's at_exit handlers and releases it. Called from
+// inside the critical section it returns ErrCloseInCallback instead of
+// deadlocking on the lock its own caller holds.
 func (b *Bridge) Close() error {
+	if b.owns(goroutineID()) {
+		return ErrCloseInCallback
+	}
 	b.mu.Lock()
 	defer b.mu.Unlock()
 	if b.closed {
