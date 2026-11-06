@@ -360,6 +360,25 @@ The main weaknesses, in order of impact:
    a `Version` constant that disagrees with the tag. These are already listed
    in "Gaps and open items".
 
+### Status (updated 2026-11-07, branch `review-fixes`)
+
+| Finding | Status | Test |
+|---|---|---|
+| D1 Close from a callback | fixed: returns `ErrCloseInCallback` | `apitest.TestCloseInCallback` |
+| D2 accessors panic after Close | documented in the package doc; panic value pinned to `ErrClosed`. Changing the API (options 2 and 3) is still the owner's decision | `apitest.TestNodeAccessorAfterClosePanicsWithErrClosed` |
+| D3 registry lock order | fixed: interpreter before `ExtensionRegistry.mu` | `apitest.TestRegisterFromCallbackWhileAnotherGoroutineRegisters` |
+| D4 logger install race | fixed: decide-and-act under the interpreter | `apitest.TestLogHandlerRegisteredWhileLastOneIsRemoved` |
+| D5 leaks on boot errors | fixed in `runtime.Boot` and `bridge.New` | `runtime.TestBootClosesInterpreterOnError`, `bridge.TestNewClosesInterpreterOnError` |
+| D6 argument checks | checked: not a crash (rbgo raises `ArgumentError`) | `runtime.TestNativeMethodsCheckArguments`, `bridge.TestWriterCreatedFromRubyRaises` |
+| D7 `Default()` caches failure | fixed: retries | `TestDefaultRetriesAfterFailure` (root package) |
+| D8 re-register leaks handles | fixed | `TestRegisterGroupAgainReleasesHandles` (root package) |
+| D9 callback error matching | improved: class must be `RuntimeError`, empty messages match only empty ones. Exact identity needs rbgo support | `apitest.TestCallbackErrorNotBlamedForUnrelatedException` |
+| R2 cancellation | done, cooperative: `*Context` methods and `Pool.DoContext`; checkpoints per parsed or converted block and per Go callback (about 4% overhead). True preemption needs an interrupt hook in rbgo | `apitest/cancel_test.go`, `bridge/cancel_test.go` |
+| R7 logging | done: `SlogHandler`, `ContextLogHandler`, `Severity.SlogLevel`. The conversion-stats hook is not done | `apitest/slog_test.go`, `ExampleSlogHandler` |
+
+Action items A1–A4, A8, A14 (except the rbgo interrupt hook), A16 (except
+the stats hook) and A17 (partly) are done.
+
 ### Measurements
 
 | What | Result | How |
