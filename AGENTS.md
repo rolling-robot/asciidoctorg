@@ -5,7 +5,8 @@ is, how it is built, the decisions behind it, where it stands and what is
 missing. Detailed references: [PLAN.md](PLAN.md) (steps and status),
 [docs/compatibility.md](docs/compatibility.md) (test results, feature
 support, AsciidoctorJ mapping) and [docs/rbgo-gaps.md](docs/rbgo-gaps.md)
-(every rbgo divergence from MRI and its workaround).
+(every rbgo divergence from MRI and its workaround). Changes visible to
+callers since the last release go in [docs/upgrading.md](docs/upgrading.md).
 
 The [code review of 2026-11-07](#code-review-2026-11-07) at the end of this
 file lists confirmed defects, design recommendations and a prioritized list

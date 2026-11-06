@@ -118,6 +118,7 @@ go test ./...
 | `rubysrc/shims`, `rubysrc/glue` | Ruby that adapts Asciidoctor to rbgo, and the Ruby side of the bridge |
 | `third_party/asciidoctorj` | AsciidoctorJ (git submodule): API reference and test fixtures |
 | `docs/compatibility.md` | what works, what differs from Asciidoctor and AsciidoctorJ, test results |
+| `docs/upgrading.md` | API additions and behaviour changes since the last release, with the action each needs |
 | `docs/rbgo-gaps.md` | every rbgo divergence from MRI found, with its workaround |
 | `AGENTS.md` | project state, architecture, design decisions and gaps, for contributors and agents |
 
