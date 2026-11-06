@@ -396,111 +396,119 @@ func (r *ExtensionRegistry) RubyProcessor(kind ExtensionKind, className, name st
 
 // Register activates the group. Registering a group again replaces it.
 func (g *ExtensionGroup) Register() error {
-	r := g.r
-	a := r.a
 	if err := g.validate(); err != nil {
 		return err
 	}
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	if old, ok := r.groups[g.name]; ok && old != g {
-		if err := old.unregisterLocked(); err != nil {
+	r := g.r
+	// Lock order: the interpreter first, then the registry. A callback
+	// already holds the interpreter, so taking the registry first here would
+	// deadlock against a callback that registers or unregisters a group.
+	return r.a.do(func() error {
+		r.mu.Lock()
+		defer r.mu.Unlock()
+		if old, ok := r.groups[g.name]; ok && old != g {
+			if err := old.unregisterLocked(); err != nil {
+				return err
+			}
+		}
+		if err := g.registerLocked(); err != nil {
+			g.releaseHandles()
 			return err
 		}
+		g.registered = true
+		r.groups[g.name] = g
+		return nil
+	})
+}
+
+// registerLocked registers the group's processors with Asciidoctor. The
+// caller holds the interpreter and r.mu.
+func (g *ExtensionGroup) registerLocked() error {
+	a := g.r.a
+	glue, err := a.glue()
+	if err != nil {
+		return err
 	}
-	err := a.do(func() error {
-		glue, err := a.glue()
-		if err != nil {
-			return err
-		}
-		specs := make([]any, 0, len(g.specs))
-		for i := range g.specs {
-			s := &g.specs[i]
-			if s.rubyClass != "" {
-				// Asciidoctor resolves class names when a document activates
-				// the group; resolve now so an unknown class fails here.
-				if _, err := glue.Call("resolve_class", s.rubyClass); err != nil {
-					return err
-				}
-				var name any
-				if s.name != "" {
-					name = ruby.Symbol(s.name)
-				}
-				specs = append(specs, []any{ruby.Symbol(s.kind), s.rubyClass, name})
-				continue
-			}
-			s.handler.bind(a)
-			id := a.b.Register(s.handler)
-			s.handler.setID(id)
-			class, err := a.b.Const("AsciidoctorGo::" + s.class)
-			if err != nil {
+	specs := make([]any, 0, len(g.specs))
+	for i := range g.specs {
+		s := &g.specs[i]
+		if s.rubyClass != "" {
+			// Asciidoctor resolves class names when a document activates
+			// the group; resolve now so an unknown class fails here.
+			if _, err := glue.Call("resolve_class", s.rubyClass); err != nil {
 				return err
-			}
-			var proc ruby.Value
-			if s.name != "" {
-				proc, err = class.Call("new", id, ruby.Symbol(s.name), s.config)
-			} else {
-				proc, err = class.Call("new", id, s.config)
-			}
-			if err != nil {
-				return err
-			}
-			if rh, ok := s.handler.(*inlineMacroProcessorHandler); ok && rh.regexp != "" {
-				if err := setInlineRegexp(a, proc, rh.regexp); err != nil {
-					return err
-				}
-			}
-			// Asciidoctor validates macro names lazily; check them now so an
-			// invalid name fails the registration.
-			switch s.kind {
-			case "block_macro":
-				if _, err := proc.Call("name"); err != nil {
-					return err
-				}
-			case "inline_macro":
-				if _, err := proc.Call("regexp"); err != nil {
-					return err
-				}
 			}
 			var name any
 			if s.name != "" {
 				name = ruby.Symbol(s.name)
 			}
-			specs = append(specs, []any{ruby.Symbol(s.kind), proc, name})
+			specs = append(specs, []any{ruby.Symbol(s.kind), s.rubyClass, name})
+			continue
 		}
-		_, err = glue.Call("register_group", ruby.Symbol(g.name), specs)
-		return err
-	})
-	if err != nil {
-		g.releaseHandles()
-		return err
+		s.handler.bind(a)
+		id := a.b.Register(s.handler)
+		s.handler.setID(id)
+		class, err := a.b.Const("AsciidoctorGo::" + s.class)
+		if err != nil {
+			return err
+		}
+		var proc ruby.Value
+		if s.name != "" {
+			proc, err = class.Call("new", id, ruby.Symbol(s.name), s.config)
+		} else {
+			proc, err = class.Call("new", id, s.config)
+		}
+		if err != nil {
+			return err
+		}
+		if rh, ok := s.handler.(*inlineMacroProcessorHandler); ok && rh.regexp != "" {
+			if err := setInlineRegexp(a, proc, rh.regexp); err != nil {
+				return err
+			}
+		}
+		// Asciidoctor validates macro names lazily; check them now so an
+		// invalid name fails the registration.
+		switch s.kind {
+		case "block_macro":
+			if _, err := proc.Call("name"); err != nil {
+				return err
+			}
+		case "inline_macro":
+			if _, err := proc.Call("regexp"); err != nil {
+				return err
+			}
+		}
+		var name any
+		if s.name != "" {
+			name = ruby.Symbol(s.name)
+		}
+		specs = append(specs, []any{ruby.Symbol(s.kind), proc, name})
 	}
-	g.registered = true
-	r.groups[g.name] = g
-	return nil
+	_, err = glue.Call("register_group", ruby.Symbol(g.name), specs)
+	return err
 }
 
 // Unregister deactivates the group.
 func (g *ExtensionGroup) Unregister() error {
-	g.r.mu.Lock()
-	defer g.r.mu.Unlock()
-	return g.unregisterLocked()
+	r := g.r
+	return r.a.do(func() error { // interpreter first, then r.mu; see Register
+		r.mu.Lock()
+		defer r.mu.Unlock()
+		return g.unregisterLocked()
+	})
 }
 
+// unregisterLocked deactivates the group. The caller holds the interpreter
+// and r.mu.
 func (g *ExtensionGroup) unregisterLocked() error {
 	if !g.registered {
 		return nil
 	}
-	a := g.r.a
-	err := a.do(func() error {
-		ext, err := a.b.Const("Asciidoctor::Extensions")
-		if err != nil {
-			return err
-		}
-		_, err = ext.Call("unregister", ruby.Symbol(g.name))
-		return err
-	})
+	ext, err := g.r.a.b.Const("Asciidoctor::Extensions")
 	if err != nil {
+		return err
+	}
+	if _, err := ext.Call("unregister", ruby.Symbol(g.name)); err != nil {
 		return err
 	}
 	g.releaseHandles()
@@ -582,24 +590,21 @@ func (r *ExtensionRegistry) Unregister(name string) error {
 // UnregisterAll unregisters every extension group, including those
 // registered from Ruby.
 func (r *ExtensionRegistry) UnregisterAll() error {
-	r.mu.Lock()
-	defer r.mu.Unlock()
-	a := r.a
-	err := a.do(func() error {
-		ext, err := a.b.Const("Asciidoctor::Extensions")
+	return r.a.do(func() error { // interpreter first, then r.mu; see Register
+		r.mu.Lock()
+		defer r.mu.Unlock()
+		ext, err := r.a.b.Const("Asciidoctor::Extensions")
 		if err != nil {
 			return err
 		}
-		_, err = ext.Call("unregister_all")
-		return err
+		if _, err := ext.Call("unregister_all"); err != nil {
+			return err
+		}
+		for name, g := range r.groups {
+			g.releaseHandles()
+			g.registered = false
+			delete(r.groups, name)
+		}
+		return nil
 	})
-	if err != nil {
-		return err
-	}
-	for name, g := range r.groups {
-		g.releaseHandles()
-		g.registered = false
-		delete(r.groups, name)
-	}
-	return nil
 }

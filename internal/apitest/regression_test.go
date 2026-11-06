@@ -76,3 +76,41 @@ func TestNodeAccessorAfterClosePanicsWithErrClosed(t *testing.T) {
 	_ = doc.Doctitle()
 	t.Fatal("Doctitle on a closed instance did not panic")
 }
+
+// D3: ExtensionRegistry took its own mutex before the interpreter, while a
+// callback (which holds the interpreter) registering a group takes them in the
+// opposite order, so the two deadlocked.
+func TestRegisterFromCallbackWhileAnotherGoroutineRegisters(t *testing.T) {
+	a := newInstance(t)
+	reg := a.Extensions()
+	noop := asciidoctor.PostprocessorFunc(func(_ *asciidoctor.Document, out string) (string, error) { return out, nil })
+	var inner error
+	concurrentDone := make(chan struct{})
+	if _, err := reg.Treeprocessor(asciidoctor.TreeprocessorFunc(func(*asciidoctor.Document) (*asciidoctor.Document, error) {
+		// Another goroutine registers now: it takes the registry's lock
+		// and then waits for the interpreter, which this callback holds.
+		started := make(chan struct{})
+		go func() {
+			defer close(concurrentDone)
+			close(started)
+			if _, err := reg.Postprocessor(noop, nil); err != nil {
+				t.Errorf("concurrent Postprocessor: %v", err)
+			}
+		}()
+		<-started
+		time.Sleep(100 * time.Millisecond)
+		_, inner = reg.Postprocessor(noop, nil)
+		return nil, nil
+	}), nil); err != nil {
+		t.Fatal(err)
+	}
+	within(t, 10*time.Second, func() {
+		if _, err := a.Convert("hello", nil); err != nil {
+			t.Errorf("Convert: %v", err)
+		}
+	})
+	within(t, 10*time.Second, func() { <-concurrentDone })
+	if inner != nil {
+		t.Fatalf("register from callback: %v", inner)
+	}
+}
