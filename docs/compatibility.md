@@ -153,6 +153,7 @@ in Ruby cannot be added to it.
 | `@ConverterFor`, `setOutfileSuffix` | the backend names and `BackendTraits` passed to `RegisterConverter` |
 | `syntaxHighlighterRegistry()` | `RegisterSyntaxHighlighter` |
 | `registerLogHandler`, `unregisterLogHandler` | `RegisterLogHandler`, which returns the unregister function; `SetLogLevel` |
+| (none) | `SlogHandler` (forwards to `log/slog`), `ContextLogHandler` (receives the context of the call that logged), `Severity.SlogLevel` |
 | `log(LogRecord)` in extensions and converters | `Asciidoctor.Log` (reach the instance with `Node.Asciidoctor()`) |
 | Service-loaded `ExtensionRegistry`, `ConverterRegistry`, `LogHandler` | `RegisterSetup`, called from a package's `init` |
 | `unwrap(AsciidoctorJRuby.class)`, JRuby runtime access | `Do` and `Node.Value` |

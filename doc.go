@@ -93,6 +93,10 @@
 // its output itself by implementing OutputWriter. RegisterLogHandler receives
 // Asciidoctor's log messages, with their source location; SetLogLevel sets
 // the lowest severity delivered, and Log lets extensions and converters log.
+// SlogHandler forwards the messages to a *slog.Logger. A handler implementing
+// ContextLogHandler receives the context of the call that logged (the one
+// given to ConvertContext and the other *Context methods), so trace values
+// reach the log records.
 //
 // # Command line
 //

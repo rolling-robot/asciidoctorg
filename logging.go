@@ -1,6 +1,7 @@
 package asciidoctor
 
 import (
+	"context"
 	"errors"
 	"sync"
 
@@ -48,6 +49,16 @@ type LogRecord struct {
 // LogHandler receives Asciidoctor's log messages.
 type LogHandler interface {
 	Log(record LogRecord)
+}
+
+// ContextLogHandler is a LogHandler that also wants the context of the call
+// that logged: the context passed to ConvertContext, LoadContext and the other
+// *Context methods (context.Background() for the methods without one). A
+// handler that implements it receives LogContext instead of Log, so it can
+// pass trace and request values on, as SlogHandler does.
+type ContextLogHandler interface {
+	LogHandler
+	LogContext(ctx context.Context, record LogRecord)
 }
 
 // LogHandlerFunc adapts a function to a LogHandler.
@@ -249,8 +260,13 @@ func (h *logHandler) Dispatch(_ *ruby.Call, method string, args []ruby.Value) (a
 		handlers = append(handlers, l.handlers[id])
 	}
 	l.mu.Unlock()
+	ctx := h.a.b.Context()
 	for _, lh := range handlers {
-		lh.Log(rec)
+		if ch, ok := lh.(ContextLogHandler); ok {
+			ch.LogContext(ctx, rec)
+		} else {
+			lh.Log(rec)
+		}
 	}
 	return nil, nil
 }

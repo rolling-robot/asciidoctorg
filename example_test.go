@@ -1,8 +1,10 @@
 package asciidoctor_test
 
 import (
+	"context"
 	"fmt"
 	"log"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"strings"
@@ -249,6 +251,34 @@ func ExampleAsciidoctor_RegisterLogHandler() {
 	}
 	// Output:
 	// WARN at <stdin>: line 3: section title out of sequence: expected level 1, got level 2
+}
+
+func ExampleSlogHandler() {
+	a, err := asciidoctor.New()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer a.Close()
+	// A text handler without the timestamp and the base directory (the
+	// working directory, for a string source), so the output is reproducible.
+	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+		ReplaceAttr: func(groups []string, attr slog.Attr) slog.Attr {
+			if (len(groups) == 0 && attr.Key == slog.TimeKey) || (len(groups) == 1 && attr.Key == "dir") {
+				return slog.Attr{}
+			}
+			return attr
+		},
+	}))
+	unregister, err := a.RegisterLogHandler(asciidoctor.SlogHandler{Logger: logger})
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer unregister()
+	if _, err := a.ConvertContext(context.Background(), "= Title\n\n=== Too deep\n", nil); err != nil {
+		log.Fatal(err)
+	}
+	// Output:
+	// level=WARN msg="section title out of sequence: expected level 1, got level 2" asciidoc.path=<stdin> asciidoc.line=3
 }
 
 func ExampleAsciidoctor_RunCLI() {

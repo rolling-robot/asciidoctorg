@@ -160,9 +160,9 @@ ruby scripts/gen-goldens.rb          # regenerate the MRI goldens (needs MRI Rub
 | `converter.go`, `load.go`, `walker.go` | `Convert*`, `Load*` (each with a `*Context` variant), directory walkers (`AsciiDocDirectoryWalker`, `GlobDirectoryWalker`) |
 | `document.go`, `node.go`, `structural_node.go`, `blocks.go`, `table.go`, `create.go`, `reader.go` | AST wrappers that hold the live `ruby.Value` and forward to it (like AsciidoctorJ's `*Impl`), with a per-document cache that keeps wrapper identity stable; `Create*` node constructors; `Reader` |
 | `extensions.go`, `extension_handlers.go`, `ruby_extensions.go` | Go processors of all eight kinds; each becomes a Ruby subclass of the matching `Asciidoctor::Extensions::*Processor` whose `process` calls Go. Registration metadata comes from a Go struct (the analogue of AsciidoctorJ's annotations). Groups; `RegisterSetup` (service-loader analogue, called from `init`); Ruby extensions via `LoadRubySource`/`RequireLibrary` |
-| `syntax_highlighter.go`, `logging.go` | Go syntax highlighters and log handlers, same proxy pattern |
+| `syntax_highlighter.go`, `logging.go`, `slog.go` | Go syntax highlighters and log handlers, same proxy pattern; `SlogHandler` adapter to `log/slog`, `ContextLogHandler` for the caller's context |
 | `cli.go`, `cmd/asciidoctor` | `RunCLI` runs Asciidoctor's own `Invoker` (all options, MRI-identical output and exit codes in the cases checked) |
-| `doc.go`, `example_test.go` | package documentation, 12 runnable examples |
+| `doc.go`, `example_test.go` | package documentation, 13 runnable examples |
 
 Package-level `Convert`/`Load` use a lazily created default instance. Booting
 an instance takes about 0.13 s (about 1 s the first time a runtime directory
